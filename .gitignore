@@ -108,5 +108,5 @@ InitTestScene*.unity*
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
 
-Assets/Football Pitch.psd
-Assets/Football Pitch.psd.meta
+Assets/Field Textures/Football Pitch.psd
+Assets/Field Textures/Football Pitch.psd.meta
