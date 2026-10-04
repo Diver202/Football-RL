@@ -46,10 +46,10 @@ Material:
     - _Blend: 2
     - _CastShadows: 1
     - _Cull: 2
-    - _DotsNoiseScale: 3
+    - _DotsNoiseScale: 0.28
     - _DstBlend: 1
     - _DstBlendAlpha: 1
-    - _NoiseScale: 0.31
+    - _NoiseScale: 0.3
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SrcBlend: 5
