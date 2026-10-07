@@ -17,7 +17,9 @@ public class FootballAgent : MonoBehaviour
     private Rigidbody agentRb;
     private GameObject currentBall;
     private Rigidbody ballRb;
-    private Collider ballCollider;
+    
+    // To prevent immediate re-possession after kicking or losing the ball
+    private float possessionCooldown = 0f;
 
     private void Awake()
     {
@@ -32,6 +34,12 @@ public class FootballAgent : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (possessionCooldown > 0)
+        {
+            possessionCooldown -= Time.fixedDeltaTime;
+        }
+
+        // Implementation of V_max(t) = V_base - kappa * I_possess(i,t)
         float currentMaxV = HasPossession ? (maxVelocityBase - dribblePenalty) : maxVelocityBase;
         
         Vector3 horizontalVelocity = new Vector3(agentRb.linearVelocity.x, 0, agentRb.linearVelocity.z);
@@ -46,30 +54,30 @@ public class FootballAgent : MonoBehaviour
     {
         if (!HasPossession || currentBall == null) return;
 
-        HasPossession = false;
-        currentBall.transform.parent = null;
+        Rigidbody bRb = ballRb;
+        LosePossession();
+        
+        // Cooldown so agent doesn't instantly re-possess the ball it just kicked
+        possessionCooldown = 0.5f;
         
         Vector3 forwardDir = transform.forward;
         Vector3 horizontalDir = Quaternion.Euler(0, passAngle.x * 45f, 0) * forwardDir;
         Vector3 trajectory = Vector3.Slerp(horizontalDir, Vector3.up, Mathf.Clamp01(passAngle.y)).normalized;
 
-        // Re-enable physics and collision
-        ballRb.isKinematic = false;
-        if (ballCollider != null) ballCollider.enabled = true;
-        
-        ballRb.AddForce(trajectory * maxKickForce, ForceMode.Impulse);
-        currentBall = null;
+        bRb.AddForce(trajectory * maxKickForce, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ball") && !HasPossession)
+        if (collision.gameObject.CompareTag("Ball") && !HasPossession && possessionCooldown <= 0f)
         {
             TakePossession(collision.gameObject);
         }
         else if (collision.gameObject.CompareTag("Player") && HasPossession)
         {
+            // If tackled by another player, lose possession
             LosePossession();
+            possessionCooldown = 1.0f; // Brief cooldown before they can grab it again
         }
     }
 
@@ -78,29 +86,31 @@ public class FootballAgent : MonoBehaviour
         HasPossession = true;
         currentBall = ball;
         ballRb = ball.GetComponent<Rigidbody>();
-        ballCollider = ball.GetComponent<Collider>();
         
-        // Zero out velocities BEFORE setting kinematic to fix Unity 6 errors
-        ballRb.linearVelocity = Vector3.zero;
-        ballRb.angularVelocity = Vector3.zero;
-        ballRb.isKinematic = true;
-
-        // Disable collider while held to prevent depenetration physics explosions
-        if (ballCollider != null) ballCollider.enabled = false;
-        
+        // Snap ball to hold position
         currentBall.transform.position = ballHoldPosition.position;
-        currentBall.transform.parent = ballHoldPosition;
+        
+        // Use a FixedJoint to attach the ball physically without disabling its colliders
+        // This stops the ball from going through walls while possessed
+        FixedJoint joint = currentBall.AddComponent<FixedJoint>();
+        joint.connectedBody = agentRb;
+        
+        // The joint inherently allows the ball to push against the environment 
+        // without passing through colliders, unlike the kinematic parenting approach.
     }
 
     public void LosePossession()
     {
-        if (!HasPossession) return;
+        if (!HasPossession || currentBall == null) return;
         HasPossession = false;
-        currentBall.transform.parent = null;
         
-        ballRb.isKinematic = false;
-        if (ballCollider != null) ballCollider.enabled = true;
+        FixedJoint joint = currentBall.GetComponent<FixedJoint>();
+        if (joint != null)
+        {
+            Destroy(joint);
+        }
         
         currentBall = null;
+        ballRb = null;
     }
 }

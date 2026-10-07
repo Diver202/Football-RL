@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(FootballAgent))]
-public class HeuristicGreedyBrain : MonoBehaviour
+public class TestBrain : MonoBehaviour
 {
     public Transform targetBall; // Assign the GlowBall here
     public Transform opponentGoal; // Assign the opposing GoalPost here
@@ -17,7 +17,7 @@ public class HeuristicGreedyBrain : MonoBehaviour
     {
         if (agent.HasPossession)
         {
-            // Egoistic policy: ignore teammates, drive to goal
+            // Egoistic policy: ignore teammates, drive to goal (lambda = 0)
             Vector3 dirToGoal = (opponentGoal.position - transform.position).normalized;
             agent.ApplyMovement(new Vector2(dirToGoal.x, dirToGoal.z));
             
