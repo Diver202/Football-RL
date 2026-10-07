@@ -3,8 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class GoalTrigger : MonoBehaviour
 {
-    [Tooltip("The tag of the team that SCORES when the ball enters this trigger (e.g., 'TeamA' or 'TeamB')")]
-    public string scoringTeam = "TeamA";
+    [Tooltip("The tag of the team that SCORES when the ball enters this trigger (e.g., 'TeamRed' or 'TeamBlue')")]
+    public string scoringTeam = "TeamRed";
 
     private void Awake()
     {
