@@ -14490,11 +14490,20 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 545c00a6a77ea034d8cc3a7475183c97, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 521686475872591965, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1715255086074194768, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1621320758}
   m_SourcePrefab: {fileID: 100100000, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
+--- !u!4 &383455698 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1525862207594288398, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
+  m_PrefabInstance: {fileID: 383455697}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &404062530
 Mesh:
   m_ObjectHideFlags: 0
@@ -39424,6 +39433,45 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &1621320752 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1715255086074194768, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
+  m_PrefabInstance: {fileID: 383455697}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1621320758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621320752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f80a93a462049cbb2dd7dd4f6543e1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SinglePlayerTrainer
+  targetBall: {fileID: 702858139}
+  opponentGoal: {fileID: 332380665}
+  ownGoal: {fileID: 762489208}
+  opponent: {fileID: 3422828622911878939}
+  maxShootDistance: 24
+  closeRangeShotDistance: 10
+  goalCornerInset: 1
+  goalWidth: 8.5
+  kickAlignmentThreshold: 25
+  evasionTriggerDistance: 9
+  dribbleCorridorWidth: 3.5
+  evasionStrength: 1.6
+  enableBurstKnockAhead: 1
+  burstTriggerDistance: 3.2
+  jockeyDistance: 4
+  tackleCommitDistance: 3
+  dangerZoneRadius: 18
+  clearanceDangerRadius: 16
+  pitchHalfLengthX: 50
+  pitchHalfWidthZ: 33
+  boundaryBuffer: 4
+  turnSpeed: 12
 --- !u!43 &1686372617
 Mesh:
   m_ObjectHideFlags: 0
@@ -44289,11 +44337,59 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 521686475872591965, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1715255086074194768, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3422828622911878933}
   m_SourcePrefab: {fileID: 100100000, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
+--- !u!1 &3422828622911878932 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1715255086074194768, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
+  m_PrefabInstance: {fileID: 3422828622911878931}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3422828622911878933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3422828622911878932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f80a93a462049cbb2dd7dd4f6543e1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SinglePlayerTrainer
+  targetBall: {fileID: 702858139}
+  opponentGoal: {fileID: 762489208}
+  ownGoal: {fileID: 332380665}
+  opponent: {fileID: 383455698}
+  maxShootDistance: 24
+  closeRangeShotDistance: 10
+  goalCornerInset: 1
+  goalWidth: 8.5
+  kickAlignmentThreshold: 25
+  evasionTriggerDistance: 9
+  dribbleCorridorWidth: 3.5
+  evasionStrength: 1.6
+  enableBurstKnockAhead: 1
+  burstTriggerDistance: 3.2
+  jockeyDistance: 4
+  tackleCommitDistance: 3
+  dangerZoneRadius: 18
+  clearanceDangerRadius: 16
+  pitchHalfLengthX: 50
+  pitchHalfWidthZ: 33
+  boundaryBuffer: 4
+  turnSpeed: 12
+--- !u!4 &3422828622911878939 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1525862207594288398, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
+  m_PrefabInstance: {fileID: 3422828622911878931}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

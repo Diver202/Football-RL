@@ -50,7 +50,17 @@ public class FootballAgent : MonoBehaviour
         }
     }
 
+    public Rigidbody AgentRb => agentRb;
+    public Rigidbody BallRb => ballRb;
+    public GameObject CurrentBall => currentBall;
+    public float PossessionCooldown => possessionCooldown;
+
     public void ExecuteKick(Vector2 passAngle)
+    {
+        ExecuteKick(passAngle, 1f);
+    }
+
+    public void ExecuteKick(Vector2 passAngle, float powerFactor)
     {
         if (!HasPossession || currentBall == null) return;
 
@@ -64,7 +74,8 @@ public class FootballAgent : MonoBehaviour
         Vector3 horizontalDir = Quaternion.Euler(0, passAngle.x * 45f, 0) * forwardDir;
         Vector3 trajectory = Vector3.Slerp(horizontalDir, Vector3.up, Mathf.Clamp01(passAngle.y)).normalized;
 
-        bRb.AddForce(trajectory * maxKickForce, ForceMode.Impulse);
+        float force = Mathf.Clamp(powerFactor, 0.05f, 1f) * maxKickForce;
+        bRb.AddForce(trajectory * force, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision collision)
