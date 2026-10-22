@@ -41,6 +41,12 @@ public class GameManager : MonoBehaviour
             
         Debug.Log($"Goal! Current Score -> Team Red: {teamRedScore} | Team Blue: {teamBlueScore}");
         
-        // TODO: Reset the environment positions for the next episode/round here
+        // Notify active RL agents to grant rewards and trigger episode reset
+        FootballAgentML[] agents = FindObjectsByType<FootballAgentML>(FindObjectsSortMode.None);
+        foreach (var agent in agents)
+        {
+            bool scored = agent.CompareTag(team);
+            agent.OnGoalScored(scored);
+        }
     }
 }
