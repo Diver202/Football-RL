@@ -3,68 +3,159 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class FootballAgent : MonoBehaviour
 {
-    [Header("Movement Dynamics")]
-    public float baseForce = 20f;
-    public float maxVelocityBase = 8f; 
-    public float dribblePenalty = 3f;
+    [Header("Movement")]
+    public float moveSpeed = 15f;
+    public float maxVelocity = 8f;
+    public float dribbleOffset = 0.85f;
+    public float ballRadius = 0.15f;
 
-    [Header("Possession & Kicking")]
-    public Transform ballHoldPosition; 
-    public float maxKickForce = 20f;
-    
-    public bool HasPossession { get; private set; }
-    
+    [Header("Possession State")]
+    public bool HasPossession = false;
+    public GameObject currentBall;
+
     private Rigidbody agentRb;
-    private GameObject currentBall;
+    private Collider agentCollider;
     private Rigidbody ballRb;
-    
-    // To prevent immediate re-possession after kicking or losing the ball
+    private Collider ballCollider;
     private float possessionCooldown = 0f;
 
     private void Awake()
     {
         agentRb = GetComponent<Rigidbody>();
+        agentCollider = GetComponent<Collider>();
+
+        // Lock vertical position and tilt so the agent stays firmly grounded
+        agentRb.constraints = RigidbodyConstraints.FreezePositionY | 
+                              RigidbodyConstraints.FreezeRotationX | 
+                              RigidbodyConstraints.FreezeRotationZ;
     }
 
     public void ApplyMovement(Vector2 moveInput)
     {
-        Vector3 force = new Vector3(moveInput.x, 0, moveInput.y).normalized * baseForce;
+        Vector3 force = new Vector3(moveInput.x, 0, moveInput.y).normalized * moveSpeed;
         agentRb.AddForce(force, ForceMode.Acceleration);
+
+        // Clamp horizontal velocity
+        Vector3 horiz = new Vector3(agentRb.linearVelocity.x, 0, agentRb.linearVelocity.z);
+        if (horiz.magnitude > maxVelocity)
+        {
+            Vector3 clamped = horiz.normalized * maxVelocity;
+            agentRb.linearVelocity = new Vector3(clamped.x, 0, clamped.z);
+        }
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (possessionCooldown > 0)
         {
-            possessionCooldown -= Time.fixedDeltaTime;
+            possessionCooldown -= Time.deltaTime;
         }
 
-        // Implementation of V_max(t) = V_base - kappa * I_possess(i,t)
-        float currentMaxV = HasPossession ? (maxVelocityBase - dribblePenalty) : maxVelocityBase;
-        
-        Vector3 horizontalVelocity = new Vector3(agentRb.linearVelocity.x, 0, agentRb.linearVelocity.z);
-        if (horizontalVelocity.magnitude > currentMaxV)
+        // KEEP BALL DIRECTLY IN FRONT AT GROUND LEVEL WHILE POSSESSED
+        if (HasPossession && currentBall != null)
         {
-            Vector3 clampedVelocity = horizontalVelocity.normalized * currentMaxV;
-            agentRb.linearVelocity = new Vector3(clampedVelocity.x, agentRb.linearVelocity.y, clampedVelocity.z);
+            Vector3 frontPos = transform.position + transform.forward * dribbleOffset;
+            frontPos.y = ballRadius;
+            currentBall.transform.position = frontPos;
+
+            // Check if agent/ball is nearing boundary barriers
+            if (Mathf.Abs(frontPos.x) > 50f || Mathf.Abs(frontPos.z) > 34f)
+            {
+                // Release possession near barriers
+                LosePossession();
+                possessionCooldown = 1.0f;
+            }
         }
     }
 
-    public void ExecuteKick(Vector2 passAngle)
+    public void TakePossession(GameObject ball)
+    {
+        if (possessionCooldown > 0f || HasPossession) return;
+
+        HasPossession = true;
+        currentBall = ball;
+        ballRb = ball.GetComponent<Rigidbody>();
+        ballCollider = ball.GetComponent<Collider>();
+
+        if (ballRb != null)
+        {
+            ballRb.isKinematic = true;
+            ballRb.linearVelocity = Vector3.zero;
+            ballRb.angularVelocity = Vector3.zero;
+        }
+
+        if (agentCollider != null && ballCollider != null)
+        {
+            Physics.IgnoreCollision(agentCollider, ballCollider, true);
+        }
+
+        // Place directly in front of the agent at ground level
+        Vector3 frontPos = transform.position + transform.forward * dribbleOffset;
+        frontPos.y = ballRadius;
+        currentBall.transform.position = frontPos;
+    }
+
+    public void LosePossession()
+    {
+        if (!HasPossession && currentBall == null) return;
+        HasPossession = false;
+
+        if (currentBall != null)
+        {
+            if (ballRb != null)
+            {
+                ballRb.isKinematic = false;
+            }
+
+            if (agentCollider != null && ballCollider != null)
+            {
+                Physics.IgnoreCollision(agentCollider, ballCollider, false);
+            }
+        }
+
+        currentBall = null;
+        ballRb = null;
+        ballCollider = null;
+    }
+
+    public void KickTowards(Vector3 targetPosition, float force = 20f, float upwardArc = 0.15f)
+    {
+        if (!HasPossession || currentBall == null) return;
+
+        Vector3 kickDir = (targetPosition - transform.position);
+        kickDir.y = 0f;
+        Kick(kickDir.normalized, force, upwardArc);
+    }
+
+    public void Kick(Vector3 direction, float force = 20f, float upwardArc = 0.15f)
     {
         if (!HasPossession || currentBall == null) return;
 
         Rigidbody bRb = ballRb;
         LosePossession();
-        
-        // Cooldown so agent doesn't instantly re-possess the ball it just kicked
         possessionCooldown = 0.5f;
-        
-        Vector3 forwardDir = transform.forward;
-        Vector3 horizontalDir = Quaternion.Euler(0, passAngle.x * 45f, 0) * forwardDir;
-        Vector3 trajectory = Vector3.Slerp(horizontalDir, Vector3.up, Mathf.Clamp01(passAngle.y)).normalized;
 
-        bRb.AddForce(trajectory * maxKickForce, ForceMode.Impulse);
+        if (bRb != null)
+        {
+            bRb.isKinematic = false;
+            bRb.linearVelocity = Vector3.zero;
+            bRb.angularVelocity = Vector3.zero;
+
+            Vector3 traj = (direction.normalized + Vector3.up * upwardArc).normalized;
+            bRb.AddForce(traj * force, ForceMode.Impulse);
+        }
+    }
+
+    public void ExecuteKick(Vector2 passAngle)
+    {
+        Vector3 forwardDir = transform.forward;
+        Vector3 horizDir = Quaternion.Euler(0, passAngle.x * 45f, 0) * forwardDir;
+        Kick(horizDir, 20f, Mathf.Clamp01(passAngle.y));
+    }
+
+    public void SetPossessionCooldown(float duration)
+    {
+        possessionCooldown = Mathf.Max(possessionCooldown, duration);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -73,44 +164,13 @@ public class FootballAgent : MonoBehaviour
         {
             TakePossession(collision.gameObject);
         }
-        else if (collision.gameObject.CompareTag("Player") && HasPossession)
+        else if (collision.gameObject.name.Contains("Barrier") || collision.gameObject.name.Contains("Plane"))
         {
-            // If tackled by another player, lose possession
-            LosePossession();
-            possessionCooldown = 1.0f; // Brief cooldown before they can grab it again
+            if (HasPossession)
+            {
+                LosePossession();
+                possessionCooldown = 1.0f;
+            }
         }
-    }
-
-    private void TakePossession(GameObject ball)
-    {
-        HasPossession = true;
-        currentBall = ball;
-        ballRb = ball.GetComponent<Rigidbody>();
-        
-        // Snap ball to hold position
-        currentBall.transform.position = ballHoldPosition.position;
-        
-        // Use a FixedJoint to attach the ball physically without disabling its colliders
-        // This stops the ball from going through walls while possessed
-        FixedJoint joint = currentBall.AddComponent<FixedJoint>();
-        joint.connectedBody = agentRb;
-        
-        // The joint inherently allows the ball to push against the environment 
-        // without passing through colliders, unlike the kinematic parenting approach.
-    }
-
-    public void LosePossession()
-    {
-        if (!HasPossession || currentBall == null) return;
-        HasPossession = false;
-        
-        FixedJoint joint = currentBall.GetComponent<FixedJoint>();
-        if (joint != null)
-        {
-            Destroy(joint);
-        }
-        
-        currentBall = null;
-        ballRb = null;
     }
 }
