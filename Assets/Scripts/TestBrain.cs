@@ -1,17 +1,24 @@
 using UnityEngine;
 
+/// <summary>
+/// Simple testing brain that drives the FootballAgent:
+/// 1. Pursues the ball and takes possession.
+/// 2. Dribbles towards the opponent goal (experiencing the mathematical velocity decay).
+/// 3. Shoots towards the goal when within shooting range.
+/// </summary>
 [RequireComponent(typeof(FootballAgent))]
 public class TestBrain : MonoBehaviour
 {
     [Header("Target References")]
     public Transform targetBall;   // GlowBall
-    public Transform opponentGoal; // Target GoalPost
+    public Transform opponentGoal; // Opponent GoalPost
 
-    [Header("Behavior Tuning")]
+    [Header("Behavior Parameters")]
     public float possessionDistance = 1.3f;
     public float shootingRange = 18f;
-    public float kickForce = 22f;
     public float turnSpeed = 8f;
+    [Range(0f, 1f)] public float kickElevation = 0.15f;
+    [Range(0f, 1f)] public float kickForceFraction = 1.0f;
 
     private FootballAgent agent;
 
@@ -32,10 +39,12 @@ public class TestBrain : MonoBehaviour
 
             if (toBall.sqrMagnitude > 0.01f)
             {
-                // Smoothly face the ball
+                // Smoothly orient facing towards the ball
                 transform.forward = Vector3.Slerp(transform.forward, toBall.normalized, turnSpeed * Time.fixedDeltaTime);
-                // Move towards the ball
-                agent.ApplyMovement(new Vector2(toBall.normalized.x, toBall.normalized.z));
+
+                // Continuous movement input in [-1, 1]^2
+                Vector2 moveInput = new Vector2(toBall.normalized.x, toBall.normalized.z);
+                agent.ApplyMovement(moveInput);
             }
 
             // 2. TAKE POSSESSION WHEN CLOSE
@@ -52,16 +61,18 @@ public class TestBrain : MonoBehaviour
 
             if (toGoal.sqrMagnitude > 0.01f)
             {
-                // Smoothly face the goal
+                // Orient towards the goal
                 transform.forward = Vector3.Slerp(transform.forward, toGoal.normalized, turnSpeed * Time.fixedDeltaTime);
-                // Move towards the goal
-                agent.ApplyMovement(new Vector2(toGoal.normalized.x, toGoal.normalized.z));
+
+                // Continuous movement input in [-1, 1]^2
+                Vector2 moveInput = new Vector2(toGoal.normalized.x, toGoal.normalized.z);
+                agent.ApplyMovement(moveInput);
             }
 
             // 4. KICK TOWARDS GOAL WHEN IN RANGE
             if (toGoal.magnitude <= shootingRange)
             {
-                agent.KickTowards(opponentGoal.position, kickForce, 0.15f);
+                agent.KickTowards(opponentGoal.position, kickElevation, kickForceFraction);
             }
         }
     }

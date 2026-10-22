@@ -110,3 +110,12 @@ InitTestScene*.unity*
 
 Assets/Field Textures/Football Pitch.psd
 Assets/Field Textures/Football Pitch.psd.meta
+
+# Python Virtual Environments & Cache
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+results/
+run_logs/
