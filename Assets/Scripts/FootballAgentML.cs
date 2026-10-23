@@ -24,7 +24,7 @@ public class FootballAgentML : Agent
     public Transform ownGoal;
 
     [Header("Spawn & Reset Positions")]
-    public Vector3 initialAgentPosition = new Vector3(-35f, 1f, 0f);
+    public Vector3 initialAgentPosition = new Vector3(35f, 1f, 0f);
     public Vector3 initialBallPosition = new Vector3(0f, 0.15f, 0f);
 
     [Header("Hyperparameters & Reward Shaping")]
@@ -37,6 +37,24 @@ public class FootballAgentML : Agent
     private Rigidbody ballRb;
     private float prevDistanceToBall;
     private float prevDistanceBallToGoal;
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        GameManager.OnGoalScoredEvent += HandleGoalScored;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        GameManager.OnGoalScoredEvent -= HandleGoalScored;
+    }
+
+    private void HandleGoalScored(string scoringTeam)
+    {
+        bool scoredByThisTeam = CompareTag(scoringTeam);
+        OnGoalScored(scoredByThisTeam);
+    }
 
     public override void Initialize()
     {
@@ -210,14 +228,31 @@ public class FootballAgentML : Agent
         var continuous = actionsOut.ContinuousActions;
         var discrete = actionsOut.DiscreteActions;
 
-        // Manual WASD controls for testing
-        continuous[0] = Input.GetAxisRaw("Horizontal");
-        continuous[1] = Input.GetAxisRaw("Vertical");
+        float moveX = 0f;
+        float moveZ = 0f;
+        int kick = 0;
+
+#if ENABLE_INPUT_SYSTEM
+        var keyboard = UnityEngine.InputSystem.Keyboard.current;
+        if (keyboard != null)
+        {
+            if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) moveX -= 1f;
+            if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) moveX += 1f;
+            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) moveZ -= 1f;
+            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) moveZ += 1f;
+            if (keyboard.spaceKey.isPressed) kick = 1;
+        }
+#else
+        moveX = Input.GetAxisRaw("Horizontal");
+        moveZ = Input.GetAxisRaw("Vertical");
+        if (Input.GetKey(KeyCode.Space)) kick = 1;
+#endif
+
+        continuous[0] = moveX;
+        continuous[1] = moveZ;
         continuous[2] = 0f;    // straight forward
         continuous[3] = 0.2f;  // slight elevation
         continuous[4] = 1.0f;  // full power
-
-        // Spacebar to kick
-        discrete[0] = Input.GetKey(KeyCode.Space) ? 1 : 0;
+        discrete[0] = kick;
     }
 }

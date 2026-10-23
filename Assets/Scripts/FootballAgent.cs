@@ -166,6 +166,14 @@ public class FootballAgent : MonoBehaviour
     /// <summary>
     /// Releases possession and restores normal ball physics.
     /// </summary>
+    public void ReleasePossession()
+    {
+        LosePossession();
+    }
+
+    /// <summary>
+    /// Releases possession and restores normal ball physics.
+    /// </summary>
     public void LosePossession()
     {
         if (!HasPossession && currentBall == null) return;

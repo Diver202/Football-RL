@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public static event System.Action<string> OnGoalScoredEvent;
+
     public void GoalScored(string team)
     {
         if (team == "TeamRed")
@@ -41,12 +43,7 @@ public class GameManager : MonoBehaviour
             
         Debug.Log($"Goal! Current Score -> Team Red: {teamRedScore} | Team Blue: {teamBlueScore}");
         
-        // Notify active RL agents to grant rewards and trigger episode reset
-        FootballAgentML[] agents = FindObjectsByType<FootballAgentML>(FindObjectsSortMode.None);
-        foreach (var agent in agents)
-        {
-            bool scored = agent.CompareTag(team);
-            agent.OnGoalScored(scored);
-        }
+        // Broadcast goal event to any listening agents or listeners
+        OnGoalScoredEvent?.Invoke(team);
     }
 }
