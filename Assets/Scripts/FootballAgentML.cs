@@ -247,87 +247,19 @@ public class FootballAgentML : Agent
         EndEpisode();
     }
 
-    private Vector2 smoothedKeyboardInput = Vector2.zero;
-
     public override void Heuristic(in ActionBuffers actionsOut)
     {
+        // Neutral fallback: Agent is driven purely by ML-Agents neural network.
+        // Manual player controls have been completely decoupled into ManualPlayerController.cs
+        // so that FreeCamera can navigate without accidentally controlling the bot.
         var continuous = actionsOut.ContinuousActions;
         var discrete = actionsOut.DiscreteActions;
 
-        float moveX = 0f;
-        float moveZ = 0f;
-        int kick = 0;
-        float kickAngleX = 0f;
-
-#if ENABLE_INPUT_SYSTEM
-        // 1. Full 360-degree Gamepad Analog Stick
-        var gamepad = UnityEngine.InputSystem.Gamepad.current;
-        if (gamepad != null)
-        {
-            Vector2 stick = gamepad.leftStick.ReadValue();
-            if (stick.sqrMagnitude > 0.04f)
-            {
-                moveX = stick.x;
-                moveZ = stick.y;
-            }
-            if (gamepad.buttonSouth.isPressed || gamepad.rightTrigger.isPressed)
-            {
-                kick = 1;
-            }
-        }
-
-        // 2. Continuous Keyboard with Smooth Analog Filtering
-        var keyboard = UnityEngine.InputSystem.Keyboard.current;
-        if (keyboard != null && (gamepad == null || (moveX == 0f && moveZ == 0f)))
-        {
-            float targetX = 0f;
-            float targetZ = 0f;
-            if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) targetX -= 1f;
-            if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) targetX += 1f;
-            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) targetZ -= 1f;
-            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) targetZ += 1f;
-            if (keyboard.spaceKey.isPressed) kick = 1;
-
-            Vector2 raw = new Vector2(targetX, targetZ);
-            if (raw.sqrMagnitude > 1f) raw.Normalize();
-
-            // Smooth interpolation eliminates rigid 8-way digital stepping
-            smoothedKeyboardInput = Vector2.MoveTowards(smoothedKeyboardInput, raw, 15f * Time.deltaTime);
-            moveX = smoothedKeyboardInput.x;
-            moveZ = smoothedKeyboardInput.y;
-        }
-
-        // 3. True 360-Degree Mouse Aiming for Kicks
-        var mouse = UnityEngine.InputSystem.Mouse.current;
-        if (mouse != null && Camera.main != null)
-        {
-            if (mouse.leftButton.isPressed) kick = 1;
-
-            Ray ray = Camera.main.ScreenPointToRay(mouse.position.ReadValue());
-            Plane groundPlane = new Plane(Vector3.up, new Vector3(0f, 0.15f, 0f));
-            if (groundPlane.Raycast(ray, out float enterDist))
-            {
-                Vector3 worldHit = ray.GetPoint(enterDist);
-                Vector3 toCursor = worldHit - transform.position;
-                toCursor.y = 0f;
-                if (toCursor.sqrMagnitude > 0.1f)
-                {
-                    float signedAngle = Vector3.SignedAngle(transform.forward, toCursor.normalized, Vector3.up);
-                    kickAngleX = Mathf.Clamp(signedAngle / 45f, -1f, 1f);
-                }
-            }
-        }
-#else
-        moveX = Input.GetAxisRaw("Horizontal");
-        moveZ = Input.GetAxisRaw("Vertical");
-        if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) kick = 1;
-#endif
-
-        continuous[0] = moveX;
-        continuous[1] = moveZ;
-        continuous[2] = kickAngleX; // Aimed horizontal kick angle in [-1, 1]
-        continuous[3] = 0.2f;       // Slight elevation
-        continuous[4] = 1.0f;       // Full power
-        discrete[0] = kick;
+        continuous[0] = 0f;
+        continuous[1] = 0f;
+        continuous[2] = 0f;
+        continuous[3] = 0.2f;
+        continuous[4] = 0f;
+        discrete[0] = 0;
     }
 }

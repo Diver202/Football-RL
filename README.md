@@ -32,8 +32,9 @@ The system strictly decouples physics, rule-based baselines, and reinforcement l
 | Script | Role | Description |
 | :--- | :--- | :--- |
 | **`FootballAgent.cs`** | **Physical Motor & Body** | Implements ground locomotion forces, kinematic ball-holding, dribble decay velocity clamping ($V_{max}$), and 3D kick trajectory impulses. |
-| **`FootballAgentML.cs`** | **Reinforcement Learning Brain** | Inherits from `Unity.MLAgents.Agent`. Collects 21 continuous observations, executes continuous/discrete actions, shapes dense rewards, and handles episode resets. Compatible with Unity's New Input System. |
+| **`FootballAgentML.cs`** | **Reinforcement Learning Brain** | Inherits from `Unity.MLAgents.Agent`. Collects 21 continuous observations, executes continuous/discrete actions, shapes dense rewards, and handles episode resets. |
 | **`TestBrain.cs`** | **Rule-Based Baseline** | Hardcoded greedy bot (chases ball, acquires possession, shoots in range). Used as the sparring opponent for Phase 1. |
+| **`ManualPlayerController.cs`** | **Optional Disconnected Human Control** | Completely standalone component for testing player movement with Gamepad/Keyboard/Mouse. Kept disconnected by default so `FreeCamera` can navigate without interference. |
 | **`BarrierDeflector.cs`** | **Pitch Boundary Physics** | Deflects loose balls horizontally inward and strips possession to prevent wall-pinning. |
 | **`GameManager.cs`** | **Match Referee & Events** | Tracks team scores and broadcasts `OnGoalScoredEvent` to trigger episode termination and rewards. |
 
@@ -182,21 +183,20 @@ If an agent converged on bad habits or you adjusted rewards and want a clean sla
 
 ---
 
-### D. Testing Manually (360-Degree Heuristic Mode)
+### D. FreeCamera & Optional Manual Player Control
 
-You can test full 360-degree player physics inside the Unity Editor without running Python:
-1. In `Behavior Parameters`, change **Behavior Type** to **`Heuristic Only`**.
-2. Click **Play (▶)** in Unity.
-3. **Controls (Full 360-Degree Omnidirectional Support):**
-   * **Gamepad / Controller (Xbox / PlayStation):**
-     * **Left Analog Stick**: Full 360-degree analog locomotion and speed control (creeping, jogging, sprinting).
-     * **A Button / Cross / Right Trigger**: Kick with full impulse.
-   * **Keyboard (Smoothed Analog Traction):**
-     * **W / A / S / D** or **Arrow Keys**: Continuous movement. Inputs are smoothly interpolated (no digital snapping) so turning is natural.
-     * **Spacebar**: Kick forward.
-   * **Mouse 360 Aiming:**
-     * Point your mouse anywhere on the pitch: kicks will aim in true 360 degrees directly at your mouse cursor!
-     * **Left Mouse Button**: Kick towards cursor.
+* **FreeCamera (Default):**
+  - The scene camera uses `FreeCamera` (WASD + Mouse) so you can fly around the pitch, spectate, and record video.
+  - **`FootballAgentML` is completely decoupled from keyboard/mouse inputs.** Pressing WASD, Space, or clicking the mouse will **never** accidentally drive the bot or trigger kicks.
+
+* **Optional Manual Character Control (`ManualPlayerController.cs`):**
+  - If you ever want to manually test physical 360-degree locomotion and kicking without Python:
+    1. Attach the `ManualPlayerController` component to any GameObject with `FootballAgent`.
+    2. Check the **`Enable Manual Control`** checkbox in the Inspector.
+  - **Controls:**
+    - **Gamepad (Xbox / PS):** Left Stick for 360° analog locomotion; A button / Right Trigger to kick.
+    - **Keyboard:** W/A/S/D (smooth analog traction); Spacebar to kick.
+    - **Mouse:** Point anywhere on the turf to aim kicks; Left Click to shoot.
 
 ---
 
