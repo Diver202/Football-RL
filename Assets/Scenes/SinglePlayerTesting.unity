@@ -14340,6 +14340,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1715255086074194768, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
+      propertyPath: m_TagString
+      value: TeamRed
+      objectReference: {fileID: 0}
     - target: {fileID: 5442323718851516749, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -42331,6 +42335,7 @@ MonoBehaviour:
   goalReward: 1
   concedePenalty: -1
   boundaryPenalty: -0.05
+  lambda: 0
 --- !u!114 &1991275791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44474,6 +44479,10 @@ PrefabInstance:
     - target: {fileID: 1715255086074194768, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1715255086074194768, guid: fd9741423708e6c4b8861d027e5cae94, type: 3}
+      propertyPath: m_TagString
+      value: TeamBlue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
