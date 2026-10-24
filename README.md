@@ -136,82 +136,123 @@ mlagents-learn config/football_config.yaml --run-id=football_yt_01 --time-scale=
 
 ---
 
-### B. Pausing, Resuming, and Saving Progress
+### B. Pausing, Resuming, and Saving Progress (Exact Mechanics)
 
-* **Will training be lost if I stop?**
-  **No!** ML-Agents automatically saves periodic checkpoints and summaries.
-* **To stop cleanly:** Click **Stop (⏹)** in Unity or press **`Ctrl + C`** in your PowerShell terminal. ML-Agents will export the neural network weights into:
-  ```text
-  results/football_yt_01/FootballAgent.onnx
-  ```
-* **To resume where you left off:** Add the `--resume` flag:
-  ```powershell
-  mlagents-learn config/football_config.yaml --run-id=football_yt_01 --resume --time-scale=1
-  ```
-  Hit **Play (▶)** in Unity, and the agent continues with its existing knowledge!
+Understanding how weights are saved and exported ensures you never lose training progress:
+
+1. **Continuous Checkpoints (`.pt` files):**
+   - As training progresses, ML-Agents saves PyTorch model weights every `summary_freq` (10,000 steps) to:
+     ```text
+     results/<run-id>/FootballAgent/checkpoint.pt
+     results/<run-id>/FootballAgent/FootballAgent-<step>.pt
+     ```
+   - It retains the last 5 checkpoints (`keep_checkpoints: 5`). Even if your computer crashes or training is interrupted, your weights are safely stored in these `.pt` files.
+
+2. **The Final Inference Model (`.onnx` file):**
+   - **When is `.onnx` generated?**
+     - When training reaches `max_steps` (1,000,000 steps).
+     - **OR** when you cleanly stop training by pressing **`Ctrl + C`** **once** in the terminal running `mlagents-learn`.
+   - **Crucial Rule:** Always stop training by pressing **`Ctrl + C` in PowerShell**, not by clicking Stop in Unity or closing the terminal window with the `X` button. ML-Agents requires ~5 seconds to catch the interrupt signal, run `torch.onnx.export()`, and write:
+     ```text
+     results/<run-id>/FootballAgent.onnx
+     ```
+
+3. **To Resume Where You Left Off:**
+   - To pick up from the exact last saved step, simply add the `--resume` flag with the same `--run-id`:
+     ```powershell
+     mlagents-learn config/football_config.yaml --run-id=football_yt_01 --resume --time-scale=1
+     ```
+   - ML-Agents will output `[INFO] Resuming training from results\football_yt_01`, reload the latest `.pt` weights, buffer, and learning rate, and prompt you to press **Play (▶)** in Unity.
 
 ---
 
 ### C. Binning / Discarding a Model to Start Fresh
 
-If your agent picked up bad habits or you adjusted rewards and want a clean slate:
+If an agent converged on bad habits or you adjusted rewards and want a clean slate:
 
-* **Option 1 (Force Overwrite):** Add `--force` to erase existing checkpoints:
+* **Option 1 (Force Overwrite):** Add `--force` to wipe the existing folder and start from step 0:
   ```powershell
   mlagents-learn config/football_config.yaml --run-id=football_yt_01 --force --time-scale=1
   ```
-* **Option 2 (New Run ID - Recommended):** Change the run ID to preserve the old run for comparison:
+* **Option 2 (New Run ID - Highly Recommended):** Increment the run ID (e.g. `football_yt_02`) to keep your previous logs and TensorBoard curves intact:
   ```powershell
   mlagents-learn config/football_config.yaml --run-id=football_yt_02 --time-scale=1
   ```
-* **Option 3:** Delete the `results/football_yt_01/` directory on disk.
+* **Option 3 (Manual Binning):** Delete the `results/<run-id>/` directory from your file explorer.
 
 ---
 
-### D. Testing Manually (Heuristic Keyboard Mode)
+### D. Testing Manually (360-Degree Heuristic Mode)
 
-You can play as the agent anytime inside the Unity Editor without running Python:
+You can test full 360-degree player physics inside the Unity Editor without running Python:
 1. In `Behavior Parameters`, change **Behavior Type** to **`Heuristic Only`**.
 2. Click **Play (▶)** in Unity.
-3. Controls (via New Input System):
-   * **W / A / S / D** or **Arrow Keys**: Move and turn
-   * **Spacebar**: Kick the ball with forward impulse
+3. **Controls (Full 360-Degree Omnidirectional Support):**
+   * **Gamepad / Controller (Xbox / PlayStation):**
+     * **Left Analog Stick**: Full 360-degree analog locomotion and speed control (creeping, jogging, sprinting).
+     * **A Button / Cross / Right Trigger**: Kick with full impulse.
+   * **Keyboard (Smoothed Analog Traction):**
+     * **W / A / S / D** or **Arrow Keys**: Continuous movement. Inputs are smoothly interpolated (no digital snapping) so turning is natural.
+     * **Spacebar**: Kick forward.
+   * **Mouse 360 Aiming:**
+     * Point your mouse anywhere on the pitch: kicks will aim in true 360 degrees directly at your mouse cursor!
+     * **Left Mouse Button**: Kick towards cursor.
 
 ---
 
-## 6. Live Monitoring with TensorBoard
+## 6. Understanding Early Training & Exploration
 
-Open a separate PowerShell terminal to view live reward curves and loss graphs:
+### Why Did the Agent Initially Move Around Randomly?
+When you start training a brand-new reinforcement learning model, **random movement is completely normal and mathematically intended**:
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-tensorboard --logdir results
-```
-
-Open your browser to:
-```text
-http://localhost:6006
-```
-
-### Key Metrics to Track
-* **`Environment/Cumulative Reward`**: Should steadily climb upward as the agent learns to acquire possession and score.
-* **`Environment/Episode Length`**: Drops as the bot gets faster at scoring goals.
-* **`Policy/Value Loss` & `Policy/Extrinsic Reward`**: Tracks critic accuracy and learning convergence.
+1. **Neural Network Cold Start:** At step 0, all weights and biases in the policy network are randomly initialized. For continuous locomotion (`MoveX`, `MoveZ`), the policy samples from a Gaussian distribution $\mathcal{N}(\mu, \sigma^2)$ where initial variance $\sigma \approx 1.0$.
+2. **Entropy Regularization ($\beta = 0.005$):** The entropy bonus explicitly prevents premature convergence by forcing the agent to explore all directions on the pitch rather than settling into a standstill.
+3. **Reward Signal Enhancements in `FootballAgentML.cs`:**
+   - **Heading Orientation (21 observations):** The agent now explicitly observes its forward heading (`transform.forward.x`, `transform.forward.z`), allowing it to understand which way it is facing when taking shots.
+   - **Amplified Dense Gradient:** The reward for closing the distance to the ball has been increased ($\Delta d_{ball} \times 0.01$), providing a steep hill-climbing gradient so the agent rapidly learns to sprint toward the ball within the first 10,000–30,000 steps.
+   - **Goal-Aligned Kick Shaping:** Kicks are now only rewarded if directed toward the opponent's goal ($\text{Dot}(\text{forward}, \text{toGoal}) > 0.25$), eliminating the earlier "hot potato" trap where the agent kicked randomly just to harvest points.
 
 ---
 
-## 7. Curriculum Roadmap
+## 7. Multi-Agent Passing Roadmap (Transitioning from 1v1 to 2v2/3v3)
 
-```
-[Phase 1: 1v1 vs TestBrain]
-            │  (Locomotion, interception, dribbling, shooting)
-            ▼
-[Phase 2: 1v1 Self-Play]
-            │  (ELO matchmaking against past checkpoints; competitive defense)
-            ▼
-[Phase 3: 2v2 MARL (Sweeping λ ∈ {0, 0.25, 0.5, 0.75, 1.0})]
-            │  (Dribble fatigue forces emergent passing Pareto frontier)
-            ▼
-[Phase 4: 3v3 Full Match Formations]
-               (Passing triangles and tactical roles)
-```
+The ultimate objective formulated in **`proposal.md`** is emergent cooperative passing governed by the cooperation parameter $\lambda \in [0, 1]$.
+
+### Why the Bots Will Choose to Pass
+In naive RL, agents rarely pass because passing carries turnover risks. In our environment, passing is mathematically forced by the **Dribble Velocity Decay Equation**:
+$$V_{max}^{(i)}(t) = \max\Big(V_{min},\; V_{base} - \kappa - \alpha \cdot t_{possess}\Big)$$
+- A defending bot sprints at **$8.0\text{ m/s}$**.
+- An unencumbered teammate sprints at **$8.0\text{ m/s}$**.
+- A dribbling agent slows down to **$2.5\text{ m/s}$** after retaining possession for 4+ seconds.
+- As the defender closes in, the only way for the ball carrier to avoid being tackled is to pass to their sprinting teammate upfield!
+
+### Step-by-Step Transition to 2v2 Passing:
+
+1. **Scene Setup (2v2 Pitch):**
+   - Duplicate the Blue Agent $\rightarrow$ `BlueAgent1` (Striker) and `BlueAgent2` (Midfielder).
+   - Duplicate the Red Agent $\rightarrow$ `RedAgent1` and `RedAgent2`.
+   - Both agents on each team share the same `Behavior Parameters` name (`FootballAgent`), so both agents train the same neural network concurrently.
+2. **Observation Expansion for Teammates & Opponents:**
+   - For 2v2, each agent observes:
+     - Teammate relative position and velocity ($6$ floats).
+     - Opponent relative positions and velocities ($12$ floats).
+   - Update `CollectObservations` in `FootballAgentML.cs` and set `Space Size` in the Inspector accordingly.
+3. **The Parameterized Cooperation Reward ($\lambda$):**
+   - Configured via the `lambda` slider on `FootballAgentML`:
+     $$\mathcal{R}_i = (1 - \lambda) r_i^{ind} + \lambda R_{team}$$
+     - $\lambda = 0.0$: Pure egoism (player hoards the ball to score alone).
+     - $\lambda = 0.5$: Balanced team play (scorer and passer split credit).
+     - $\lambda = 1.0$: Utilitarian team play (entire team is rewarded equally for any goal).
+4. **Self-Play Training (`config/football_config.yaml`):**
+   - Enable Self-Play so Team Blue and Team Red play against past checkpoints of themselves, developing dynamic counter-strategies:
+     ```yaml
+     behaviors:
+       FootballAgent:
+         trainer_type: ppo
+         self_play:
+           save_steps: 20000
+           team_change: 100000
+           swap_steps: 10000
+           play_against_latest_model_ratio: 0.5
+           initial_elo: 1200.0
+     ```

@@ -33,18 +33,19 @@ public class TestBrain : MonoBehaviour
 
         if (!agent.HasPossession)
         {
-            // 1. CHASE THE BALL
+            // 1. CHASE THE BALL (360-degree continuous vector)
             Vector3 toBall = targetBall.position - transform.position;
             toBall.y = 0f;
 
-            if (toBall.sqrMagnitude > 0.01f)
+            if (toBall.sqrMagnitude > 0.04f)
             {
-                // Smoothly orient facing towards the ball
-                transform.forward = Vector3.Slerp(transform.forward, toBall.normalized, turnSpeed * Time.fixedDeltaTime);
-
-                // Continuous movement input in [-1, 1]^2
+                // Full 360-degree unit vector
                 Vector2 moveInput = new Vector2(toBall.normalized.x, toBall.normalized.z);
                 agent.ApplyMovement(moveInput);
+            }
+            else
+            {
+                agent.ApplyMovement(Vector2.zero);
             }
 
             // 2. TAKE POSSESSION WHEN CLOSE
@@ -55,18 +56,18 @@ public class TestBrain : MonoBehaviour
         }
         else
         {
-            // 3. DRIVE TOWARDS OPPONENT GOAL
+            // 3. DRIVE TOWARDS OPPONENT GOAL (360-degree continuous vector)
             Vector3 toGoal = opponentGoal.position - transform.position;
             toGoal.y = 0f;
 
-            if (toGoal.sqrMagnitude > 0.01f)
+            if (toGoal.sqrMagnitude > 0.04f)
             {
-                // Orient towards the goal
-                transform.forward = Vector3.Slerp(transform.forward, toGoal.normalized, turnSpeed * Time.fixedDeltaTime);
-
-                // Continuous movement input in [-1, 1]^2
                 Vector2 moveInput = new Vector2(toGoal.normalized.x, toGoal.normalized.z);
                 agent.ApplyMovement(moveInput);
+            }
+            else
+            {
+                agent.ApplyMovement(Vector2.zero);
             }
 
             // 4. KICK TOWARDS GOAL WHEN IN RANGE

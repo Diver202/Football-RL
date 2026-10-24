@@ -12,11 +12,17 @@ using UnityEngine;
 public class FootballAgent : MonoBehaviour
 {
     [Header("Movement Dynamics (proposal.md Section 3.3)")]
-    [Tooltip("Base force applied for continuous ground movement (A_move).")]
-    public float baseForce = 25f;
-
     [Tooltip("Base unencumbered maximum speed (V_base).")]
     public float maxVelocityBase = 8f;
+
+    [Tooltip("Acceleration rate in m/s^2 for athletic responsiveness.")]
+    public float accelerationRate = 35f;
+
+    [Tooltip("Active braking deceleration in m/s^2 when stopping or reversing (cleat friction).")]
+    public float brakingRate = 50f;
+
+    [Tooltip("Rotation speed in degrees per second for smooth 360-degree heading alignment.")]
+    public float turnSpeed = 720f;
 
     [Tooltip("Initial speed reduction penalty when taking possession (kappa).")]
     public float dribblePenaltyBase = 2f;
@@ -65,6 +71,7 @@ public class FootballAgent : MonoBehaviour
     private Rigidbody ballRb;
     private Collider ballCollider;
     private float possessionCooldown = 0f;
+    private Vector2 currentMoveInput = Vector2.zero;
 
     private void Awake()
     {
@@ -80,12 +87,12 @@ public class FootballAgent : MonoBehaviour
     }
 
     /// <summary>
-    /// Applies continuous movement force vector in [-1, 1]^2 as defined in proposal.md Section 3.1.
+    /// Applies continuous movement vector in [-1, 1]^2 as defined in proposal.md Section 3.1.
+    /// Provides full 360-degree omnidirectional movement and analog speed modulation.
     /// </summary>
     public void ApplyMovement(Vector2 moveInput)
     {
-        Vector3 force = new Vector3(moveInput.x, 0f, moveInput.y).normalized * baseForce;
-        agentRb.AddForce(force, ForceMode.Acceleration);
+        currentMoveInput = moveInput;
     }
 
     private void Update()
@@ -94,17 +101,56 @@ public class FootballAgent : MonoBehaviour
         {
             possessionCooldown -= Time.deltaTime;
         }
+    }
 
-        // Handle active possession
-        if (HasPossession && currentBall != null)
+    private void FixedUpdate()
+    {
+        // 1. Calculate dynamic max speed decay based on possession time (proposal.md Section 3.3)
+        if (HasPossession)
         {
-            CurrentPossessionTime += Time.deltaTime;
-
-            // Mathematical decay: V_max(t) = max(V_min, V_base - kappa - alpha * t_possess)
+            CurrentPossessionTime += Time.fixedDeltaTime;
+            // V_max(t) = max(V_min, V_base - kappa - alpha * t_possess)
             float penalizedV = maxVelocityBase - dribblePenaltyBase - (possessionDecayRate * CurrentPossessionTime);
             CurrentMaxVelocity = Mathf.Max(minPossessionVelocity, penalizedV);
+        }
+        else
+        {
+            CurrentPossessionTime = 0f;
+            CurrentMaxVelocity = maxVelocityBase;
+        }
 
-            // Keep the ball locked directly in front at ground level
+        // 2. Full 360-Degree Continuous Locomotion with Athletic Turf Traction
+        float inputMag = Mathf.Clamp01(currentMoveInput.magnitude);
+        Vector3 currentHorizVel = new Vector3(agentRb.linearVelocity.x, 0f, agentRb.linearVelocity.z);
+
+        if (inputMag > 0.05f)
+        {
+            // Continuous 360-degree movement direction vector
+            Vector3 moveDir = new Vector3(currentMoveInput.x, 0f, currentMoveInput.y).normalized;
+            float targetSpeed = inputMag * CurrentMaxVelocity;
+            Vector3 targetVel = moveDir * targetSpeed;
+
+            // Smooth 360-degree heading rotation via Rigidbody.MoveRotation (PhysX compliant)
+            Quaternion targetRot = Quaternion.LookRotation(moveDir, Vector3.up);
+            Quaternion newRot = Quaternion.RotateTowards(agentRb.rotation, targetRot, turnSpeed * Time.fixedDeltaTime);
+            agentRb.MoveRotation(newRot);
+
+            // Turf traction: accelerate or apply hard cleat braking when cutting back/reversing
+            bool isCuttingBack = currentHorizVel.sqrMagnitude > 0.1f && Vector3.Dot(currentHorizVel.normalized, moveDir) < 0f;
+            float rate = isCuttingBack ? brakingRate : accelerationRate;
+            Vector3 newHorizVel = Vector3.MoveTowards(currentHorizVel, targetVel, rate * Time.fixedDeltaTime);
+            agentRb.linearVelocity = new Vector3(newHorizVel.x, 0f, newHorizVel.z);
+        }
+        else
+        {
+            // Active braking to stop cleanly without ice-skating
+            Vector3 stoppedVel = Vector3.MoveTowards(currentHorizVel, Vector3.zero, brakingRate * Time.fixedDeltaTime);
+            agentRb.linearVelocity = new Vector3(stoppedVel.x, 0f, stoppedVel.z);
+        }
+
+        // 3. Synchronize Possessed Ball in FixedUpdate (Eliminates Jitter & Desync)
+        if (HasPossession && currentBall != null)
+        {
             Vector3 frontPos = transform.position + transform.forward * dribbleOffset;
             frontPos.y = ballGroundHeight;
             currentBall.transform.position = frontPos;
@@ -114,22 +160,6 @@ public class FootballAgent : MonoBehaviour
             {
                 ReleaseNearBarrier(frontPos);
             }
-        }
-        else
-        {
-            CurrentPossessionTime = 0f;
-            CurrentMaxVelocity = maxVelocityBase;
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        // Enforce velocity clamping according to current V_max(t)
-        Vector3 horizVelocity = new Vector3(agentRb.linearVelocity.x, 0f, agentRb.linearVelocity.z);
-        if (horizVelocity.magnitude > CurrentMaxVelocity)
-        {
-            Vector3 clamped = horizVelocity.normalized * CurrentMaxVelocity;
-            agentRb.linearVelocity = new Vector3(clamped.x, 0f, clamped.z);
         }
     }
 
