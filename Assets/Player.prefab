@@ -160,9 +160,9 @@ MonoBehaviour:
   accelerationRate: 35
   brakingRate: 50
   turnSpeed: 720
-  dribblePenaltyBase: 2
-  possessionDecayRate: 0.8
-  minPossessionVelocity: 2.5
+  dribblePenaltyBase: 0.4
+  possessionDecayRate: 0.25
+  minPossessionVelocity: 4.5
   dribbleRadius: 1.6
   dribbleNudgeStrength: 25
   kickRadius: 1.8

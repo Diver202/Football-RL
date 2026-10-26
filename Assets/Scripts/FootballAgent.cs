@@ -27,13 +27,13 @@ public class FootballAgent : MonoBehaviour
 
     [Header("Dribble Fatigue Decay (proposal.md Section 3.3)")]
     [Tooltip("Initial speed reduction penalty when taking possession (kappa).")]
-    public float dribblePenaltyBase = 2f;
+    public float dribblePenaltyBase = 0.4f;
 
     [Tooltip("Continuous velocity decay rate per second of ball retention (alpha).")]
-    public float possessionDecayRate = 0.8f;
+    public float possessionDecayRate = 0.25f;
 
     [Tooltip("Minimum allowable maximum velocity when heavily encumbered (V_min).")]
-    public float minPossessionVelocity = 2.5f;
+    public float minPossessionVelocity = 4.5f;
 
     [Header("Discrete Tap-and-Chase Dribble")]
     [Tooltip("Maximum reach distance to the ball for executing a dribble tap.")]
