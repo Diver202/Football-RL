@@ -105,8 +105,8 @@ public class ManualPlayerController : MonoBehaviour
         if (moveInput.sqrMagnitude > 1f) moveInput.Normalize();
         agent.ApplyMovement(moveInput);
 
-        // Execute Kick
-        if (kickTriggered && agent.HasPossession)
+        // Execute Power Kick
+        if (kickTriggered && agent.CanKickBall())
         {
             agent.ExecuteKick(new Vector2(kickAngleX, defaultKickElevation), defaultKickForce);
         }

@@ -31,7 +31,7 @@ The system strictly decouples physics, rule-based baselines, and reinforcement l
 
 | Script | Role | Description |
 | :--- | :--- | :--- |
-| **`FootballAgent.cs`** | **Physical Motor & Body** | Implements ground locomotion forces, kinematic ball-holding, dribble decay velocity clamping ($V_{max}$), and 3D kick trajectory impulses. |
+| **`FootballAgent.cs`** | **Physical Motor & Body** | Implements ground locomotion forces, pure-physics micro-dribble rolling, dribble decay velocity clamping ($V_{max}$), and 3D kick trajectory impulses. |
 | **`FootballAgentML.cs`** | **Reinforcement Learning Brain** | Inherits from `Unity.MLAgents.Agent`. Collects 21 continuous observations, executes continuous/discrete actions, shapes dense rewards, and handles episode resets. |
 | **`TestBrain.cs`** | **Rule-Based Baseline** | Hardcoded greedy bot (chases ball, acquires possession, shoots in range). Used as the sparring opponent for Phase 1. |
 | **`ManualPlayerController.cs`** | **Optional Disconnected Human Control** | Completely standalone component for testing player movement with Gamepad/Keyboard/Mouse. Kept disconnected by default so `FreeCamera` can navigate without interference. |

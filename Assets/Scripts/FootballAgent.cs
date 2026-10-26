@@ -1,17 +1,17 @@
 using UnityEngine;
 
 /// <summary>
-/// Implements the physical agent capabilities formulated in proposal.md:
-/// - Continuous 2D force movement: A_move in [-1, 1]^2
-/// - Possession dynamics with decaying maximum velocity:
-///   V_max(t) = max(V_min, V_base - kappa - alpha * t_possess)
-/// - Parameterized 2D kick action space: A_pass_angle in [-1, 1]^2
-/// - Automatic possession release and boundary buffer protection near barriers
+/// Implements pure-physics agent locomotion and ball mechanics formulated in proposal.md:
+/// - Continuous 2D force movement: A_move in [-1, 1]^2 with athletic turf traction
+/// - Pure physics dribbling: Soft micro-kicks keep the ball rolling naturally with the agent
+/// - Zero kinematic locks: The ball is 100% dynamic PhysX at all times (no child-snapping)
+/// - Dribble velocity decay: V_max(t) = max(V_min, V_base - kappa - alpha * t_possess)
+/// - Parameterized 2D power kicks: A_pass_angle in [-1, 1]^2
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class FootballAgent : MonoBehaviour
 {
-    [Header("Movement Dynamics (proposal.md Section 3.3)")]
+    [Header("Locomotion Dynamics (proposal.md Section 3.3)")]
     [Tooltip("Base unencumbered maximum speed (V_base).")]
     public float maxVelocityBase = 8f;
 
@@ -24,6 +24,7 @@ public class FootballAgent : MonoBehaviour
     [Tooltip("Rotation speed in degrees per second for smooth 360-degree heading alignment.")]
     public float turnSpeed = 720f;
 
+    [Header("Dribble Fatigue Decay (proposal.md Section 3.3)")]
     [Tooltip("Initial speed reduction penalty when taking possession (kappa).")]
     public float dribblePenaltyBase = 2f;
 
@@ -33,15 +34,18 @@ public class FootballAgent : MonoBehaviour
     [Tooltip("Minimum allowable maximum velocity when heavily encumbered (V_min).")]
     public float minPossessionVelocity = 2.5f;
 
-    [Header("Ball Holding Geometry")]
-    [Tooltip("Forward offset from agent center to ball center.")]
-    public float dribbleOffset = 0.85f;
+    [Header("Pure-Physics Dribble Mechanics")]
+    [Tooltip("Distance threshold from agent center to ball center for dribble micro-kicks.")]
+    public float dribbleRadius = 1.6f;
 
-    [Tooltip("Fixed vertical height of ball above turf while possessed.")]
-    public float ballGroundHeight = 0.15f;
+    [Tooltip("Strength of the soft rolling micro-nudge applied to keep ball with player.")]
+    public float dribbleNudgeStrength = 25f;
 
-    [Header("Kicking Action Space (proposal.md Section 3.1)")]
-    [Tooltip("Maximum impulse force for kicks/passes.")]
+    [Header("Power Kick Action Space (proposal.md Section 3.1)")]
+    [Tooltip("Distance threshold within which the agent can execute a power kick.")]
+    public float kickRadius = 1.8f;
+
+    [Tooltip("Maximum impulse force for power kicks/shots.")]
     public float maxKickForce = 22f;
 
     [Tooltip("Minimum impulse force for soft passes.")]
@@ -53,30 +57,21 @@ public class FootballAgent : MonoBehaviour
     [Tooltip("Maximum vertical elevation angle in degrees for pass_angle.y in [0, 1].")]
     public float maxElevationAngle = 35f;
 
-    [Header("Boundary Buffer")]
-    [Tooltip("Half-length boundary threshold where agent automatically releases ball.")]
-    public float pitchBoundaryX = 51f;
-
-    [Tooltip("Half-width boundary threshold where agent automatically releases ball.")]
-    public float pitchBoundaryZ = 34f;
+    [Header("Ball Reference")]
+    public Rigidbody ballRb;
 
     [Header("State")]
     public bool HasPossession { get; private set; }
     public float CurrentPossessionTime { get; private set; }
     public float CurrentMaxVelocity { get; private set; }
-    public GameObject currentBall;
 
     private Rigidbody agentRb;
-    private Collider agentCollider;
-    private Rigidbody ballRb;
-    private Collider ballCollider;
-    private float possessionCooldown = 0f;
     private Vector2 currentMoveInput = Vector2.zero;
+    private float kickCooldown = 0f;
 
     private void Awake()
     {
         agentRb = GetComponent<Rigidbody>();
-        agentCollider = GetComponent<Collider>();
 
         // Lock vertical position and tilt so the agent stays firmly grounded on the pitch
         agentRb.constraints = RigidbodyConstraints.FreezePositionY | 
@@ -84,6 +79,23 @@ public class FootballAgent : MonoBehaviour
                               RigidbodyConstraints.FreezeRotationZ;
 
         CurrentMaxVelocity = maxVelocityBase;
+
+        FindBallReference();
+    }
+
+    private void Start()
+    {
+        FindBallReference();
+    }
+
+    private void FindBallReference()
+    {
+        if (ballRb == null)
+        {
+            GameObject bObj = GameObject.FindWithTag("Ball");
+            if (bObj == null) bObj = GameObject.Find("GlowBall");
+            if (bObj != null) ballRb = bObj.GetComponent<Rigidbody>();
+        }
     }
 
     /// <summary>
@@ -97,29 +109,63 @@ public class FootballAgent : MonoBehaviour
 
     private void Update()
     {
-        if (possessionCooldown > 0f)
+        if (kickCooldown > 0f)
         {
-            possessionCooldown -= Time.deltaTime;
+            kickCooldown -= Time.deltaTime;
         }
     }
 
     private void FixedUpdate()
     {
-        // 1. Calculate dynamic max speed decay based on possession time (proposal.md Section 3.3)
-        if (HasPossession)
+        FindBallReference();
+
+        // 1. Evaluate Dynamic Possession & Dribble Fatigue Decay (proposal.md Section 3.3)
+        EvaluatePossession();
+
+        // 2. Full 360-Degree Continuous Locomotion with Athletic Turf Traction
+        PerformLocomotion();
+
+        // 3. Pure Physics Dribble Micro-Kicks (Soft Nudges)
+        PerformDribbleNudge();
+    }
+
+    private void EvaluatePossession()
+    {
+        if (ballRb == null)
         {
+            HasPossession = false;
+            CurrentPossessionTime = 0f;
+            CurrentMaxVelocity = maxVelocityBase;
+            return;
+        }
+
+        Vector3 toBall = ballRb.position - transform.position;
+        toBall.y = 0f;
+        float dist = toBall.magnitude;
+        float forwardAlignment = toBall.sqrMagnitude > 0.01f ? Vector3.Dot(transform.forward, toBall.normalized) : 0f;
+
+        // An agent has possession if ball is within dribble radius, in front of the agent, and not in kick cooldown
+        bool inControl = dist <= dribbleRadius && forwardAlignment > 0.1f && kickCooldown <= 0f;
+
+        if (inControl)
+        {
+            HasPossession = true;
             CurrentPossessionTime += Time.fixedDeltaTime;
-            // V_max(t) = max(V_min, V_base - kappa - alpha * t_possess)
+
+            // Mathematical decay: V_max(t) = max(V_min, V_base - kappa - alpha * t_possess)
             float penalizedV = maxVelocityBase - dribblePenaltyBase - (possessionDecayRate * CurrentPossessionTime);
             CurrentMaxVelocity = Mathf.Max(minPossessionVelocity, penalizedV);
         }
         else
         {
+            HasPossession = false;
             CurrentPossessionTime = 0f;
             CurrentMaxVelocity = maxVelocityBase;
         }
+    }
 
-        // 2. Full 360-Degree Continuous Locomotion with Athletic Turf Traction
+    private void PerformLocomotion()
+    {
         float inputMag = Mathf.Clamp01(currentMoveInput.magnitude);
         Vector3 currentHorizVel = new Vector3(agentRb.linearVelocity.x, 0f, agentRb.linearVelocity.z);
 
@@ -147,106 +193,55 @@ public class FootballAgent : MonoBehaviour
             Vector3 stoppedVel = Vector3.MoveTowards(currentHorizVel, Vector3.zero, brakingRate * Time.fixedDeltaTime);
             agentRb.linearVelocity = new Vector3(stoppedVel.x, 0f, stoppedVel.z);
         }
-
-        // 3. Synchronize Possessed Ball in FixedUpdate (Eliminates Jitter & Desync)
-        if (HasPossession && currentBall != null)
-        {
-            Vector3 frontPos = transform.position + transform.forward * dribbleOffset;
-            frontPos.y = ballGroundHeight;
-            currentBall.transform.position = frontPos;
-
-            // Boundary protection: release possession if nearing barriers
-            if (Mathf.Abs(frontPos.x) > pitchBoundaryX || Mathf.Abs(frontPos.z) > pitchBoundaryZ)
-            {
-                ReleaseNearBarrier(frontPos);
-            }
-        }
     }
 
     /// <summary>
-    /// Takes possession of the ball: disables collision with agent, sets kinematic, and locks to front.
+    /// Pure Physics Dribble: When running near the ball, the player's feet softly nudge the ball
+    /// forward so it rolls naturally with the player, eliminating any kinematic holding.
     /// </summary>
-    public void TakePossession(GameObject ball)
+    private void PerformDribbleNudge()
     {
-        if (possessionCooldown > 0f || HasPossession) return;
+        if (!HasPossession || ballRb == null || kickCooldown > 0f) return;
 
-        HasPossession = true;
-        CurrentPossessionTime = 0f;
-        currentBall = ball;
-        ballRb = ball.GetComponent<Rigidbody>();
-        ballCollider = ball.GetComponent<Collider>();
-
-        if (ballRb != null)
+        // If the agent is actively moving, nudge the ball forward at slightly higher speed than the agent
+        if (currentMoveInput.sqrMagnitude > 0.01f)
         {
-            ballRb.isKinematic = true;
-            ballRb.linearVelocity = Vector3.zero;
-            ballRb.angularVelocity = Vector3.zero;
-        }
+            Vector3 desiredNudgeDir = transform.forward;
+            float agentSpeed = new Vector3(agentRb.linearVelocity.x, 0f, agentRb.linearVelocity.z).magnitude;
+            float targetBallSpeed = Mathf.Max(agentSpeed + 0.8f, 2.5f);
 
-        if (agentCollider != null && ballCollider != null)
-        {
-            Physics.IgnoreCollision(agentCollider, ballCollider, true);
-        }
+            Vector3 targetBallVel = desiredNudgeDir * targetBallSpeed;
+            targetBallVel.y = ballRb.linearVelocity.y; // Keep natural gravity intact
 
-        Vector3 frontPos = transform.position + transform.forward * dribbleOffset;
-        frontPos.y = ballGroundHeight;
-        currentBall.transform.position = frontPos;
+            // Gently adjust ball velocity toward desired forward roll
+            ballRb.linearVelocity = Vector3.MoveTowards(ballRb.linearVelocity, targetBallVel, dribbleNudgeStrength * Time.fixedDeltaTime);
+        }
     }
 
     /// <summary>
-    /// Releases possession and restores normal ball physics.
+    /// Checks whether the ball is within reach for a power kick.
     /// </summary>
-    public void ReleasePossession()
+    public bool CanKickBall()
     {
-        LosePossession();
+        if (ballRb == null || kickCooldown > 0f) return false;
+        Vector3 toBall = ballRb.position - transform.position;
+        toBall.y = 0f;
+        return toBall.magnitude <= kickRadius;
     }
 
     /// <summary>
-    /// Releases possession and restores normal ball physics.
-    /// </summary>
-    public void LosePossession()
-    {
-        if (!HasPossession && currentBall == null) return;
-        HasPossession = false;
-        CurrentPossessionTime = 0f;
-
-        if (currentBall != null)
-        {
-            if (ballRb != null)
-            {
-                ballRb.isKinematic = false;
-            }
-
-            if (agentCollider != null && ballCollider != null)
-            {
-                Physics.IgnoreCollision(agentCollider, ballCollider, false);
-            }
-        }
-
-        currentBall = null;
-        ballRb = null;
-        ballCollider = null;
-    }
-
-    /// <summary>
-    /// Executes a pass or shot adhering to proposal.md Section 3.1:
+    /// Executes a power pass or shot adhering to proposal.md Section 3.1:
     /// passAngle.x in [-1, 1] -> Horizontal angle deviation [-maxHorizontalAngle, +maxHorizontalAngle]
     /// passAngle.y in [0, 1]  -> Vertical elevation angle [0, maxElevationAngle]
     /// forceFraction in [0, 1] -> Interpolates between minKickForce and maxKickForce
     /// </summary>
     public void ExecuteKick(Vector2 passAngle, float forceFraction = 1f)
     {
-        if (!HasPossession || currentBall == null) return;
+        if (!CanKickBall()) return;
 
-        Rigidbody bRb = ballRb;
-        LosePossession();
-        possessionCooldown = 0.5f;
-
-        if (bRb == null) return;
-
-        bRb.isKinematic = false;
-        bRb.linearVelocity = Vector3.zero;
-        bRb.angularVelocity = Vector3.zero;
+        kickCooldown = 0.3f; // Short cooldown so dribble nudge doesn't immediately overwrite the big kick
+        HasPossession = false;
+        CurrentPossessionTime = 0f;
 
         // 1. Horizontal direction deviation: passAngle.x in [-1, 1]
         float horizAngle = Mathf.Clamp(passAngle.x, -1f, 1f) * maxHorizontalAngle;
@@ -259,65 +254,35 @@ public class FootballAgent : MonoBehaviour
 
         // 3. Force calculation
         float kickForce = Mathf.Lerp(minKickForce, maxKickForce, Mathf.Clamp01(forceFraction));
-        bRb.AddForce(trajectory.normalized * kickForce, ForceMode.Impulse);
+        ballRb.linearVelocity = Vector3.zero; // Clear previous velocity for a crisp, punchy kick
+        ballRb.AddForce(trajectory.normalized * kickForce, ForceMode.Impulse);
     }
 
     /// <summary>
-    /// High-level utility for brain scripts to kick towards a target world position.
+    /// High-level utility for AI brains to kick towards a target world position.
     /// Calculates the required passAngle relative to agent forward.
     /// </summary>
     public void KickTowards(Vector3 targetWorldPos, float elevation = 0.15f, float forceFraction = 1f)
     {
-        if (!HasPossession || currentBall == null) return;
+        if (!CanKickBall()) return;
 
         Vector3 toTarget = targetWorldPos - transform.position;
         toTarget.y = 0f;
-
         if (toTarget.sqrMagnitude < 0.01f) return;
 
-        // Calculate signed angle from transform.forward to target
         float signedAngle = Vector3.SignedAngle(transform.forward, toTarget.normalized, Vector3.up);
         float normalizedX = Mathf.Clamp(signedAngle / maxHorizontalAngle, -1f, 1f);
 
         ExecuteKick(new Vector2(normalizedX, elevation), forceFraction);
     }
 
-    private void ReleaseNearBarrier(Vector3 frontPos)
+    public void SetCooldown(float duration)
     {
-        Rigidbody bRb = ballRb;
-        LosePossession();
-        possessionCooldown = 1.0f;
-
-        // Push ball back into the pitch away from the barrier
-        if (bRb != null)
-        {
-            Vector3 inward = Vector3.zero;
-            if (Mathf.Abs(frontPos.x) > pitchBoundaryX) inward.x = -Mathf.Sign(frontPos.x);
-            if (Mathf.Abs(frontPos.z) > pitchBoundaryZ) inward.z = -Mathf.Sign(frontPos.z);
-            inward = inward.normalized;
-
-            bRb.linearVelocity = inward * 10f;
-        }
+        kickCooldown = Mathf.Max(kickCooldown, duration);
     }
 
-    public void SetPossessionCooldown(float duration)
-    {
-        possessionCooldown = Mathf.Max(possessionCooldown, duration);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ball") && !HasPossession && possessionCooldown <= 0f)
-        {
-            TakePossession(collision.gameObject);
-        }
-        else if (collision.gameObject.name.Contains("Barrier") || collision.gameObject.name.Contains("Plane"))
-        {
-            if (HasPossession)
-            {
-                LosePossession();
-                possessionCooldown = 1.0f;
-            }
-        }
-    }
+    // Retained for backward compatibility with external scripts
+    public void ReleasePossession() => HasPossession = false;
+    public void LosePossession() => HasPossession = false;
+    public void SetPossessionCooldown(float d) => SetCooldown(d);
 }

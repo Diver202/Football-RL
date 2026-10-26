@@ -1,10 +1,10 @@
 using UnityEngine;
 
 /// <summary>
-/// Simple testing brain that drives the FootballAgent:
-/// 1. Pursues the ball and takes possession.
-/// 2. Dribbles towards the opponent goal (experiencing the mathematical velocity decay).
-/// 3. Shoots towards the goal when within shooting range.
+/// Rule-based sparring brain that drives the FootballAgent:
+/// 1. Pursues the ball using pure physics locomotion.
+/// 2. Naturally micro-dribbles the ball towards the opponent goal.
+/// 3. Executes power shots when within shooting range.
 /// </summary>
 [RequireComponent(typeof(FootballAgent))]
 public class TestBrain : MonoBehaviour
@@ -14,9 +14,7 @@ public class TestBrain : MonoBehaviour
     public Transform opponentGoal; // Opponent GoalPost
 
     [Header("Behavior Parameters")]
-    public float possessionDistance = 1.3f;
     public float shootingRange = 18f;
-    public float turnSpeed = 8f;
     [Range(0f, 1f)] public float kickElevation = 0.15f;
     [Range(0f, 1f)] public float kickForceFraction = 1.0f;
 
@@ -29,17 +27,16 @@ public class TestBrain : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (targetBall == null || opponentGoal == null) return;
+        if (targetBall == null || opponentGoal == null || agent == null) return;
 
         if (!agent.HasPossession)
         {
-            // 1. CHASE THE BALL (360-degree continuous vector)
+            // 1. CHASE THE BALL (Pure-physics continuous direction vector)
             Vector3 toBall = targetBall.position - transform.position;
             toBall.y = 0f;
 
             if (toBall.sqrMagnitude > 0.04f)
             {
-                // Full 360-degree unit vector
                 Vector2 moveInput = new Vector2(toBall.normalized.x, toBall.normalized.z);
                 agent.ApplyMovement(moveInput);
             }
@@ -47,16 +44,10 @@ public class TestBrain : MonoBehaviour
             {
                 agent.ApplyMovement(Vector2.zero);
             }
-
-            // 2. TAKE POSSESSION WHEN CLOSE
-            if (toBall.magnitude <= possessionDistance)
-            {
-                agent.TakePossession(targetBall.gameObject);
-            }
         }
         else
         {
-            // 3. DRIVE TOWARDS OPPONENT GOAL (360-degree continuous vector)
+            // 2. DRIVE TOWARDS OPPONENT GOAL (Micro-kicks naturally dribble the ball along)
             Vector3 toGoal = opponentGoal.position - transform.position;
             toGoal.y = 0f;
 
@@ -70,8 +61,8 @@ public class TestBrain : MonoBehaviour
                 agent.ApplyMovement(Vector2.zero);
             }
 
-            // 4. KICK TOWARDS GOAL WHEN IN RANGE
-            if (toGoal.magnitude <= shootingRange)
+            // 3. EXECUTE POWER KICK WHEN IN SHOOTING RANGE
+            if (toGoal.magnitude <= shootingRange && agent.CanKickBall())
             {
                 agent.KickTowards(opponentGoal.position, kickElevation, kickForceFraction);
             }

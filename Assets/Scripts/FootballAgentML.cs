@@ -5,8 +5,8 @@ using Unity.MLAgents.Actuators;
 
 /// <summary>
 /// ML-Agents reinforcement learning brain for FootballAgent.
-/// Integrates observation collection, action execution (movement & kicking),
-/// and reward shaping according to proposal.md.
+/// Integrates 21 continuous observations, action execution (360 movement & kicking),
+/// and reward shaping according to proposal.md with pure-physics mechanics.
 /// </summary>
 public class FootballAgentML : Agent
 {
@@ -23,12 +23,15 @@ public class FootballAgentML : Agent
     [Tooltip("Our own goal post transform.")]
     public Transform ownGoal;
 
+    [Header("Team Identification")]
+    [Tooltip("Which team this agent plays for ('TeamRed' or 'TeamBlue').")]
+    public string teamName = "TeamRed";
+
     [Header("Spawn & Reset Positions")]
     public Vector3 initialAgentPosition = new Vector3(35f, 1f, 0f);
     public Vector3 initialBallPosition = new Vector3(0f, 0.15f, 0f);
 
     [Header("Hyperparameters & Reward Shaping")]
-    public float possessionDistance = 1.3f;
     public float goalReward = 1.0f;
     public float concedePenalty = -1.0f;
     public float boundaryPenalty = -0.05f;
@@ -42,6 +45,7 @@ public class FootballAgentML : Agent
     private Rigidbody ballRb;
     private float prevDistanceToBall;
     private float prevDistanceBallToGoal;
+    private bool prevHadPossession = false;
 
     protected override void OnEnable()
     {
@@ -57,7 +61,7 @@ public class FootballAgentML : Agent
 
     private void HandleGoalScored(string scoringTeam)
     {
-        bool scoredByThisTeam = CompareTag(scoringTeam);
+        bool scoredByThisTeam = (teamName == scoringTeam);
         OnGoalScored(scoredByThisTeam);
     }
 
@@ -82,10 +86,10 @@ public class FootballAgentML : Agent
             agentRb.angularVelocity = Vector3.zero;
         }
 
-        // 2. Reset ball
+        // 2. Reset ball purely in dynamic PhysX mode
         if (targetBall != null)
         {
-            if (agent != null && agent.HasPossession)
+            if (agent != null)
             {
                 agent.ReleasePossession();
             }
@@ -98,6 +102,8 @@ public class FootballAgentML : Agent
                 ballRb.angularVelocity = Vector3.zero;
             }
         }
+
+        prevHadPossession = false;
 
         // Cache initial distances for dense shaping
         if (targetBall != null)
@@ -163,7 +169,7 @@ public class FootballAgentML : Agent
         float kickForce = Mathf.Clamp01(actions.ContinuousActions[4]);
 
         // Discrete actions:
-        // [0] = kickFlag (0: don't kick, 1: kick)
+        // [0] = kickFlag (0: don't kick, 1: power kick)
         int kickFlag = actions.DiscreteActions[0];
 
         // 1. Apply Movement (Full 360-degree omnidirectional continuous input)
@@ -174,48 +180,48 @@ public class FootballAgentML : Agent
         }
         agent.ApplyMovement(moveInput);
 
-        // 2. Handle Possession Acquisition
-        if (!agent.HasPossession && targetBall != null)
-        {
-            float distToBall = Vector3.Distance(transform.position, targetBall.position);
-            if (distToBall <= possessionDistance)
-            {
-                agent.TakePossession(targetBall.gameObject);
-                AddReward(0.3f); // Substantial reward for successfully securing possession
-            }
+        bool isCurrentlyPossessing = agent.HasPossession;
 
-            // Dense reward for moving closer to the ball (amplified for clearer gradient)
+        // 2. Possession Acquisition Reward
+        if (!prevHadPossession && isCurrentlyPossessing)
+        {
+            AddReward(0.3f); // Reward securing physical control of the ball
+        }
+        prevHadPossession = isCurrentlyPossessing;
+
+        // 3. Dense Shaping
+        if (!isCurrentlyPossessing && targetBall != null)
+        {
+            // Dense reward for pursuing and closing distance to the ball
+            float distToBall = Vector3.Distance(transform.position, targetBall.position);
             float ballDistDelta = prevDistanceToBall - distToBall;
             AddReward(ballDistDelta * 0.01f);
             prevDistanceToBall = distToBall;
         }
-
-        // 3. Handle Possession Actions (Kicking & Dribbling)
-        if (agent.HasPossession && targetBall != null)
+        else if (isCurrentlyPossessing && targetBall != null)
         {
-            // Dense reward for advancing ball towards opponent goal
+            // Dense reward for advancing the ball towards the opponent's goal
             float distToGoal = Vector3.Distance(targetBall.position, opponentGoal.position);
             float goalDistDelta = prevDistanceBallToGoal - distToGoal;
             AddReward(goalDistDelta * 0.01f);
             prevDistanceBallToGoal = distToGoal;
+        }
 
-            // Execute Kick only when agent chooses to shoot
-            if (kickFlag == 1)
+        // 4. Power Kick Execution
+        if (kickFlag == 1 && agent.CanKickBall())
+        {
+            agent.ExecuteKick(new Vector2(kickAngleX, kickElevY), kickForce);
+
+            // Shaped Kick Reward: reward power shots directed toward opponent goal
+            Vector3 toGoal = (opponentGoal.position - transform.position).normalized;
+            float forwardAlignment = Vector3.Dot(transform.forward, toGoal);
+            if (forwardAlignment > 0.25f)
             {
-                agent.ExecuteKick(new Vector2(kickAngleX, kickElevY), kickForce);
-
-                // Shaped Kick Reward: only reward kicks directed towards opponent goal
-                // (Prevents the 'hot potato' exploit where the agent kicks randomly to harvest rewards)
-                Vector3 toGoal = (opponentGoal.position - transform.position).normalized;
-                float forwardAlignment = Vector3.Dot(transform.forward, toGoal);
-                if (forwardAlignment > 0.25f)
-                {
-                    AddReward(0.05f * forwardAlignment);
-                }
+                AddReward(0.05f * forwardAlignment);
             }
         }
 
-        // 4. Existential step penalty (discourages stalling/running in circles)
+        // 5. Existential step penalty (discourages stalling/running in circles)
         if (MaxStep > 0)
         {
             AddReward(-1f / MaxStep);
