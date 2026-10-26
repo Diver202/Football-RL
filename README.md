@@ -13,13 +13,11 @@ The environment models football as a Partially Observable Stochastic Game (POSG)
   * $\mathcal{A}_i^{move} \in [-1, 1]^2$: Continuous 2D force applied for ground movement.
   * $\mathcal{A}_i^{pass\_flag} \in \{0, 1\}$: Discrete decision to pass or shoot.
   * $\mathcal{A}_i^{pass\_angle} \in [-1, 1]^2$: Continuous 2D vector for horizontal deviation angle ($\pm 45^\circ$) and vertical elevation ($0^\circ$ to $35^\circ$).
-* **Dribble Velocity Decay ($V_{max}$):**
+* **Discrete Tap-and-Chase Dribble (Push-and-Run):**
+  Instead of continuous magnetic pulling, the agent delivers discrete impulse taps ($5.0\text{ N}$) to push the ball ahead $1.2\text{--}2.0\text{ m}$. The ball decelerates via Unity linear damping (drag), and the player sprints to catch up before tapping again.
+* **Persistent Possession & Velocity Decay ($V_{max}$):**
   $$V_{max}^{(i)}(t) = \max\Big(V_{min},\; V_{base} - \kappa - \alpha \cdot t_{possess}\Big)$$
-  The longer an agent holds the ball, the slower they move. This physical penalty forces agents to choose between selfish dribbling and cooperative passing.
-* **Cooperation Reward Structure:**
-  $$\mathcal{R}_i = (1 - \lambda) r_i^{ind} + \lambda R_{team}$$
-  * $\lambda = 0$: Purely egoistic policy (hoards ball, shoots alone).
-  * $\lambda = 1$: Purely utilitarian team policy (maximizes team success via passing).
+  Possession is tracked across the tap-and-chase lifecycle via a Ball Carrier state machine. While the carrier chases its own tap, possession remains active and $V_{max}$ continuously decays from $8\text{ m/s} \to 2.5\text{ m/s}$. If an opponent intercepts or the ball escapes beyond $3.5\text{ m}$, possession transfers or resets.
 * **Barrier Deflection System:**
   Field boundary walls deflect loose balls horizontally back into the pitch at $20\text{ m/s}$ ($Y = 0$). Near-boundary buffers automatically release possession so agents cannot trap or pin the ball against the barriers.
 
@@ -33,7 +31,7 @@ The system strictly decouples physics, rule-based baselines, and reinforcement l
 | :--- | :--- | :--- |
 | **`FootballAgent.cs`** | **Physical Motor & Body** | Implements ground locomotion forces, pure-physics micro-dribble rolling, dribble decay velocity clamping ($V_{max}$), and 3D kick trajectory impulses. |
 | **`FootballAgentML.cs`** | **Reinforcement Learning Brain** | Inherits from `Unity.MLAgents.Agent`. Collects 21 continuous observations, executes continuous/discrete actions, shapes dense rewards, and handles episode resets. |
-| **`TestBrain.cs`** | **Rule-Based Baseline** | Hardcoded greedy bot (chases ball, acquires possession, shoots in range). Used as the sparring opponent for Phase 1. |
+| **`TestBrain.cs`** | **Heuristic Sparring Brain** | Never holds the ball, only moves it with dribble taps, so it can be tackled. Circles round the ball at a safe radius until lined up behind it toward the goal, then runs straight through it (tap, chase, tap). Predicts where the ball is rolling, dodges defenders in its path, shoots away from the nearest defender, and only one bot per team chases the ball. |
 | **`ManualPlayerController.cs`** | **Optional Disconnected Human Control** | Completely standalone component for testing player movement with Gamepad/Keyboard/Mouse. Kept disconnected by default so `FreeCamera` can navigate without interference. |
 | **`BarrierDeflector.cs`** | **Pitch Boundary Physics** | Deflects loose balls horizontally inward and strips possession to prevent wall-pinning. |
 | **`GameManager.cs`** | **Match Referee & Events** | Tracks team scores and broadcasts `OnGoalScoredEvent` to trigger episode termination and rewards. |

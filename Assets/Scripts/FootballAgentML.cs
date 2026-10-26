@@ -86,6 +86,8 @@ public class FootballAgentML : Agent
             agentRb.angularVelocity = Vector3.zero;
         }
 
+        FootballAgent.ClearGlobalPossession();
+
         // 2. Reset ball purely in dynamic PhysX mode
         if (targetBall != null)
         {

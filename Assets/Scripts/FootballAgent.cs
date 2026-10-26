@@ -1,12 +1,13 @@
 using UnityEngine;
 
 /// <summary>
-/// Implements pure-physics agent locomotion and ball mechanics formulated in proposal.md:
-/// - Continuous 2D force movement: A_move in [-1, 1]^2 with athletic turf traction
-/// - Pure physics dribbling: Soft micro-kicks keep the ball rolling naturally with the agent
-/// - Zero kinematic locks: The ball is 100% dynamic PhysX at all times (no child-snapping)
-/// - Dribble velocity decay: V_max(t) = max(V_min, V_base - kappa - alpha * t_possess)
+/// Implements pure-physics agent locomotion and discrete tap-and-chase dribbling:
+/// - Discrete push-and-run dribble: Agent rhythmically taps the ball ahead and sprints after it
+/// - Dynamic stamina/velocity decay across the entire possession lifecycle:
+///   V_max(t) = max(V_min, V_base - kappa - alpha * t_possess)
+/// - Ball has natural linear damping/drag (configured in Unity Rigidbody)
 /// - Parameterized 2D power kicks: A_pass_angle in [-1, 1]^2
+/// - Zero kinematic locks: The ball is 100% dynamic PhysX at all times
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class FootballAgent : MonoBehaviour
@@ -34,12 +35,25 @@ public class FootballAgent : MonoBehaviour
     [Tooltip("Minimum allowable maximum velocity when heavily encumbered (V_min).")]
     public float minPossessionVelocity = 2.5f;
 
-    [Header("Pure-Physics Dribble Mechanics")]
-    [Tooltip("Distance threshold from agent center to ball center for dribble micro-kicks.")]
-    public float dribbleRadius = 1.6f;
+    [Header("Discrete Tap-and-Chase Dribble")]
+    [Tooltip("Maximum reach distance to the ball for executing a dribble tap.")]
+    public float dribbleReach = 1.5f;
 
-    [Tooltip("Strength of the soft rolling micro-nudge applied to keep ball with player.")]
-    public float dribbleNudgeStrength = 25f;
+    [Tooltip("Discrete impulse force applied to tap the ball ahead.")]
+    public float dribbleTapForce = 5.0f;
+
+    [Tooltip("Minimum time cadence in seconds between consecutive dribble taps.")]
+    public float dribbleCadence = 0.35f;
+
+    [Tooltip("How directly the agent must face AND run into the ball for a dribble tap (cosine; 0.8 = within ~37 degrees). Prevents sideways taps while walking around the ball.")]
+    [Range(0f, 1f)]
+    public float tapAlignment = 0.8f;
+
+    [Tooltip("Maximum distance the ball can roll ahead before possession is considered lost.")]
+    public float looseBallDistance = 3.5f;
+
+    [Tooltip("Timeout in seconds without touching the ball before possession is forfeited.")]
+    public float possessionTimeout = 1.5f;
 
     [Header("Power Kick Action Space (proposal.md Section 3.1)")]
     [Tooltip("Distance threshold within which the agent can execute a power kick.")]
@@ -65,9 +79,14 @@ public class FootballAgent : MonoBehaviour
     public float CurrentPossessionTime { get; private set; }
     public float CurrentMaxVelocity { get; private set; }
 
+    // Static global carrier tracker ensures single-owner possession across all bots
+    public static FootballAgent activeBallCarrier = null;
+
     private Rigidbody agentRb;
     private Vector2 currentMoveInput = Vector2.zero;
-    private float kickCooldown = 0f;
+    private float dribbleCooldown = 0f;
+    private float powerKickCooldown = 0f;
+    private float timeSinceLastTouch = 999f;
 
     private void Awake()
     {
@@ -109,47 +128,66 @@ public class FootballAgent : MonoBehaviour
 
     private void Update()
     {
-        if (kickCooldown > 0f)
-        {
-            kickCooldown -= Time.deltaTime;
-        }
+        if (dribbleCooldown > 0f) dribbleCooldown -= Time.deltaTime;
+        if (powerKickCooldown > 0f) powerKickCooldown -= Time.deltaTime;
+        timeSinceLastTouch += Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
         FindBallReference();
 
-        // 1. Evaluate Dynamic Possession & Dribble Fatigue Decay (proposal.md Section 3.3)
-        EvaluatePossession();
+        // 1. Evaluate Dynamic Possession & Dribble Fatigue Decay
+        EvaluatePossessionState();
 
         // 2. Full 360-Degree Continuous Locomotion with Athletic Turf Traction
         PerformLocomotion();
 
-        // 3. Pure Physics Dribble Micro-Kicks (Soft Nudges)
-        PerformDribbleNudge();
+        // 3. Discrete Tap-and-Chase Dribble Execution
+        PerformDribbleTap();
     }
 
-    private void EvaluatePossession()
+    /// <summary>
+    /// Evaluates possession under the discrete tap-and-chase paradigm.
+    /// An agent retains possession while the ball is rolling ahead, as long as it stays
+    /// within looseBallDistance and hasn't timed out or been intercepted by an opponent.
+    /// </summary>
+    private void EvaluatePossessionState()
     {
         if (ballRb == null)
         {
-            HasPossession = false;
-            CurrentPossessionTime = 0f;
-            CurrentMaxVelocity = maxVelocityBase;
+            SetPossession(false);
             return;
         }
 
-        Vector3 toBall = ballRb.position - transform.position;
-        toBall.y = 0f;
-        float dist = toBall.magnitude;
-        float forwardAlignment = toBall.sqrMagnitude > 0.01f ? Vector3.Dot(transform.forward, toBall.normalized) : 0f;
+        float distToBall = Vector3.Distance(transform.position, ballRb.position);
 
-        // An agent has possession if ball is within dribble radius, in front of the agent, and not in kick cooldown
-        bool inControl = dist <= dribbleRadius && forwardAlignment > 0.1f && kickCooldown <= 0f;
-
-        if (inControl)
+        // If this agent is the active carrier
+        if (activeBallCarrier == this)
         {
-            HasPossession = true;
+            // Forfeit possession if ball escapes too far or timeout expires
+            if (distToBall > looseBallDistance || timeSinceLastTouch > possessionTimeout)
+            {
+                activeBallCarrier = null;
+                SetPossession(false);
+                return;
+            }
+
+            // Still in possession during tap-and-chase!
+            SetPossession(true);
+        }
+        else
+        {
+            SetPossession(false);
+        }
+    }
+
+    private void SetPossession(bool hasIt)
+    {
+        HasPossession = hasIt;
+
+        if (HasPossession)
+        {
             CurrentPossessionTime += Time.fixedDeltaTime;
 
             // Mathematical decay: V_max(t) = max(V_min, V_base - kappa - alpha * t_possess)
@@ -158,7 +196,6 @@ public class FootballAgent : MonoBehaviour
         }
         else
         {
-            HasPossession = false;
             CurrentPossessionTime = 0f;
             CurrentMaxVelocity = maxVelocityBase;
         }
@@ -196,26 +233,96 @@ public class FootballAgent : MonoBehaviour
     }
 
     /// <summary>
-    /// Pure Physics Dribble: When running near the ball, the player's feet softly nudge the ball
-    /// forward so it rolls naturally with the player, eliminating any kinematic holding.
+    /// Discrete Tap-and-Chase: When running near the ball, the agent delivers a punchy discrete
+    /// tap that sends the ball rolling ahead. The ball decelerates via Unity linear damping (drag),
+    /// and the agent sprints to catch up before tapping it again.
     /// </summary>
-    private void PerformDribbleNudge()
+    private void PerformDribbleTap()
     {
-        if (!HasPossession || ballRb == null || kickCooldown > 0f) return;
+        if (ballRb == null || dribbleCooldown > 0f || powerKickCooldown > 0f) return;
 
-        // If the agent is actively moving, nudge the ball forward at slightly higher speed than the agent
-        if (currentMoveInput.sqrMagnitude > 0.01f)
+        Vector3 toBall = ballRb.position - transform.position;
+        toBall.y = 0f;
+        float dist = toBall.magnitude;
+
+        // Player must be within foot reach to interact with the ball
+        if (dist > dribbleReach) return;
+
+        // Ball must be squarely in front of where the player is facing
+        if (toBall.sqrMagnitude < 0.0001f) return;
+        Vector3 toBallDir = toBall / dist;
+        if (Vector3.Dot(transform.forward, toBallDir) < tapAlignment) return;
+
+        if (currentMoveInput.sqrMagnitude > 0.05f)
         {
-            Vector3 desiredNudgeDir = transform.forward;
-            float agentSpeed = new Vector3(agentRb.linearVelocity.x, 0f, agentRb.linearVelocity.z).magnitude;
-            float targetBallSpeed = Mathf.Max(agentSpeed + 0.8f, 2.5f);
+            Vector3 moveDir = new Vector3(currentMoveInput.x, 0f, currentMoveInput.y).normalized;
 
-            Vector3 targetBallVel = desiredNudgeDir * targetBallSpeed;
-            targetBallVel.y = ballRb.linearVelocity.y; // Keep natural gravity intact
+            // Player must be running INTO the ball (not past it or around it)
+            if (Vector3.Dot(moveDir, toBallDir) < tapAlignment) return;
 
-            // Gently adjust ball velocity toward desired forward roll
-            ballRb.linearVelocity = Vector3.MoveTowards(ballRb.linearVelocity, targetBallVel, dribbleNudgeStrength * Time.fixedDeltaTime);
+            dribbleCooldown = dribbleCadence;
+            timeSinceLastTouch = 0f;
+
+            if (activeBallCarrier != null && activeBallCarrier != this)
+            {
+                activeBallCarrier.SetPossession(false);
+            }
+            activeBallCarrier = this;
+            SetPossession(true);
+
+            // Calculate tap impulse: enough to pop the ball 1.2 to 2 meters ahead
+            float playerSpeed = new Vector3(agentRb.linearVelocity.x, 0f, agentRb.linearVelocity.z).magnitude;
+            float finalTapImpulse = Mathf.Max(dribbleTapForce, playerSpeed * 0.8f);
+
+            // KICK IN THE FORWARD DIRECTION (transform.forward)
+            ballRb.linearVelocity = new Vector3(0f, ballRb.linearVelocity.y, 0f);
+            ballRb.AddForce(transform.forward * finalTapImpulse, ForceMode.Impulse);
         }
+        else if (currentMoveInput.sqrMagnitude <= 0.05f && dist <= dribbleReach * 0.8f)
+        {
+            // Player is standing right over the ball and standing still: gently trap the ball
+            Vector3 horizBallVel = new Vector3(ballRb.linearVelocity.x, 0f, ballRb.linearVelocity.z);
+            Vector3 trappedVel = Vector3.MoveTowards(horizBallVel, Vector3.zero, 12f * Time.fixedDeltaTime);
+            ballRb.linearVelocity = new Vector3(trappedVel.x, ballRb.linearVelocity.y, trappedVel.z);
+            timeSinceLastTouch = 0f;
+
+            if (activeBallCarrier != null && activeBallCarrier != this)
+            {
+                activeBallCarrier.SetPossession(false);
+            }
+            activeBallCarrier = this;
+            SetPossession(true);
+        }
+    }
+
+    /// <summary>
+    /// Explicitly kicks the ball in the agent's forward direction.
+    /// Used by AI brains or controllers.
+    /// </summary>
+    public bool KickForward(float force = 5.0f)
+    {
+        if (ballRb == null || dribbleCooldown > 0f || powerKickCooldown > 0f) return false;
+
+        Vector3 toBall = ballRb.position - transform.position;
+        toBall.y = 0f;
+        if (toBall.magnitude > dribbleReach) return false;
+
+        // Ball must be in front of the agent
+        if (toBall.sqrMagnitude > 0.01f && Vector3.Dot(transform.forward, toBall.normalized) < tapAlignment) return false;
+
+        dribbleCooldown = dribbleCadence;
+        timeSinceLastTouch = 0f;
+
+        if (activeBallCarrier != null && activeBallCarrier != this)
+        {
+            activeBallCarrier.SetPossession(false);
+        }
+        activeBallCarrier = this;
+        SetPossession(true);
+
+        ballRb.linearVelocity = new Vector3(0f, ballRb.linearVelocity.y, 0f);
+        ballRb.AddForce(transform.forward * force, ForceMode.Impulse);
+        return true;
     }
 
     /// <summary>
@@ -223,7 +330,7 @@ public class FootballAgent : MonoBehaviour
     /// </summary>
     public bool CanKickBall()
     {
-        if (ballRb == null || kickCooldown > 0f) return false;
+        if (ballRb == null || powerKickCooldown > 0f) return false;
         Vector3 toBall = ballRb.position - transform.position;
         toBall.y = 0f;
         return toBall.magnitude <= kickRadius;
@@ -239,9 +346,15 @@ public class FootballAgent : MonoBehaviour
     {
         if (!CanKickBall()) return;
 
-        kickCooldown = 0.3f; // Short cooldown so dribble nudge doesn't immediately overwrite the big kick
-        HasPossession = false;
-        CurrentPossessionTime = 0f;
+        powerKickCooldown = 0.45f;
+        dribbleCooldown = 0.5f;
+        timeSinceLastTouch = 999f;
+
+        if (activeBallCarrier == this)
+        {
+            activeBallCarrier = null;
+        }
+        SetPossession(false);
 
         // 1. Horizontal direction deviation: passAngle.x in [-1, 1]
         float horizAngle = Mathf.Clamp(passAngle.x, -1f, 1f) * maxHorizontalAngle;
@@ -260,7 +373,6 @@ public class FootballAgent : MonoBehaviour
 
     /// <summary>
     /// High-level utility for AI brains to kick towards a target world position.
-    /// Calculates the required passAngle relative to agent forward.
     /// </summary>
     public void KickTowards(Vector3 targetWorldPos, float elevation = 0.15f, float forceFraction = 1f)
     {
@@ -276,13 +388,17 @@ public class FootballAgent : MonoBehaviour
         ExecuteKick(new Vector2(normalizedX, elevation), forceFraction);
     }
 
-    public void SetCooldown(float duration)
+    public static void ClearGlobalPossession()
     {
-        kickCooldown = Mathf.Max(kickCooldown, duration);
+        activeBallCarrier = null;
     }
 
-    // Retained for backward compatibility with external scripts
-    public void ReleasePossession() => HasPossession = false;
-    public void LosePossession() => HasPossession = false;
-    public void SetPossessionCooldown(float d) => SetCooldown(d);
+    public void ReleasePossession()
+    {
+        if (activeBallCarrier == this) activeBallCarrier = null;
+        SetPossession(false);
+    }
+
+    public void LosePossession() => ReleasePossession();
+    public void SetPossessionCooldown(float d) { powerKickCooldown = Mathf.Max(powerKickCooldown, d); }
 }
