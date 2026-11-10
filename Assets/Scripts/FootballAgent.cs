@@ -82,6 +82,11 @@ public class FootballAgent : MonoBehaviour
     // Static global carrier tracker ensures single-owner possession across all bots
     public static FootballAgent activeBallCarrier = null;
 
+    // Last agent to touch the ball (tap, trap, kick or body contact). Used to credit the
+    // goal scorer for r_ind (proposal.md Section 3.3). Possession is released on a shot,
+    // so HasPossession cannot be used to identify the scorer.
+    public static FootballAgent LastToucher { get; private set; }
+
     private Rigidbody agentRb;
     private Vector2 currentMoveInput = Vector2.zero;
     private float dribbleCooldown = 0f;
@@ -268,6 +273,7 @@ public class FootballAgent : MonoBehaviour
                 activeBallCarrier.SetPossession(false);
             }
             activeBallCarrier = this;
+            LastToucher = this;
             SetPossession(true);
 
             // Calculate tap impulse: enough to pop the ball 1.2 to 2 meters ahead
@@ -291,6 +297,7 @@ public class FootballAgent : MonoBehaviour
                 activeBallCarrier.SetPossession(false);
             }
             activeBallCarrier = this;
+            LastToucher = this;
             SetPossession(true);
         }
     }
@@ -318,6 +325,7 @@ public class FootballAgent : MonoBehaviour
             activeBallCarrier.SetPossession(false);
         }
         activeBallCarrier = this;
+        LastToucher = this;
         SetPossession(true);
 
         ballRb.linearVelocity = new Vector3(0f, ballRb.linearVelocity.y, 0f);
@@ -355,6 +363,7 @@ public class FootballAgent : MonoBehaviour
             activeBallCarrier = null;
         }
         SetPossession(false);
+        LastToucher = this;
 
         // 1. Horizontal direction deviation: passAngle.x in [-1, 1]
         float horizAngle = Mathf.Clamp(passAngle.x, -1f, 1f) * maxHorizontalAngle;
@@ -391,6 +400,16 @@ public class FootballAgent : MonoBehaviour
     public static void ClearGlobalPossession()
     {
         activeBallCarrier = null;
+        LastToucher = null;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Body contact (deflections, blocks) also counts as a touch
+        if (ballRb != null && collision.rigidbody == ballRb)
+        {
+            LastToucher = this;
+        }
     }
 
     public void ReleasePossession()

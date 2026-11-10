@@ -4,290 +4,226 @@ using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 
 /// <summary>
-/// ML-Agents reinforcement learning brain for FootballAgent.
-/// Integrates 21 continuous observations, action execution (360 movement & kicking),
-/// and reward shaping according to proposal.md with pure-physics mechanics.
+/// ML-Agents brain for one football player. Nothing to assign in the Inspector except Max Step (= 0).
+///
+/// Everything match-related lives on MatchController, which is the single place to set up a match:
+/// the team lists decide which side a player is on, and the controller hands each player its
+/// goals, the ball and the reward settings when the scene starts.
+///
+/// KICK-OFF: the player's Transform position and rotation in the scene ARE its kick-off spot.
+///
+/// OBSERVATIONS: the same 21 floats, in the same order and units, as the solo and vs-TestBrain runs,
+/// so those checkpoints stay loadable. Team Blue gets every x/z quantity rotated 180 degrees (and
+/// its movement action rotated back), so it sees the game exactly as Team Red does and one shared
+/// policy can play both sides. For Team Red the observations are identical to the old ones.
+///
+/// ACTIONS: continuous [moveX, moveZ, kickAngleX, kickElevation, kickForce], discrete [kick 0/1].
 /// </summary>
+[RequireComponent(typeof(FootballAgent))]
 public class FootballAgentML : Agent
 {
-    [Header("Agent & Environment References")]
-    [Tooltip("The FootballAgent physical component controlling locomotion and kicking.")]
-    public FootballAgent agent;
+    public const int ObservationSize = 21;
 
-    [Tooltip("The football GameObject (GlowBall).")]
-    public Transform targetBall;
+    // Set by MatchController at startup (not shown in the Inspector).
+    [System.NonSerialized] public Transform opponentGoal;   // also read by TestBrain
+    [System.NonSerialized] public Transform ownGoal;
+    [System.NonSerialized] public Transform targetBall;
+    [System.NonSerialized] public MatchController match;
 
-    [Tooltip("The opponent's goal post transform.")]
-    public Transform opponentGoal;
-
-    [Tooltip("Our own goal post transform.")]
-    public Transform ownGoal;
-
-    [Header("Team Identification")]
-    [Tooltip("Which team this agent plays for ('TeamRed' or 'TeamBlue').")]
-    public string teamName = "TeamRed";
-
-    [Header("Spawn & Reset Positions")]
-    public Vector3 initialAgentPosition = new Vector3(35f, 1f, 0f);
-    public Vector3 initialBallPosition = new Vector3(0f, 0.15f, 0f);
-
-    [Header("Hyperparameters & Reward Shaping")]
-    public float goalReward = 10.0f;
-    public float concedePenalty = -5.0f;
-    public float boundaryPenalty = -1.0f;
-
-    [Header("Cooperation Parameter (proposal.md Section 3.3)")]
-    [Tooltip("Cooperation coefficient lambda in [0, 1]. 0 = selfish (Phase 1), 1 = utilitarian team (Phase 3).")]
-    [Range(0f, 1f)]
-    public float lambda = 0.0f;
+    public FootballAgent Body { get; private set; }
 
     private Rigidbody agentRb;
     private Rigidbody ballRb;
+    private Vector3 kickoffPosition;
+    private Quaternion kickoffRotation;
+    private bool kickoffCaptured;
     private float prevDistanceToBall;
     private float prevDistanceBallToGoal;
-    private bool prevHadPossession = false;
-    private bool hasSecuredFirstPossession = false;
+    private bool distancesInitialised;
+    private bool hasSecuredFirstPossession;
 
-    protected override void OnEnable()
+    /// <summary>Called once by MatchController before the first step.</summary>
+    public void JoinMatch(MatchController controller, Transform attackGoal, Transform defendGoal, Transform ball)
     {
-        base.OnEnable();
-        GameManager.OnGoalScoredEvent += HandleGoalScored;
+        match = controller;
+        opponentGoal = attackGoal;
+        ownGoal = defendGoal;
+        targetBall = ball;
+        ballRb = ball != null ? ball.GetComponent<Rigidbody>() : null;
+        CacheComponentsAndKickoff();
     }
 
-    protected override void OnDisable()
+    private void CacheComponentsAndKickoff()
     {
-        base.OnDisable();
-        GameManager.OnGoalScoredEvent -= HandleGoalScored;
+        if (Body == null) Body = GetComponent<FootballAgent>();
+        if (agentRb == null) agentRb = GetComponent<Rigidbody>();
+        if (!kickoffCaptured)
+        {
+            // Where the player was placed in the scene = its kick-off spot.
+            kickoffPosition = transform.position;
+            kickoffRotation = transform.rotation;
+            kickoffCaptured = true;
+        }
     }
 
-    private void HandleGoalScored(string scoringTeam)
+    /// <summary>+1 if this agent attacks towards +x in world space, -1 otherwise.</summary>
+    public float TeamSign =>
+        (opponentGoal != null && ownGoal != null && opponentGoal.position.x < ownGoal.position.x) ? -1f : 1f;
+
+    /// <summary>+1 for the side the model was trained on (attacking -x, Team Red), -1 for the mirrored side.</summary>
+    public float MirrorSign => -TeamSign;
+
+    private Vector3 Mirror(Vector3 v)
     {
-        bool scoredByThisTeam = (teamName == scoringTeam);
-        OnGoalScored(scoredByThisTeam);
+        float m = MirrorSign;
+        return new Vector3(m * v.x, v.y, m * v.z);
     }
 
     public override void Initialize()
     {
-        if (agent == null)
-            agent = GetComponent<FootballAgent>();
-        if (agentRb == null)
-            agentRb = GetComponent<Rigidbody>();
-        if (targetBall != null)
-            ballRb = targetBall.GetComponent<Rigidbody>();
-
-        // Ensure proper baseline reward hyperparameters even if older scene values were serialized
-        if (goalReward < 5.0f) goalReward = 10.0f;
-        if (concedePenalty > -2.0f) concedePenalty = -5.0f;
-        if (boundaryPenalty > -0.5f) boundaryPenalty = -1.0f;
+        CacheComponentsAndKickoff();
     }
 
     public override void OnEpisodeBegin()
     {
-        // 1. Reset agent
-        transform.position = initialAgentPosition;
-        transform.rotation = Quaternion.identity;
+        // MatchController.ResetScene() moves everyone; only reset per-episode trackers here.
+        distancesInitialised = false;
+        hasSecuredFirstPossession = false;
+        if (Body != null) Body.ReleasePossession();
+    }
+
+    /// <summary>Called by MatchController at kick-off.</summary>
+    public void ResetToKickoff()
+    {
+        CacheComponentsAndKickoff();
+        transform.SetPositionAndRotation(kickoffPosition, kickoffRotation);
         if (agentRb != null)
         {
+            agentRb.position = kickoffPosition;
+            agentRb.rotation = kickoffRotation;
             agentRb.linearVelocity = Vector3.zero;
             agentRb.angularVelocity = Vector3.zero;
         }
+        if (Body != null) Body.ReleasePossession();
+        distancesInitialised = false;
+    }
 
-        FootballAgent.ClearGlobalPossession();
-
-        // 2. Reset ball purely in dynamic PhysX mode
-        if (targetBall != null)
-        {
-            if (agent != null)
-            {
-                agent.ReleasePossession();
-            }
-
-            targetBall.position = initialBallPosition;
-            if (ballRb != null)
-            {
-                ballRb.isKinematic = false;
-                ballRb.linearVelocity = Vector3.zero;
-                ballRb.angularVelocity = Vector3.zero;
-            }
-        }
-
-        prevHadPossession = false;
-        hasSecuredFirstPossession = false;
-
-        // Cache initial distances for dense shaping
-        if (targetBall != null)
-        {
-            prevDistanceToBall = Vector3.Distance(transform.position, targetBall.position);
-            if (opponentGoal != null)
-            {
-                prevDistanceBallToGoal = Vector3.Distance(targetBall.position, opponentGoal.position);
-            }
-        }
+    private void InitialiseDistancesIfNeeded()
+    {
+        if (distancesInitialised || targetBall == null || opponentGoal == null) return;
+        prevDistanceToBall = Vector3.Distance(transform.position, targetBall.position);
+        prevDistanceBallToGoal = Vector3.Distance(targetBall.position, opponentGoal.position);
+        distancesInitialised = true;
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        if (targetBall == null || opponentGoal == null) return;
+        if (targetBall == null || opponentGoal == null)
+        {
+            for (int i = 0; i < ObservationSize; i++) sensor.AddObservation(0f);
+            return;
+        }
+        InitialiseDistancesIfNeeded();
 
-        // 1. Agent Local State & Orientation (7 floats)
-        Vector3 agentVel = agentRb != null ? agentRb.linearVelocity : Vector3.zero;
-        sensor.AddObservation(transform.localPosition.x);                         // 1 float
-        sensor.AddObservation(transform.localPosition.z);                         // 1 float
-        sensor.AddObservation(agentVel.x);                                        // 1 float
-        sensor.AddObservation(agentVel.z);                                        // 1 float
-        sensor.AddObservation(transform.forward.x);                              // 1 float (heading)
-        sensor.AddObservation(transform.forward.z);                              // 1 float (heading)
-        sensor.AddObservation(agent != null ? agent.CurrentPossessionTime : 0f); // 1 float
+        // 1. Agent state & orientation (7)
+        Vector3 pos = Mirror(transform.localPosition);
+        Vector3 agentVel = Mirror(agentRb != null ? agentRb.linearVelocity : Vector3.zero);
+        Vector3 fwd = Mirror(transform.forward);
+        sensor.AddObservation(pos.x);
+        sensor.AddObservation(pos.z);
+        sensor.AddObservation(agentVel.x);
+        sensor.AddObservation(agentVel.z);
+        sensor.AddObservation(fwd.x);
+        sensor.AddObservation(fwd.z);
+        sensor.AddObservation(Body != null ? Body.CurrentPossessionTime : 0f);
 
-        // 2. Ball Relative State & Possession (7 floats)
-        Vector3 toBall = targetBall.position - transform.position;
-        Vector3 ballVel = ballRb != null ? ballRb.linearVelocity : Vector3.zero;
-        sensor.AddObservation(toBall);                                            // 3 floats
-        sensor.AddObservation(ballVel);                                           // 3 floats
-        sensor.AddObservation((agent != null && agent.HasPossession) ? 1.0f : 0.0f); // 1 float
+        // 2. Ball relative state & possession (7)
+        Vector3 toBall = Mirror(targetBall.position - transform.position);
+        Vector3 ballVel = Mirror(ballRb != null ? ballRb.linearVelocity : Vector3.zero);
+        sensor.AddObservation(toBall);
+        sensor.AddObservation(ballVel);
+        sensor.AddObservation((Body != null && Body.HasPossession) ? 1.0f : 0.0f);
 
-        // 3. Goal Relative Vectors (4 floats)
-        Vector3 toOppGoal = opponentGoal.position - transform.position;
-        Vector3 toOwnGoal = ownGoal != null ? (ownGoal.position - transform.position) : Vector3.zero;
-        sensor.AddObservation(toOppGoal.x);                                       // 1 float
-        sensor.AddObservation(toOppGoal.z);                                       // 1 float
-        sensor.AddObservation(toOwnGoal.x);                                       // 1 float
-        sensor.AddObservation(toOwnGoal.z);                                       // 1 float
+        // 3. Goal relative vectors (4)
+        Vector3 toOppGoal = Mirror(opponentGoal.position - transform.position);
+        Vector3 toOwnGoal = ownGoal != null ? Mirror(ownGoal.position - transform.position) : Vector3.zero;
+        sensor.AddObservation(toOppGoal.x);
+        sensor.AddObservation(toOppGoal.z);
+        sensor.AddObservation(toOwnGoal.x);
+        sensor.AddObservation(toOwnGoal.z);
 
-        // 4. Scalar Distances & Velocity Decay State (3 floats)
-        sensor.AddObservation(prevDistanceToBall);                                // 1 float
-        sensor.AddObservation(prevDistanceBallToGoal);                            // 1 float
-        sensor.AddObservation(agent != null ? agent.CurrentMaxVelocity : 8f);     // 1 float
-        // Total: Exactly 21 continuous observations (preserves Inspector Space Size: 21)
+        // 4. Scalar distances & velocity decay state (3)
+        sensor.AddObservation(prevDistanceToBall);
+        sensor.AddObservation(prevDistanceBallToGoal);
+        sensor.AddObservation(Body != null ? Body.CurrentMaxVelocity : 8f);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        if (agent == null) return;
+        if (Body == null || match == null) return;
 
-        // Continuous actions:
-        // [0] = moveX (-1 to 1)
-        // [1] = moveZ (-1 to 1)
-        // [2] = kickHorizontalAngle (-1 to 1)
-        // [3] = kickElevationAngle (0 to 1)
-        // [4] = kickForceFraction (0 to 1)
         float moveX = actions.ContinuousActions[0];
         float moveZ = actions.ContinuousActions[1];
         float kickAngleX = actions.ContinuousActions[2];
         float kickElevY = Mathf.Clamp01(actions.ContinuousActions[3]);
         float kickForce = Mathf.Clamp01(actions.ContinuousActions[4]);
-
-        // Discrete actions:
-        // [0] = kickFlag (0: don't kick, 1: power kick)
         int kickFlag = actions.DiscreteActions[0];
 
-        // 1. Apply Movement (Full 360-degree omnidirectional continuous input)
-        Vector2 moveInput = new Vector2(moveX, moveZ);
-        if (moveInput.sqrMagnitude > 1f)
-        {
-            moveInput.Normalize();
-        }
-        agent.ApplyMovement(moveInput);
+        // 1. Movement (mirrored back to world frame for Team Blue)
+        float m = MirrorSign;
+        Vector2 moveInput = new Vector2(m * moveX, m * moveZ);
+        if (moveInput.sqrMagnitude > 1f) moveInput.Normalize();
+        Body.ApplyMovement(moveInput);
 
-        bool isCurrentlyPossessing = agent.HasPossession;
+        float s = match.ShapingScale;
+        bool possessing = Body.HasPossession;
+        InitialiseDistancesIfNeeded();
 
-        // 2. Possession Acquisition Reward (one-time bonus per episode)
-        // Eliminates "reward milking" where the agent repeatedly tapped and dropped the ball in circles.
-        if (isCurrentlyPossessing && !hasSecuredFirstPossession)
+        // 2. One-time possession bonus per episode
+        if (possessing && !hasSecuredFirstPossession)
         {
             hasSecuredFirstPossession = true;
-            AddReward(1.0f); // Rewarded once per episode for taking ball control
+            AddReward(s * match.firstPossessionBonus);
         }
-        prevHadPossession = isCurrentlyPossessing;
 
-        // 3. Dense Shaping
-        if (!isCurrentlyPossessing && targetBall != null)
+        // 3. Dense shaping (identical to the vs-bot run)
+        if (!possessing && targetBall != null)
         {
-            // Dense reward for pursuing and closing distance to the ball
             float distToBall = Vector3.Distance(transform.position, targetBall.position);
-            float ballDistDelta = prevDistanceToBall - distToBall;
-            AddReward(ballDistDelta * 0.02f);
+            AddReward(s * match.approachBallWeight * (prevDistanceToBall - distToBall));
             prevDistanceToBall = distToBall;
         }
-        else if (isCurrentlyPossessing && targetBall != null && opponentGoal != null)
+        else if (possessing && targetBall != null && opponentGoal != null)
         {
-            // Strong dense reward for advancing the ball towards the opponent's goal
             float distToGoal = Vector3.Distance(targetBall.position, opponentGoal.position);
-            float goalDistDelta = prevDistanceBallToGoal - distToGoal;
-            AddReward(goalDistDelta * 0.04f);
+            AddReward(s * match.advanceBallWeight * (prevDistanceBallToGoal - distToGoal));
             prevDistanceBallToGoal = distToGoal;
         }
 
-        // 4. Power Kick Execution
-        if (kickFlag == 1 && agent.CanKickBall())
+        // 4. Power kick (kick angle is relative to the body, so it needs no mirroring)
+        if (kickFlag == 1 && Body.CanKickBall())
         {
-            agent.ExecuteKick(new Vector2(kickAngleX, kickElevY), kickForce);
+            Body.ExecuteKick(new Vector2(kickAngleX, kickElevY), kickForce);
 
-            // Shaped Kick Reward: reward power shots directed toward opponent goal
             if (opponentGoal != null)
             {
                 Vector3 toGoal = (opponentGoal.position - transform.position).normalized;
-                float forwardAlignment = Vector3.Dot(transform.forward, toGoal);
+                float alignment = Vector3.Dot(transform.forward, toGoal);
                 float distToGoal = Vector3.Distance(transform.position, opponentGoal.position);
-
-                // Reward shooting toward goal, especially within 35 meters
-                if (forwardAlignment > 0.3f && distToGoal < 35f)
-                {
-                    AddReward(0.3f * forwardAlignment);
-                }
+                if (alignment > 0.3f && distToGoal < match.shotRange)
+                    AddReward(s * match.shotTowardGoalBonus * alignment);
             }
         }
 
-        // 5. Existential step penalty (discourages stalling/running in circles)
-        if (MaxStep > 0)
-        {
-            AddReward(-1f / MaxStep);
-        }
-    }
-
-    public void OnGoalScored(bool byThisTeam)
-    {
-        if (byThisTeam)
-        {
-            // Mathematical formulation from proposal.md Section 3.3:
-            // R_i = (1 - lambda) * r_ind + lambda * R_team
-            bool isGoalScorer = (agent != null && agent.HasPossession);
-            float r_ind = isGoalScorer ? goalReward : (goalReward * 0.7f);
-            float r_team = goalReward;
-            float totalReward = ((1f - lambda) * r_ind) + (lambda * r_team);
-
-            // Speed bonus: Reward scoring quickly!
-            // If the agent scores early in the episode, it earns up to an additional +5.0 reward.
-            float speedBonus = 0f;
-            if (MaxStep > 0)
-            {
-                float timeFractionRemaining = Mathf.Clamp01((float)(MaxStep - StepCount) / MaxStep);
-                speedBonus = 5.0f * timeFractionRemaining;
-            }
-
-            AddReward(totalReward + speedBonus);
-        }
-        else
-        {
-            AddReward(concedePenalty);
-        }
-        EndEpisode();
-    }
-
-    public void OnBallOutOfBounds()
-    {
-        AddReward(boundaryPenalty);
-        EndEpisode();
+        // 5. Existential penalty: -1 over a full-length match
+        AddReward(-1f / match.maxEnvironmentSteps);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        // Neutral fallback: Agent is driven purely by ML-Agents neural network.
-        // Manual player controls have been completely decoupled into ManualPlayerController.cs
-        // so that FreeCamera can navigate without accidentally controlling the bot.
+        // Neutral fallback. Manual control lives in ManualPlayerController.cs.
         var continuous = actionsOut.ContinuousActions;
         var discrete = actionsOut.DiscreteActions;
-
         continuous[0] = 0f;
         continuous[1] = 0f;
         continuous[2] = 0f;

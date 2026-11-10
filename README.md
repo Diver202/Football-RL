@@ -112,6 +112,10 @@ deactivate
 
 ## 5. How to Train (Step-by-Step)
 
+> [!IMPORTANT]
+> **Current stage: 1v1 self-play, starting from the vs-TestBrain model. Follow [TRAINING.md](TRAINING.md)** (`config/selfplay_1v1.yaml`).
+> Episodes, resets and goal rewards are now run by `MatchController`. The agent still uses the same 21 observations.
+
 ### A. Recording Live Video for YouTube (Real-Time 1x Speed)
 
 To watch the agent playing live in the Unity window at natural real-time speed while recording in OBS Studio:
