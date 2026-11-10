@@ -42324,7 +42324,7 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 5000
+  MaxStep: 1200
   agent: {fileID: 1991275792}
   targetBall: {fileID: 702858139}
   opponentGoal: {fileID: 332380665}
@@ -42332,9 +42332,9 @@ MonoBehaviour:
   teamName: TeamRed
   initialAgentPosition: {x: 35, y: 1, z: 0}
   initialBallPosition: {x: 0, y: 0.15, z: 0}
-  goalReward: 1
-  concedePenalty: -1
-  boundaryPenalty: -0.05
+  goalReward: 10
+  concedePenalty: -5
+  boundaryPenalty: -1
   lambda: 0
 --- !u!114 &1991275791
 MonoBehaviour:

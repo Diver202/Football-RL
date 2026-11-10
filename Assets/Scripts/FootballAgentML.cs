@@ -32,9 +32,9 @@ public class FootballAgentML : Agent
     public Vector3 initialBallPosition = new Vector3(0f, 0.15f, 0f);
 
     [Header("Hyperparameters & Reward Shaping")]
-    public float goalReward = 1.0f;
-    public float concedePenalty = -1.0f;
-    public float boundaryPenalty = -0.05f;
+    public float goalReward = 10.0f;
+    public float concedePenalty = -5.0f;
+    public float boundaryPenalty = -1.0f;
 
     [Header("Cooperation Parameter (proposal.md Section 3.3)")]
     [Tooltip("Cooperation coefficient lambda in [0, 1]. 0 = selfish (Phase 1), 1 = utilitarian team (Phase 3).")]
@@ -46,6 +46,7 @@ public class FootballAgentML : Agent
     private float prevDistanceToBall;
     private float prevDistanceBallToGoal;
     private bool prevHadPossession = false;
+    private bool hasSecuredFirstPossession = false;
 
     protected override void OnEnable()
     {
@@ -73,6 +74,11 @@ public class FootballAgentML : Agent
             agentRb = GetComponent<Rigidbody>();
         if (targetBall != null)
             ballRb = targetBall.GetComponent<Rigidbody>();
+
+        // Ensure proper baseline reward hyperparameters even if older scene values were serialized
+        if (goalReward < 5.0f) goalReward = 10.0f;
+        if (concedePenalty > -2.0f) concedePenalty = -5.0f;
+        if (boundaryPenalty > -0.5f) boundaryPenalty = -1.0f;
     }
 
     public override void OnEpisodeBegin()
@@ -106,6 +112,7 @@ public class FootballAgentML : Agent
         }
 
         prevHadPossession = false;
+        hasSecuredFirstPossession = false;
 
         // Cache initial distances for dense shaping
         if (targetBall != null)
@@ -184,10 +191,12 @@ public class FootballAgentML : Agent
 
         bool isCurrentlyPossessing = agent.HasPossession;
 
-        // 2. Possession Acquisition Reward
-        if (!prevHadPossession && isCurrentlyPossessing)
+        // 2. Possession Acquisition Reward (one-time bonus per episode)
+        // Eliminates "reward milking" where the agent repeatedly tapped and dropped the ball in circles.
+        if (isCurrentlyPossessing && !hasSecuredFirstPossession)
         {
-            AddReward(0.3f); // Reward securing physical control of the ball
+            hasSecuredFirstPossession = true;
+            AddReward(1.0f); // Rewarded once per episode for taking ball control
         }
         prevHadPossession = isCurrentlyPossessing;
 
@@ -197,15 +206,15 @@ public class FootballAgentML : Agent
             // Dense reward for pursuing and closing distance to the ball
             float distToBall = Vector3.Distance(transform.position, targetBall.position);
             float ballDistDelta = prevDistanceToBall - distToBall;
-            AddReward(ballDistDelta * 0.01f);
+            AddReward(ballDistDelta * 0.02f);
             prevDistanceToBall = distToBall;
         }
-        else if (isCurrentlyPossessing && targetBall != null)
+        else if (isCurrentlyPossessing && targetBall != null && opponentGoal != null)
         {
-            // Dense reward for advancing the ball towards the opponent's goal
+            // Strong dense reward for advancing the ball towards the opponent's goal
             float distToGoal = Vector3.Distance(targetBall.position, opponentGoal.position);
             float goalDistDelta = prevDistanceBallToGoal - distToGoal;
-            AddReward(goalDistDelta * 0.01f);
+            AddReward(goalDistDelta * 0.04f);
             prevDistanceBallToGoal = distToGoal;
         }
 
@@ -215,11 +224,17 @@ public class FootballAgentML : Agent
             agent.ExecuteKick(new Vector2(kickAngleX, kickElevY), kickForce);
 
             // Shaped Kick Reward: reward power shots directed toward opponent goal
-            Vector3 toGoal = (opponentGoal.position - transform.position).normalized;
-            float forwardAlignment = Vector3.Dot(transform.forward, toGoal);
-            if (forwardAlignment > 0.25f)
+            if (opponentGoal != null)
             {
-                AddReward(0.05f * forwardAlignment);
+                Vector3 toGoal = (opponentGoal.position - transform.position).normalized;
+                float forwardAlignment = Vector3.Dot(transform.forward, toGoal);
+                float distToGoal = Vector3.Distance(transform.position, opponentGoal.position);
+
+                // Reward shooting toward goal, especially within 35 meters
+                if (forwardAlignment > 0.3f && distToGoal < 35f)
+                {
+                    AddReward(0.3f * forwardAlignment);
+                }
             }
         }
 
@@ -237,10 +252,20 @@ public class FootballAgentML : Agent
             // Mathematical formulation from proposal.md Section 3.3:
             // R_i = (1 - lambda) * r_ind + lambda * R_team
             bool isGoalScorer = (agent != null && agent.HasPossession);
-            float r_ind = isGoalScorer ? goalReward : (goalReward * 0.5f);
+            float r_ind = isGoalScorer ? goalReward : (goalReward * 0.7f);
             float r_team = goalReward;
             float totalReward = ((1f - lambda) * r_ind) + (lambda * r_team);
-            AddReward(totalReward);
+
+            // Speed bonus: Reward scoring quickly!
+            // If the agent scores early in the episode, it earns up to an additional +5.0 reward.
+            float speedBonus = 0f;
+            if (MaxStep > 0)
+            {
+                float timeFractionRemaining = Mathf.Clamp01((float)(MaxStep - StepCount) / MaxStep);
+                speedBonus = 5.0f * timeFractionRemaining;
+            }
+
+            AddReward(totalReward + speedBonus);
         }
         else
         {
