@@ -21,8 +21,9 @@ param(
     [ValidateSet('NoPass', 'HalfPass', 'AllPass')]
     [string[]] $Teams = @('NoPass', 'HalfPass', 'AllPass'),
     # Training stage. '' = the original runs (config\3v3_<Team>.yaml -> results\3v3_<Team>).
-    # 'spaced' = config\3v3_<Team>_spaced.yaml -> results\3v3_<Team>_spaced.
-    [ValidateSet('', 'spaced')]
+    # Any other stage X = config\3v3_<Team>_X.yaml -> results\3v3_<Team>_X:
+    #   spaced = first spacing attempt;  roles = coach phase 1;  coach = coach phase 2.
+    [ValidateSet('', 'spaced', 'roles', 'coach')]
     [string] $Stage = '',
     [double] $TimeScale = 20,
     [int] $Retries = 2,
@@ -74,7 +75,8 @@ function Get-Config([string]$Team) {
     $dir = Join-Path $LogDir 'configs'
     New-Item -ItemType Directory -Force $dir | Out-Null
     $out = Join-Path $dir "3v3_$Team${Suffix}_$MaxSteps.yaml"
-    $text = [regex]::Replace((Get-Content $config -Raw), '(?m)^(\s*max_steps:\s*)\d+', "`${1}$MaxSteps")
+    # Only the first max_steps (the players' FootballAgent behavior, always listed first).
+    $text = ([regex]'(?m)^(\s*max_steps:\s*)\d+').Replace((Get-Content $config -Raw), "`${1}$MaxSteps", 1)
     [IO.File]::WriteAllText($out, $text)   # UTF-8 without BOM, readable by ML-Agents
     return $out
 }
@@ -84,11 +86,26 @@ function Get-MaxSteps([string]$Config) {
     return [int]$m.Matches[0].Groups[1].Value
 }
 
-# The run a config starts from (checkpoint_settings > initialize_from).
-function Get-InitFrom([string]$Config) {
+# The checkpoint files a config starts from: checkpoint_settings > initialize_from (a run), or
+# per-behavior init_path (a file; behaviors without one, like a new Coordinator, start fresh).
+function Get-InitCheckpoints([string]$Config) {
     $m = Select-String -Path $Config -Pattern '^\s*initialize_from:\s*(\S+)' | Select-Object -First 1
-    if ($null -eq $m) { throw "$Config has no initialize_from." }
-    return $m.Matches[0].Groups[1].Value
+    if ($null -ne $m) { return @("results\$($m.Matches[0].Groups[1].Value)\FootballAgent\checkpoint.pt") }
+    $paths = @(Select-String -Path $Config -Pattern '^\s*init_path:\s*(\S+)' | ForEach-Object { $_.Matches[0].Groups[1].Value -replace '/', '\' })
+    if ($paths.Count -eq 0) { throw "$Config has neither initialize_from nor init_path." }
+    return $paths
+}
+
+# ML-Agents 1.1.0 bug: a YAML init_path wins over --resume and would silently restart the run from the
+# init model. For a resume, use a copy of the config without init_path.
+function Get-ResumeConfig([string]$Config) {
+    $text = Get-Content $Config -Raw
+    if ($text -notmatch '(?m)^\s*init_path:') { return $Config }
+    $dir = Join-Path $LogDir 'configs'
+    New-Item -ItemType Directory -Force $dir | Out-Null
+    $out = Join-Path $dir ([IO.Path]::GetFileNameWithoutExtension($Config) + '_resume.yaml')
+    [IO.File]::WriteAllText($out, [regex]::Replace($text, '(?m)^\s*init_path:.*\r?\n', ''))
+    return $out
 }
 
 # Unity keeps Temp\UnityLockfile locked while the project is open in the Editor.
@@ -140,20 +157,22 @@ elseif (Get-Process mlagents-learn -ErrorAction SilentlyContinue) {
     throw 'mlagents-learn is already running. Only one training can run at a time.'
 }
 
-# Every team needs the model it starts from (3v3_base, or the finished 3M run for the 'spaced' stage).
-# results\ is not in git, so restore it from the saved_models\ backup if it is missing.
+# Every team needs the model(s) it starts from. results\ is not in git, so restore a missing one from
+# the saved_models\ backup. (Teams already trained or partly trained resume and do not need them.)
 foreach ($team in $Teams) {
-    $init = Get-InitFrom "config\3v3_$team$Suffix.yaml"
-    $checkpoint = "results\$init\FootballAgent\checkpoint.pt"
-    $backup = "saved_models\$init\FootballAgent\checkpoint.pt"
-    if (Test-Path $checkpoint) { continue }
-    if (Test-Path $backup) {
-        New-Item -ItemType Directory -Force (Split-Path $checkpoint) | Out-Null
-        Copy-Item $backup $checkpoint
-        Say "Restored $init from $backup"
+    if (Test-Path "results\3v3_$team$Suffix\FootballAgent\checkpoint.pt") { continue }
+    foreach ($checkpoint in Get-InitCheckpoints "config\3v3_$team$Suffix.yaml") {
+        if (Test-Path $checkpoint) { continue }
+        $backup = $checkpoint -replace '^results\\', 'saved_models\'
+        if (Test-Path $backup) {
+            New-Item -ItemType Directory -Force (Split-Path $checkpoint) | Out-Null
+            Copy-Item $backup $checkpoint
+            Say "Restored $checkpoint from $backup"
+        }
+        elseif ($checkpoint -like '*3v3_base*') { throw 'No 3v3 base model. Run:  .venv\Scripts\python.exe tools\convert_to_3v3.py' }
+        elseif ($checkpoint -like '*_coachbase*') { throw 'No coach base model. Run:  .venv\Scripts\python.exe tools\expand_for_coach.py' }
+        else { throw "Team $team starts from $checkpoint, which does not exist. Train that stage first." }
     }
-    elseif ($init -eq '3v3_base') { throw 'No 3v3 base model. Run:  .venv\Scripts\python.exe tools\convert_to_3v3.py' }
-    else { throw "Team $team starts from $init, but $checkpoint does not exist. Train that stage first." }
 }
 
 $missing = @($Teams | Where-Object { -not (Test-Path "Builds\Team$_\Football.exe") })
@@ -186,7 +205,7 @@ try {
     foreach ($team in $Teams) {
         $runId = "3v3_$team$Suffix"
         $config = Get-Config $team
-        $initFrom = Get-InitFrom $config
+        $initFrom = (Get-InitCheckpoints $config) -join ', '
         $exe = "Builds\Team$team\Football.exe"
         $maxSteps = Get-MaxSteps $config
         $log = Join-Path $LogDir "$runId.log"
@@ -206,7 +225,8 @@ try {
             # A game left over from a crashed attempt would block the port.
             Get-Process Football -ErrorAction SilentlyContinue | Stop-Process -Force
 
-            $cmd = "`"$Learn`" $config --env=$exe --no-graphics --time-scale=$TimeScale $flag 2>&1"
+            $runConfig = $(if ($flag -eq '--resume') { Get-ResumeConfig $config } else { $config })
+            $cmd = "`"$Learn`" $runConfig --env=$exe --no-graphics --time-scale=$TimeScale $flag 2>&1"
             cmd /c $cmd | ForEach-Object {
                 Write-Host $_
                 Add-Content -LiteralPath $log -Encoding UTF8 -Value $_

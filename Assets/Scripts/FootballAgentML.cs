@@ -13,13 +13,16 @@ using Unity.MLAgents.Actuators;
 ///
 /// KICK-OFF: the player's Transform position and rotation in the scene ARE its kick-off spot.
 ///
-/// OBSERVATIONS (46 = Behavior Parameters > Space Size):
+/// OBSERVATIONS (49 = Behavior Parameters > Space Size):
 ///   0-20  the original 21, unchanged in order and units from the solo / vs-TestBrain / 1v1 runs.
 ///   21-45 the other players: 2 teammates then 3 opponents, each sorted nearest first,
 ///         5 numbers each: relative position x/z, velocity x/z, has-the-ball flag.
 ///         Empty slots (e.g. in a 1v1 scene) are zeros.
-/// The 3v3 base model was made from the 1v1 model by tools/convert_to_3v3.py, which gives the
-/// network 25 extra inputs that start with zero weight: at step 0 it plays exactly like the 1v1 model.
+///   46-48 the coach's instruction (see TeamCoach): 1 if I am the chaser, then the vector from me to
+///         my slot (zero for the chaser, whose target is the ball). Zeros when there is no coach.
+/// The 3v3 base model was made from the 1v1 model by tools/convert_to_3v3.py (21 -> 46 inputs), and the
+/// coach models from the 3M 3v3 models by tools/expand_for_coach.py (46 -> 49). New inputs always start
+/// with zero weight, so each stage starts out playing exactly like the one before.
 ///
 /// Team Blue gets every x/z quantity rotated 180 degrees (and its movement action rotated back),
 /// so it sees the game exactly as Team Red does and one shared policy can play both sides.
@@ -33,8 +36,9 @@ public class FootballAgentML : Agent
     public const int MaxTeammates = 2;
     public const int MaxOpponents = 3;
     public const int ObservationsPerPlayer = 5;
+    public const int CoachObservationSize = 3;   // am I the chaser, vector to my slot x/z
     public const int ObservationSize =
-        BaseObservationSize + (MaxTeammates + MaxOpponents) * ObservationsPerPlayer;   // 46
+        BaseObservationSize + (MaxTeammates + MaxOpponents) * ObservationsPerPlayer + CoachObservationSize;   // 49
 
     // Set by MatchController at startup (not shown in the Inspector).
     [System.NonSerialized] public Transform opponentGoal;   // also read by TestBrain
@@ -55,6 +59,8 @@ public class FootballAgentML : Agent
     private float prevDistanceBallToGoal;
     private bool distancesInitialised;
     private bool hasSecuredFirstPossession;
+    private float prevSlotDistance;
+    private int slotVersionSeen = -1;
 
     // Reused every observation to sort the other players by distance (no garbage per step).
     private readonly List<FootballAgentML> nearestBuffer = new List<FootballAgentML>(4);
@@ -110,6 +116,7 @@ public class FootballAgentML : Agent
         // MatchController.ResetScene() moves everyone; only reset per-episode trackers here.
         distancesInitialised = false;
         hasSecuredFirstPossession = false;
+        slotVersionSeen = -1;
         if (Body != null) Body.ReleasePossession();
     }
 
@@ -185,6 +192,24 @@ public class FootballAgentML : Agent
         // 5. Teammates (2 x 5), then opponents (3 x 5), each nearest first
         AddPlayerObservations(sensor, ownTeam, MaxTeammates);
         AddPlayerObservations(sensor, otherTeam, MaxOpponents);
+
+        // ---- New with the coach (3) ----
+
+        // 6. The coach's instruction: am I the chaser, and where should I be
+        TeamCoach coach = match != null ? match.CoachOf(this) : null;
+        if (coach == null)
+        {
+            for (int i = 0; i < CoachObservationSize; i++) sensor.AddObservation(0f);
+        }
+        else
+        {
+            // The chaser's target is the ball, which it already sees, so its slot vector is zero.
+            bool isChaser = coach.IsChaser(this);
+            Vector3 toTarget = isChaser ? Vector3.zero : Mirror(coach.SlotOf(this) - transform.position);
+            sensor.AddObservation(isChaser ? 1f : 0f);
+            sensor.AddObservation(toTarget.x);
+            sensor.AddObservation(toTarget.z);
+        }
     }
 
     /// <summary>Adds `slots` x 5 numbers for the nearest players of `team` (excluding this one); zeros for empty slots.</summary>
@@ -234,15 +259,17 @@ public class FootballAgentML : Agent
         float kickForce = Mathf.Clamp01(actions.ContinuousActions[4]);
         int kickFlag = actions.DiscreteActions[0];
 
-        // 1. Movement (mirrored back to world frame for Team Blue)
+        // 1. Movement (mirrored back to world frame for Team Blue). move_gain scales it before it is
+        //    capped at full speed (2 for the coach models, whose movement outputs were halved).
         float m = MirrorSign;
-        Vector2 moveInput = new Vector2(m * moveX, m * moveZ);
+        Vector2 moveInput = new Vector2(m * moveX, m * moveZ) * match.moveGain;
         if (moveInput.sqrMagnitude > 1f) moveInput.Normalize();
         Body.ApplyMovement(moveInput);
 
         float s = match.ShapingScale;
         bool possessing = Body.HasPossession;
         bool closestToBall = match.IsClosestTeammateToBall(this);
+        bool chaser = match.IsChaser(this);   // the coach's chaser, or without a coach the closest teammate
         InitialiseDistancesIfNeeded();
 
         // 2. One-time possession bonus per episode
@@ -255,10 +282,10 @@ public class FootballAgentML : Agent
         // 3. Dense shaping
         if (!possessing && targetBall != null)
         {
-            // Approach the ball: only the player on this team closest to the ball is paid,
-            // so the whole team does not swarm the ball.
+            // Approach the ball: only the chaser is paid (the coach's chaser, or without a coach the
+            // player on this team closest to the ball), so the whole team does not swarm the ball.
             float distToBall = Vector3.Distance(transform.position, targetBall.position);
-            if (closestToBall)
+            if (chaser)
                 AddReward(s * match.approachBallWeight * (prevDistanceToBall - distToBall));
             prevDistanceToBall = distToBall;
         }
@@ -292,6 +319,27 @@ public class FootballAgentML : Agent
         // 6. Team shape: every player except the ball carrier is penalised for crowding a teammate
         //    (0 unless spacing_weight is set in the trainer YAML).
         AddReward(match.SpacingPenalty(this, possessing, closestToBall));
+
+        // 7. Coach role: a player given a slot is paid for moving towards it and for being in it.
+        RewardRole(possessing);
+    }
+
+    private void RewardRole(bool possessing)
+    {
+        TeamCoach coach = match.CoachOf(this);
+        if (coach == null || possessing || coach.IsChaser(this))
+        {
+            slotVersionSeen = -1;
+            return;
+        }
+        float d = TeamCoach.FlatDistance(transform.position, coach.SlotOf(this));
+        int v = coach.VersionOf(this);
+        // Progress is only paid while the target is the same one as last step (not when it jumps).
+        if (v == slotVersionSeen) AddReward(match.roleProgressWeight * (prevSlotDistance - d));
+        slotVersionSeen = v;
+        prevSlotDistance = d;
+        if (d < match.roleRadius)
+            AddReward(match.roleHoldWeight * (1f - d / match.roleRadius) / match.maxEnvironmentSteps);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)

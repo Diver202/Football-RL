@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.MLAgents;
+using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
+using Unity.Sentis;
 
 /// <summary>
 /// Referee for one match between RL agents (independent learners, PPO + self-play).
@@ -68,6 +70,31 @@ public class MatchController : MonoBehaviour
              "The trainer YAML sets it (spacing_exempt_closest: 1 = on).")]
     public bool spacingExemptClosest = false;
 
+    [Header("Coach (hierarchical: a coach per team gives each player a role)")]
+    [Tooltip("Off = no coach (players see zeros, as before). Scripted = random formations (phase 1). " +
+             "Learned = a Coordinator agent per team picks the formation (phase 2). " +
+             "Training builds take it from the command line: -coach off|scripted|learned.")]
+    public CoachMode coachMode = CoachMode.Off;
+    [Tooltip("Physics steps between coach decisions (25 = 0.5 s).")]
+    [Min(1)] public int coachPeriodSteps = 25;
+    [Tooltip("A player with a slot earns this much over a whole match spent exactly on its slot " +
+             "(less further away, 0 beyond Role Radius). The trainer YAML sets it (role_hold_weight).")]
+    [Min(0f)] public float roleHoldWeight = 0f;
+    [Tooltip("Reward per metre moved towards the slot (role_progress_weight).")]
+    [Min(0f)] public float roleProgressWeight = 0f;
+    [Tooltip("Within this distance (m) of its slot a player counts as in position (role_radius).")]
+    [Min(0.1f)] public float roleRadius = 5f;
+    [Tooltip("Multiplies the movement action before it is capped at full speed (move_gain). The coach models " +
+             "were made with movement outputs halved, so they use 2: same movement, but no longer stuck at the clip.")]
+    [Min(0.1f)] public float moveGain = 1f;
+    [Tooltip("Coach models for watching a Learned-coach match without a trainer (Coordinator .onnx).")]
+    public ModelAsset redCoachModel;
+    public ModelAsset blueCoachModel;
+    [Tooltip("Slots are kept inside |x| <= this.")]
+    public float pitchHalfLength = 50f;
+    [Tooltip("Slots are kept inside |z| <= this.")]
+    public float pitchHalfWidth = 33f;
+
     [Header("Episode")]
     [Tooltip("Physics steps before the match is called a draw (50 steps = 1 second). 3000 = 60 s.")]
     public int maxEnvironmentSteps = 3000;
@@ -86,6 +113,11 @@ public class MatchController : MonoBehaviour
     private float teammateDistanceSum;
     private int teammateDistanceSamples, crowdedSamples;
 
+    // Coach (null when coachMode is Off)
+    private TeamCoach redCoach, blueCoach;
+    private TeamCoachAgent redCoachAgent, blueCoachAgent;
+    private readonly Dictionary<FootballAgentML, TeamCoach> coachOf = new Dictionary<FootballAgentML, TeamCoach>();
+
     private void Awake()
     {
         sceneLambda = lambda;
@@ -94,6 +126,103 @@ public class MatchController : MonoBehaviour
         foreach (var a in blueTeam) if (a != null) a.JoinMatch(this, redGoal, blueGoal, ball, blueTeam, redTeam);
         foreach (var a in redTeam) if (a != null && a.Body != null) teamOfBody[a.Body] = 0;
         foreach (var a in blueTeam) if (a != null && a.Body != null) teamOfBody[a.Body] = 1;
+        SetUpCoaches();
+    }
+
+    // ---------------- Coach ----------------
+
+    /// <summary>"-coach off|scripted|learned" on the command line (training builds) overrides the Inspector.</summary>
+    private static CoachMode? CoachModeFromCommandLine()
+    {
+        string[] args = System.Environment.GetCommandLineArgs();
+        for (int i = 0; i < args.Length - 1; i++)
+        {
+            if (args[i] != "-coach") continue;
+            switch (args[i + 1].ToLowerInvariant())
+            {
+                case "off": return CoachMode.Off;
+                case "scripted": return CoachMode.Scripted;
+                case "learned": return CoachMode.Learned;
+                default: Debug.LogError($"MatchController: unknown -coach value '{args[i + 1]}'"); return null;
+            }
+        }
+        return null;
+    }
+
+    private void SetUpCoaches()
+    {
+        CoachMode? fromArgs = CoachModeFromCommandLine();
+        if (fromArgs.HasValue) coachMode = fromArgs.Value;
+        if (coachMode == CoachMode.Off || ball == null || redGoal == null || blueGoal == null) return;
+
+        redCoach = new TeamCoach(this, redTeam, blueGoal, redGoal);
+        blueCoach = new TeamCoach(this, blueTeam, redGoal, blueGoal);
+        foreach (var a in redTeam) if (a != null) coachOf[a] = redCoach;
+        foreach (var a in blueTeam) if (a != null) coachOf[a] = blueCoach;
+
+        if (coachMode == CoachMode.Learned)
+        {
+            redCoachAgent = CreateCoachAgent("Red", 0, redCoach, redTeam, blueTeam, blueGoal, redGoal, redCoachModel);
+            blueCoachAgent = CreateCoachAgent("Blue", 1, blueCoach, blueTeam, redTeam, redGoal, blueGoal, blueCoachModel);
+        }
+    }
+
+    /// <summary>
+    /// Creates a team's Coordinator agent at runtime (only in Learned mode), so the scenes need no coach
+    /// objects. The object is configured while inactive, because ML-Agents reads Behavior Parameters
+    /// when the agent is enabled.
+    /// </summary>
+    private TeamCoachAgent CreateCoachAgent(string label, int teamId, TeamCoach coach, List<FootballAgentML> mine,
+                                            List<FootballAgentML> theirs, Transform attackGoal, Transform defendGoal,
+                                            ModelAsset model)
+    {
+        var go = new GameObject($"Coach {label}");
+        go.SetActive(false);
+        go.transform.SetParent(transform, false);
+        var bp = go.AddComponent<BehaviorParameters>();
+        bp.BehaviorName = TeamCoachAgent.BehaviorNameValue;
+        bp.TeamId = teamId;
+        bp.BrainParameters.VectorObservationSize = TeamCoachAgent.ObservationSize;
+        bp.BrainParameters.NumStackedVectorObservations = 1;
+        bp.BrainParameters.ActionSpec = ActionSpec.MakeDiscrete(TeamCoach.FormationCount);
+        bp.Model = model;
+        var agent = go.AddComponent<TeamCoachAgent>();
+        agent.MaxStep = 0;
+        agent.Setup(this, coach, mine, theirs, attackGoal, defendGoal);
+        go.SetActive(true);
+        return agent;
+    }
+
+    /// <summary>The coach of `agent`'s team, or null when there is no coach.</summary>
+    public TeamCoach CoachOf(FootballAgentML agent) =>
+        agent != null && coachOf.TryGetValue(agent, out var c) ? c : null;
+
+    /// <summary>Whether `agent` is the one meant to go for the ball: the coach's chaser, or without a
+    /// coach the teammate closest to the ball (the original rule).</summary>
+    public bool IsChaser(FootballAgentML agent)
+    {
+        TeamCoach c = CoachOf(agent);
+        return c != null ? c.IsChaser(agent) : IsClosestTeammateToBall(agent);
+    }
+
+    private TeamCoachAgent CoachAgentOf(List<FootballAgentML> team) => team == redTeam ? redCoachAgent : blueCoachAgent;
+
+    private IEnumerable<TeamCoachAgent> CoachAgents()
+    {
+        if (redCoachAgent != null) yield return redCoachAgent;
+        if (blueCoachAgent != null) yield return blueCoachAgent;
+    }
+
+    private void StepCoaches()
+    {
+        if (redCoach == null) return;
+        bool tick = StepCount % coachPeriodSteps == 0;
+        foreach (var c in new[] { redCoach, blueCoach })
+        {
+            if (tick) c.Tick(coachMode, StepCount);
+            c.Step();
+        }
+        if (tick) foreach (var agent in CoachAgents()) agent.RequestDecision();
     }
 
     private void OnEnable() { GameManager.OnGoalScoredEvent += HandleGoal; }
@@ -119,6 +248,8 @@ public class MatchController : MonoBehaviour
         Debug.Log($"MatchController: {redTeam.Count}v{blueTeam.Count}, lambda={lambda}, shaping_scale={shapingScale}, " +
                   $"spacing_weight={spacingWeight}, spacing_distance={spacingDistance} m, " +
                   $"spacing exempts {(spacingExemptClosest ? "carrier + closest to ball (old rule)" : "carrier only")}, " +
+                  $"coach={coachMode}, role_hold_weight={roleHoldWeight}, role_progress_weight={roleProgressWeight}, " +
+                  $"role_radius={roleRadius} m, move_gain={moveGain}, " +
                   $"match length {maxEnvironmentSteps * Time.fixedDeltaTime:0} s");
     }
 
@@ -130,6 +261,10 @@ public class MatchController : MonoBehaviour
         spacingWeight = Mathf.Max(0f, p.GetWithDefault("spacing_weight", spacingWeight));
         spacingDistance = Mathf.Max(0.1f, p.GetWithDefault("spacing_distance", spacingDistance));
         spacingExemptClosest = p.GetWithDefault("spacing_exempt_closest", spacingExemptClosest ? 1f : 0f) > 0.5f;
+        roleHoldWeight = Mathf.Max(0f, p.GetWithDefault("role_hold_weight", roleHoldWeight));
+        roleProgressWeight = Mathf.Max(0f, p.GetWithDefault("role_progress_weight", roleProgressWeight));
+        roleRadius = Mathf.Max(0.1f, p.GetWithDefault("role_radius", roleRadius));
+        moveGain = Mathf.Max(0.1f, p.GetWithDefault("move_gain", moveGain));
     }
 
     /// <summary>Only checks the setup and logs what is wrong; changes nothing.</summary>
@@ -181,11 +316,13 @@ public class MatchController : MonoBehaviour
         TrackPossession();
         TrackSpacing(redTeam);
         TrackSpacing(blueTeam);
+        StepCoaches();
         StepCount++;
         if (StepCount >= maxEnvironmentSteps)
         {
             RecordMatchStats(goalScored: false);
             foreach (var a in AllAgents()) a.EpisodeInterrupted();
+            foreach (var c in CoachAgents()) c.EpisodeInterrupted();
             ResetScene();
         }
     }
@@ -209,8 +346,13 @@ public class MatchController : MonoBehaviour
         }
         foreach (var a in conceders) if (a != null) a.AddReward(concedePenalty);
 
+        // Coaches judge the team result only (the same for every lambda).
+        CoachAgentOf(scorers)?.AddReward(goalValue);
+        CoachAgentOf(conceders)?.AddReward(concedePenalty);
+
         RecordMatchStats(goalScored: true);
         foreach (var a in AllAgents()) a.EndEpisode();
+        foreach (var c in CoachAgents()) c.EndEpisode();
         ResetScene();
     }
 
@@ -266,6 +408,7 @@ public class MatchController : MonoBehaviour
     public void RewardBallProgress(FootballAgentML carrier, float reward)
     {
         carrier.AddReward(reward);
+        if (carrier.ownTeam != null) CoachAgentOf(carrier.ownTeam)?.AddReward(reward);
         if (lambda <= 0f || carrier.ownTeam == null) return;
         foreach (var mate in carrier.ownTeam)
             if (mate != null && mate != carrier) mate.AddReward(lambda * reward);
@@ -328,6 +471,19 @@ public class MatchController : MonoBehaviour
             stats.Add("Match/Nearest Teammate Distance", teammateDistanceSum / teammateDistanceSamples);
             stats.Add("Match/Crowded Share", (float)crowdedSamples / teammateDistanceSamples);
         }
+        if (redCoach != null)
+        {
+            // Share of the time players with a slot were within role_radius of it, and how often each
+            // formation was used (both teams together).
+            int support = redCoach.SupportSteps + blueCoach.SupportSteps;
+            if (support > 0)
+                stats.Add("Coach/Role Adherence", (float)(redCoach.SupportInSlotSteps + blueCoach.SupportInSlotSteps) / support);
+            int ticks = redCoach.Ticks + blueCoach.Ticks;
+            if (ticks > 0)
+                for (int f = 0; f < TeamCoach.FormationCount; f++)
+                    stats.Add($"Coach/Formation {TeamCoach.FormationNames[f]}",
+                              (float)(redCoach.FormationTicks[f] + blueCoach.FormationTicks[f]) / ticks);
+        }
     }
 
     private IEnumerable<FootballAgentML> AllAgents()
@@ -350,6 +506,8 @@ public class MatchController : MonoBehaviour
         teammateDistanceSamples = crowdedSamples = 0;
 
         foreach (var a in AllAgents()) a.ResetToKickoff();
+        redCoach?.ResetForKickoff(coachMode, StepCount);
+        blueCoach?.ResetForKickoff(coachMode, StepCount);
 
         if (ball != null)
         {
