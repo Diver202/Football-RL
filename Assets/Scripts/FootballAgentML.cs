@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
@@ -8,27 +9,40 @@ using Unity.MLAgents.Actuators;
 ///
 /// Everything match-related lives on MatchController, which is the single place to set up a match:
 /// the team lists decide which side a player is on, and the controller hands each player its
-/// goals, the ball and the reward settings when the scene starts.
+/// goals, the ball, its teammates/opponents and the reward settings when the scene starts.
 ///
 /// KICK-OFF: the player's Transform position and rotation in the scene ARE its kick-off spot.
 ///
-/// OBSERVATIONS: the same 21 floats, in the same order and units, as the solo and vs-TestBrain runs,
-/// so those checkpoints stay loadable. Team Blue gets every x/z quantity rotated 180 degrees (and
-/// its movement action rotated back), so it sees the game exactly as Team Red does and one shared
-/// policy can play both sides. For Team Red the observations are identical to the old ones.
+/// OBSERVATIONS (46 = Behavior Parameters > Space Size):
+///   0-20  the original 21, unchanged in order and units from the solo / vs-TestBrain / 1v1 runs.
+///   21-45 the other players: 2 teammates then 3 opponents, each sorted nearest first,
+///         5 numbers each: relative position x/z, velocity x/z, has-the-ball flag.
+///         Empty slots (e.g. in a 1v1 scene) are zeros.
+/// The 3v3 base model was made from the 1v1 model by tools/convert_to_3v3.py, which gives the
+/// network 25 extra inputs that start with zero weight: at step 0 it plays exactly like the 1v1 model.
+///
+/// Team Blue gets every x/z quantity rotated 180 degrees (and its movement action rotated back),
+/// so it sees the game exactly as Team Red does and one shared policy can play both sides.
 ///
 /// ACTIONS: continuous [moveX, moveZ, kickAngleX, kickElevation, kickForce], discrete [kick 0/1].
 /// </summary>
 [RequireComponent(typeof(FootballAgent))]
 public class FootballAgentML : Agent
 {
-    public const int ObservationSize = 21;
+    public const int BaseObservationSize = 21;   // the original observations
+    public const int MaxTeammates = 2;
+    public const int MaxOpponents = 3;
+    public const int ObservationsPerPlayer = 5;
+    public const int ObservationSize =
+        BaseObservationSize + (MaxTeammates + MaxOpponents) * ObservationsPerPlayer;   // 46
 
     // Set by MatchController at startup (not shown in the Inspector).
     [System.NonSerialized] public Transform opponentGoal;   // also read by TestBrain
     [System.NonSerialized] public Transform ownGoal;
     [System.NonSerialized] public Transform targetBall;
     [System.NonSerialized] public MatchController match;
+    [System.NonSerialized] public List<FootballAgentML> ownTeam;     // includes this player
+    [System.NonSerialized] public List<FootballAgentML> otherTeam;
 
     public FootballAgent Body { get; private set; }
 
@@ -42,13 +56,20 @@ public class FootballAgentML : Agent
     private bool distancesInitialised;
     private bool hasSecuredFirstPossession;
 
+    // Reused every observation to sort the other players by distance (no garbage per step).
+    private readonly List<FootballAgentML> nearestBuffer = new List<FootballAgentML>(4);
+    private System.Comparison<FootballAgentML> byDistance;
+
     /// <summary>Called once by MatchController before the first step.</summary>
-    public void JoinMatch(MatchController controller, Transform attackGoal, Transform defendGoal, Transform ball)
+    public void JoinMatch(MatchController controller, Transform attackGoal, Transform defendGoal, Transform ball,
+                          List<FootballAgentML> myTeam, List<FootballAgentML> opponents)
     {
         match = controller;
         opponentGoal = attackGoal;
         ownGoal = defendGoal;
         targetBall = ball;
+        ownTeam = myTeam;
+        otherTeam = opponents;
         ballRb = ball != null ? ball.GetComponent<Rigidbody>() : null;
         CacheComponentsAndKickoff();
     }
@@ -125,6 +146,8 @@ public class FootballAgentML : Agent
         }
         InitialiseDistancesIfNeeded();
 
+        // ---- The original 21 (do not reorder: the trained network depends on this order) ----
+
         // 1. Agent state & orientation (7)
         Vector3 pos = Mirror(transform.localPosition);
         Vector3 agentVel = Mirror(agentRb != null ? agentRb.linearVelocity : Vector3.zero);
@@ -156,6 +179,48 @@ public class FootballAgentML : Agent
         sensor.AddObservation(prevDistanceToBall);
         sensor.AddObservation(prevDistanceBallToGoal);
         sensor.AddObservation(Body != null ? Body.CurrentMaxVelocity : 8f);
+
+        // ---- New in 3v3 (25) ----
+
+        // 5. Teammates (2 x 5), then opponents (3 x 5), each nearest first
+        AddPlayerObservations(sensor, ownTeam, MaxTeammates);
+        AddPlayerObservations(sensor, otherTeam, MaxOpponents);
+    }
+
+    /// <summary>Adds `slots` x 5 numbers for the nearest players of `team` (excluding this one); zeros for empty slots.</summary>
+    private void AddPlayerObservations(VectorSensor sensor, List<FootballAgentML> team, int slots)
+    {
+        if (byDistance == null)
+            byDistance = (a, b) =>
+                (a.transform.position - transform.position).sqrMagnitude
+                .CompareTo((b.transform.position - transform.position).sqrMagnitude);
+
+        nearestBuffer.Clear();
+        if (team != null)
+        {
+            foreach (var p in team)
+                if (p != null && p != this && p.gameObject.activeInHierarchy) nearestBuffer.Add(p);
+        }
+        nearestBuffer.Sort(byDistance);
+
+        for (int i = 0; i < slots; i++)
+        {
+            if (i < nearestBuffer.Count)
+            {
+                FootballAgentML p = nearestBuffer[i];
+                Vector3 relPos = Mirror(p.transform.position - transform.position);
+                Vector3 vel = Mirror(p.agentRb != null ? p.agentRb.linearVelocity : Vector3.zero);
+                sensor.AddObservation(relPos.x);
+                sensor.AddObservation(relPos.z);
+                sensor.AddObservation(vel.x);
+                sensor.AddObservation(vel.z);
+                sensor.AddObservation((p.Body != null && p.Body.HasPossession) ? 1f : 0f);
+            }
+            else
+            {
+                for (int k = 0; k < ObservationsPerPlayer; k++) sensor.AddObservation(0f);
+            }
+        }
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -186,17 +251,22 @@ public class FootballAgentML : Agent
             AddReward(s * match.firstPossessionBonus);
         }
 
-        // 3. Dense shaping (identical to the vs-bot run)
+        // 3. Dense shaping
         if (!possessing && targetBall != null)
         {
+            // Approach the ball: only the player on this team closest to the ball is paid,
+            // so the whole team does not swarm the ball.
             float distToBall = Vector3.Distance(transform.position, targetBall.position);
-            AddReward(s * match.approachBallWeight * (prevDistanceToBall - distToBall));
+            if (match.IsClosestTeammateToBall(this))
+                AddReward(s * match.approachBallWeight * (prevDistanceToBall - distToBall));
             prevDistanceToBall = distToBall;
         }
         else if (possessing && targetBall != null && opponentGoal != null)
         {
+            // Carry the ball towards goal: the carrier gets this, teammates get lambda x this
+            // (the same (1 - lambda) * individual + lambda * team split as the goal reward).
             float distToGoal = Vector3.Distance(targetBall.position, opponentGoal.position);
-            AddReward(s * match.advanceBallWeight * (prevDistanceBallToGoal - distToGoal));
+            match.RewardBallProgress(this, s * match.advanceBallWeight * (prevDistanceBallToGoal - distToGoal));
             prevDistanceBallToGoal = distToGoal;
         }
 

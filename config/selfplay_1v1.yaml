@@ -1,3 +1,7 @@
+# RETIRED (finished at 769,635 steps; backup in saved_models/selfplay_1v1_01). The 3v3 configs replace it.
+# Warning: do not use --resume with this file. In ML-Agents 1.1.0 a YAML init_path overrides --resume
+# and would restart from the vs-bot model. The 3v3 configs use initialize_from instead, which does not.
+#
 # 1v1 self-play: the same policy plays Team Red (Team Id 0) and Team Blue (Team Id 1).
 # Scene: Assets/Scenes/SinglePlayerTesting.unity (MatchController on the GameManager object).
 #
