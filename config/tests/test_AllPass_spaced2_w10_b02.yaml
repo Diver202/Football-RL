@@ -1,0 +1,52 @@
+# TEST: AllPass (lambda 1), starting from the 3M model (results/3v3_AllPass), 500k steps.
+# Second spacing attempt. Changes vs the first ('_spaced') attempt:
+#   - fixed rule: every player except the ball carrier pays for crowding a teammate
+#     (spacing_exempt_closest: 0; before, the teammate closest to the ball was exempt too, and players
+#     escaped the penalty by racing to be closest),
+#   - spacing_weight 10 (was 2): a whole match on top of a teammate costs about one goal,
+#   - beta 0.02 (was 0.005): more exploration, because the movement outputs were pinned at +-1.
+# Run: mlagents-learn config/tests/test_AllPass_spaced2_w10_b02.yaml --env=Builds/TeamAllPass/Football.exe --no-graphics --time-scale=20
+behaviors:
+  FootballAgent:
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 256
+      buffer_size: 4096
+      learning_rate: 0.0003
+      beta: 0.02              # was 0.005: more exploration (movement outputs were pinned at +-1)
+      epsilon: 0.2
+      lambd: 0.95
+      num_epoch: 3
+      learning_rate_schedule: linear
+    network_settings:         # must match the base model
+      normalize: true
+      hidden_units: 128
+      num_layers: 2
+    reward_signals:
+      extrinsic:
+        gamma: 0.995
+        strength: 1.0
+    keep_checkpoints: 10
+    checkpoint_interval: 100000
+    max_steps: 500000
+    time_horizon: 128
+    summary_freq: 10000
+    self_play:
+      save_steps: 20000
+      team_change: 100000
+      swap_steps: 2000
+      window: 10
+      play_against_latest_model_ratio: 0.5
+      initial_elo: 1200.0
+
+# Read by MatchController at every kick-off.
+environment_parameters:
+  lambda: 1.0
+  shaping_scale: 0.5
+  spacing_weight: 10.0
+  spacing_distance: 10.0
+  spacing_exempt_closest: 0   # only the ball carrier is exempt
+
+checkpoint_settings:
+  run_id: test_AllPass_spaced2_w10_b02
+  initialize_from: 3v3_AllPass

@@ -1,0 +1,61 @@
+# TEST (not part of the main pipeline): AllPass from the 3M model, spacing_weight 20 (was 2), 300k steps.
+# 3v3 self-play, stage 2 "spaced": Team AllPass (lambda = 1.0) continued with a SPACING penalty.
+# Starts from the finished 3M-step run (results/3v3_AllPass, initialize_from below) and trains 1M more
+# steps in a new run folder, so the 3M model stays as it was for comparison.
+#
+# What is new compared to the 3M runs (identical for all three teams, so lambda is still the only
+# difference between them):
+#   spacing_weight / spacing_distance: a player who is NOT going for the ball (not the carrier, not the
+#   teammate closest to the ball) is penalised for being within spacing_distance of a teammate,
+#   linearly more the closer it is. A whole match spent right on top of a teammate costs spacing_weight
+#   (for scale: a goal is worth 10-15). The player going for the ball is never penalised, so someone
+#   still contests it.
+#   shaping_scale: fixed at 0.5, the value the 3M runs ended on.
+# Everything else (hyperparameters, network, self-play) is unchanged.
+#
+# Normally run by:  .\train_3v3.ps1 -Stage spaced
+# By hand:  mlagents-learn config/3v3_AllPass_spaced.yaml --time-scale=20 [--resume]
+behaviors:
+  FootballAgent:
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 256
+      buffer_size: 4096
+      learning_rate: 0.0003
+      beta: 0.005
+      epsilon: 0.2
+      lambd: 0.95
+      num_epoch: 3
+      learning_rate_schedule: linear
+    network_settings:         # must match the base model
+      normalize: true
+      hidden_units: 128
+      num_layers: 2
+    reward_signals:
+      extrinsic:
+        gamma: 0.995
+        strength: 1.0
+    keep_checkpoints: 10
+    checkpoint_interval: 100000
+    max_steps: 300000
+    time_horizon: 128
+    summary_freq: 10000
+    self_play:
+      save_steps: 20000
+      team_change: 100000
+      swap_steps: 2000
+      window: 10
+      play_against_latest_model_ratio: 0.5
+      initial_elo: 1200.0
+
+# Read by MatchController at every kick-off.
+environment_parameters:
+  lambda: 1.0
+  shaping_scale: 0.5
+  spacing_weight: 20.0
+  spacing_distance: 10.0
+  spacing_exempt_closest: 1   # old rule (closest-to-ball also exempt); this attempt failed, see TRAINING.md
+
+checkpoint_settings:
+  run_id: test_AllPass_spacing20
+  initialize_from: 3v3_AllPass

@@ -19294,7 +19294,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent
@@ -23703,7 +23703,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent
@@ -32001,7 +32001,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent
@@ -34309,6 +34309,9 @@ MonoBehaviour:
   firstPossessionBonus: 1
   shotTowardGoalBonus: 0.3
   shotRange: 35
+  spacingWeight: 0
+  spacingDistance: 10
+  spacingExemptClosest: 0
   maxEnvironmentSteps: 3000
 --- !u!1 &1356669740
 GameObject:
@@ -36506,7 +36509,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent
@@ -40145,7 +40148,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent
@@ -43153,7 +43156,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent

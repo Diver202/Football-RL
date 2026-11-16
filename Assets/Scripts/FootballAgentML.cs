@@ -242,6 +242,7 @@ public class FootballAgentML : Agent
 
         float s = match.ShapingScale;
         bool possessing = Body.HasPossession;
+        bool closestToBall = match.IsClosestTeammateToBall(this);
         InitialiseDistancesIfNeeded();
 
         // 2. One-time possession bonus per episode
@@ -257,7 +258,7 @@ public class FootballAgentML : Agent
             // Approach the ball: only the player on this team closest to the ball is paid,
             // so the whole team does not swarm the ball.
             float distToBall = Vector3.Distance(transform.position, targetBall.position);
-            if (match.IsClosestTeammateToBall(this))
+            if (closestToBall)
                 AddReward(s * match.approachBallWeight * (prevDistanceToBall - distToBall));
             prevDistanceToBall = distToBall;
         }
@@ -287,6 +288,10 @@ public class FootballAgentML : Agent
 
         // 5. Existential penalty: -1 over a full-length match
         AddReward(-1f / match.maxEnvironmentSteps);
+
+        // 6. Team shape: every player except the ball carrier is penalised for crowding a teammate
+        //    (0 unless spacing_weight is set in the trainer YAML).
+        AddReward(match.SpacingPenalty(this, possessing, closestToBall));
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)

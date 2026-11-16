@@ -15,10 +15,15 @@
     .\train_3v3.ps1                       # all three teams at 20x
     .\train_3v3.ps1 -Teams HalfPass       # only one team
     .\train_3v3.ps1 -Build                # rebuild the game first (Unity must be closed)
+    .\train_3v3.ps1 -Stage spaced         # stage 2: continue each 3M model with the spacing penalty
 #>
 param(
     [ValidateSet('NoPass', 'HalfPass', 'AllPass')]
     [string[]] $Teams = @('NoPass', 'HalfPass', 'AllPass'),
+    # Training stage. '' = the original runs (config\3v3_<Team>.yaml -> results\3v3_<Team>).
+    # 'spaced' = config\3v3_<Team>_spaced.yaml -> results\3v3_<Team>_spaced.
+    [ValidateSet('', 'spaced')]
+    [string] $Stage = '',
     [double] $TimeScale = 20,
     [int] $Retries = 2,
     [switch] $Build,
@@ -33,8 +38,7 @@ $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
 
 $Learn = Join-Path $PSScriptRoot '.venv\Scripts\mlagents-learn.exe'
-$BaseCheckpoint = 'results\3v3_base\FootballAgent\checkpoint.pt'
-$BaseBackup = 'saved_models\3v3_base\FootballAgent\checkpoint.pt'
+$Suffix = $(if ($Stage) { "_$Stage" } else { '' })
 $LogDir = Join-Path $PSScriptRoot 'logs'
 $Lambda = @{ NoPass = '0'; HalfPass = '0.5'; AllPass = '1' }
 
@@ -64,11 +68,12 @@ function Get-Elo([string]$RunId) {
 
 # The team's config, or (with -MaxSteps) a copy of it with only max_steps changed.
 function Get-Config([string]$Team) {
-    $config = "config\3v3_$Team.yaml"
+    $config = "config\3v3_$Team$Suffix.yaml"
+    if (-not (Test-Path $config)) { throw "Config $config not found." }
     if ($MaxSteps -le 0) { return $config }
     $dir = Join-Path $LogDir 'configs'
     New-Item -ItemType Directory -Force $dir | Out-Null
-    $out = Join-Path $dir "3v3_${Team}_$MaxSteps.yaml"
+    $out = Join-Path $dir "3v3_$Team${Suffix}_$MaxSteps.yaml"
     $text = [regex]::Replace((Get-Content $config -Raw), '(?m)^(\s*max_steps:\s*)\d+', "`${1}$MaxSteps")
     [IO.File]::WriteAllText($out, $text)   # UTF-8 without BOM, readable by ML-Agents
     return $out
@@ -77,6 +82,13 @@ function Get-Config([string]$Team) {
 function Get-MaxSteps([string]$Config) {
     $m = Select-String -Path $Config -Pattern '^\s*max_steps:\s*(\d+)' | Select-Object -First 1
     return [int]$m.Matches[0].Groups[1].Value
+}
+
+# The run a config starts from (checkpoint_settings > initialize_from).
+function Get-InitFrom([string]$Config) {
+    $m = Select-String -Path $Config -Pattern '^\s*initialize_from:\s*(\S+)' | Select-Object -First 1
+    if ($null -eq $m) { throw "$Config has no initialize_from." }
+    return $m.Matches[0].Groups[1].Value
 }
 
 # Unity keeps Temp\UnityLockfile locked while the project is open in the Editor.
@@ -128,25 +140,40 @@ elseif (Get-Process mlagents-learn -ErrorAction SilentlyContinue) {
     throw 'mlagents-learn is already running. Only one training can run at a time.'
 }
 
-if (-not (Test-Path $BaseCheckpoint)) {
-    if (Test-Path $BaseBackup) {
-        New-Item -ItemType Directory -Force (Split-Path $BaseCheckpoint) | Out-Null
-        Copy-Item $BaseBackup $BaseCheckpoint
-        Say "Restored the 3v3 base model from $BaseBackup"
+# Every team needs the model it starts from (3v3_base, or the finished 3M run for the 'spaced' stage).
+# results\ is not in git, so restore it from the saved_models\ backup if it is missing.
+foreach ($team in $Teams) {
+    $init = Get-InitFrom "config\3v3_$team$Suffix.yaml"
+    $checkpoint = "results\$init\FootballAgent\checkpoint.pt"
+    $backup = "saved_models\$init\FootballAgent\checkpoint.pt"
+    if (Test-Path $checkpoint) { continue }
+    if (Test-Path $backup) {
+        New-Item -ItemType Directory -Force (Split-Path $checkpoint) | Out-Null
+        Copy-Item $backup $checkpoint
+        Say "Restored $init from $backup"
     }
-    else { throw 'No 3v3 base model. Run:  .venv\Scripts\python.exe tools\convert_to_3v3.py' }
+    elseif ($init -eq '3v3_base') { throw 'No 3v3 base model. Run:  .venv\Scripts\python.exe tools\convert_to_3v3.py' }
+    else { throw "Team $team starts from $init, but $checkpoint does not exist. Train that stage first." }
 }
 
 $missing = @($Teams | Where-Object { -not (Test-Path "Builds\Team$_\Football.exe") })
 if ($Build -or $missing.Count -gt 0) { Invoke-UnityBuild }
 
-# Warn if a script or team scene changed after the game was built (the build would be out of date).
-$newestSource = Get-ChildItem 'Assets\Scripts\*.cs', 'Assets\Scenes\Team*.unity' |
-    Sort-Object LastWriteTime -Descending | Select-Object -First 1
+# Stop if a script changed after the game was built: an old build would silently train without the
+# change (e.g. without the spacing penalty, since it ignores parameters it does not know).
+# A newer team scene only warns: Unity also re-saves scenes for harmless reasons (e.g. assigning a
+# model for viewing).
+$newestScript = Get-ChildItem 'Assets\Scripts\*.cs' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+$newestScene = Get-ChildItem 'Assets\Scenes\Team*.unity' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 foreach ($team in $Teams) {
-    $exe = Get-Item "Builds\Team$team\Football.exe"
-    if ($newestSource.LastWriteTime -gt $exe.LastWriteTime) {
-        Say "WARNING: $($newestSource.Name) changed after Builds\Team$team was built. Rebuild with -Build if that change matters." Yellow
+    # (Football.exe keeps the date of Unity's player template, so compare with files every build rewrites.)
+    $scripts = Get-Item "Builds\Team$team\Football_Data\Managed\Assembly-CSharp.dll"
+    $scene = Get-Item "Builds\Team$team\Football_Data\level0"
+    if ($newestScript.LastWriteTime -gt $scripts.LastWriteTime) {
+        throw "$($newestScript.Name) changed after Builds\Team$team was built. Rebuild first: Unity menu Football > Build Training Players, or close Unity and add -Build."
+    }
+    if ($newestScene.LastWriteTime -gt $scene.LastWriteTime) {
+        Say "WARNING: $($newestScene.Name) changed after Builds\Team$team was built. Rebuild with -Build if that change matters." Yellow
     }
 }
 
@@ -154,11 +181,12 @@ $env:PYTHONUNBUFFERED = '1'
 $results = @()
 try {
     [void][Football.Power]::SetThreadExecutionState($ES_CONTINUOUS -bor $ES_SYSTEM_REQUIRED)
-    Say "Training $($Teams -join ', ') at ${TimeScale}x. The PC will not go to sleep while this runs." Green
+    Say "Training $($Teams -join ', ')$(if ($Stage) { " (stage: $Stage)" }) at ${TimeScale}x. The PC will not go to sleep while this runs." Green
 
     foreach ($team in $Teams) {
-        $runId = "3v3_$team"
+        $runId = "3v3_$team$Suffix"
         $config = Get-Config $team
+        $initFrom = Get-InitFrom $config
         $exe = "Builds\Team$team\Football.exe"
         $maxSteps = Get-MaxSteps $config
         $log = Join-Path $LogDir "$runId.log"
@@ -170,7 +198,7 @@ try {
 
             if (Test-Path "results\$runId\FootballAgent\checkpoint.pt") { $flag = '--resume'; $what = "resuming from step $steps" }
             elseif (Test-Path "results\$runId") { $flag = '--force'; $what = 'starting over (the previous attempt saved nothing)' }
-            else { $flag = ''; $what = 'starting from the 3v3 base model' }
+            else { $flag = ''; $what = "starting from $initFrom" }
 
             Say "Team $team (lambda $($Lambda[$team])): $what. Goal: $maxSteps steps." Cyan
             Add-Content -LiteralPath $log -Encoding UTF8 -Value "==== $(Get-Date -Format s)  $what ===="

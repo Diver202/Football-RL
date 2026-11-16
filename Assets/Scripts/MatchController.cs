@@ -17,7 +17,8 @@ using Unity.MLAgents.Policies;
 ///   - records match statistics (passes, interceptions, snatches...) to TensorBoard under "Match/".
 /// All rewards are plain per-agent rewards (Agent.AddReward), because PPO ignores group rewards.
 ///
-/// lambda and shaping_scale are overridden by the trainer YAML (environment_parameters) during training.
+/// lambda, shaping_scale, spacing_weight and spacing_distance are overridden by the trainer YAML
+/// (environment_parameters) during training.
 /// </summary>
 public class MatchController : MonoBehaviour
 {
@@ -55,6 +56,18 @@ public class MatchController : MonoBehaviour
     public float shotTowardGoalBonus = 0.3f;
     public float shotRange = 35f;
 
+    [Header("Team Shape (spacing)")]
+    [Tooltip("Penalty for crowding a teammate. A player standing right on top of a teammate for a whole " +
+             "match loses this much; it shrinks to 0 at Spacing Distance. The ball carrier is exempt. " +
+             "0 = off (the first 3M-step runs). The trainer YAML sets it (spacing_weight).")]
+    [Min(0f)] public float spacingWeight = 0f;
+    [Tooltip("Teammates closer than this (metres) count as crowding. The trainer YAML sets it (spacing_distance).")]
+    [Min(0.1f)] public float spacingDistance = 10f;
+    [Tooltip("Old rule, kept only to reproduce the first '_spaced' runs: also exempt the teammate closest " +
+             "to the ball. It failed: players escaped the penalty by racing to be closest. " +
+             "The trainer YAML sets it (spacing_exempt_closest: 1 = on).")]
+    public bool spacingExemptClosest = false;
+
     [Header("Episode")]
     [Tooltip("Physics steps before the match is called a draw (50 steps = 1 second). 3000 = 60 s.")]
     public int maxEnvironmentSteps = 3000;
@@ -70,6 +83,8 @@ public class MatchController : MonoBehaviour
     private FootballAgent lastCarrier;
     private bool ballLooseSinceLastCarrier;
     private int passes, interceptions, snatches, teammateSteals;
+    private float teammateDistanceSum;
+    private int teammateDistanceSamples, crowdedSamples;
 
     private void Awake()
     {
@@ -102,6 +117,8 @@ public class MatchController : MonoBehaviour
             Debug.LogWarning($"MatchController: the trainer set lambda={lambda}, the scene says {sceneLambda}. Using {lambda}.");
         ResetScene();
         Debug.Log($"MatchController: {redTeam.Count}v{blueTeam.Count}, lambda={lambda}, shaping_scale={shapingScale}, " +
+                  $"spacing_weight={spacingWeight}, spacing_distance={spacingDistance} m, " +
+                  $"spacing exempts {(spacingExemptClosest ? "carrier + closest to ball (old rule)" : "carrier only")}, " +
                   $"match length {maxEnvironmentSteps * Time.fixedDeltaTime:0} s");
     }
 
@@ -110,6 +127,9 @@ public class MatchController : MonoBehaviour
         var p = Academy.Instance.EnvironmentParameters;
         lambda = Mathf.Clamp01(p.GetWithDefault("lambda", lambda));
         shapingScale = Mathf.Max(0f, p.GetWithDefault("shaping_scale", shapingScale));
+        spacingWeight = Mathf.Max(0f, p.GetWithDefault("spacing_weight", spacingWeight));
+        spacingDistance = Mathf.Max(0.1f, p.GetWithDefault("spacing_distance", spacingDistance));
+        spacingExemptClosest = p.GetWithDefault("spacing_exempt_closest", spacingExemptClosest ? 1f : 0f) > 0.5f;
     }
 
     /// <summary>Only checks the setup and logs what is wrong; changes nothing.</summary>
@@ -159,6 +179,8 @@ public class MatchController : MonoBehaviour
     private void FixedUpdate()
     {
         TrackPossession();
+        TrackSpacing(redTeam);
+        TrackSpacing(blueTeam);
         StepCount++;
         if (StepCount >= maxEnvironmentSteps)
         {
@@ -207,6 +229,39 @@ public class MatchController : MonoBehaviour
         return true;
     }
 
+    /// <summary>Distance on the ground from `agent` to its nearest teammate (infinity if it has none).</summary>
+    public float NearestTeammateDistance(FootballAgentML agent)
+    {
+        float best = float.PositiveInfinity;
+        if (agent.ownTeam == null) return best;
+        Vector3 me = agent.transform.position;
+        foreach (var mate in agent.ownTeam)
+        {
+            if (mate == null || mate == agent || !mate.gameObject.activeInHierarchy) continue;
+            Vector3 d = mate.transform.position - me;
+            d.y = 0f;
+            best = Mathf.Min(best, d.magnitude);
+        }
+        return best;
+    }
+
+    /// <summary>
+    /// Spacing penalty for this physics step (0 or negative). Every player except the ball carrier is
+    /// penalised for standing within spacingDistance of a teammate, more the closer it is. Summed over
+    /// a whole match spent right on top of a teammate it comes to -spacingWeight.
+    /// When two players crowd each other both pay, so there is no way out except moving apart
+    /// (or having the ball). With spacingExemptClosest (old rule) the teammate closest to the ball is
+    /// exempt too.
+    /// </summary>
+    public float SpacingPenalty(FootballAgentML agent, bool carrying, bool closestToBall)
+    {
+        if (spacingWeight <= 0f || carrying) return 0f;
+        if (spacingExemptClosest && closestToBall) return 0f;
+        float d = NearestTeammateDistance(agent);
+        if (d >= spacingDistance) return 0f;
+        return -spacingWeight * (1f - d / spacingDistance) / maxEnvironmentSteps;
+    }
+
     /// <summary>Ball-progress shaping: the carrier gets `reward`, each teammate gets lambda * `reward`.</summary>
     public void RewardBallProgress(FootballAgentML carrier, float reward)
     {
@@ -243,6 +298,20 @@ public class MatchController : MonoBehaviour
         ballLooseSinceLastCarrier = false;
     }
 
+    /// <summary>Measures team shape every step (all players, whether or not the spacing penalty is on).</summary>
+    private void TrackSpacing(List<FootballAgentML> team)
+    {
+        foreach (var a in team)
+        {
+            if (a == null) continue;
+            float d = NearestTeammateDistance(a);
+            if (float.IsInfinity(d)) continue;
+            teammateDistanceSum += d;
+            teammateDistanceSamples++;
+            if (d < spacingDistance) crowdedSamples++;
+        }
+    }
+
     /// <summary>One sample per match; TensorBoard shows the average per match.</summary>
     private void RecordMatchStats(bool goalScored)
     {
@@ -252,6 +321,13 @@ public class MatchController : MonoBehaviour
         stats.Add("Match/Interceptions", interceptions);
         stats.Add("Match/Snatches", snatches);
         stats.Add("Match/Teammate Steals", teammateSteals);
+        if (teammateDistanceSamples > 0)
+        {
+            // Average distance from a player to its nearest teammate (metres), and the share of the
+            // time players spent closer than spacingDistance to a teammate.
+            stats.Add("Match/Nearest Teammate Distance", teammateDistanceSum / teammateDistanceSamples);
+            stats.Add("Match/Crowded Share", (float)crowdedSamples / teammateDistanceSamples);
+        }
     }
 
     private IEnumerable<FootballAgentML> AllAgents()
@@ -270,6 +346,8 @@ public class MatchController : MonoBehaviour
         lastCarrier = null;
         ballLooseSinceLastCarrier = false;
         passes = interceptions = snatches = teammateSteals = 0;
+        teammateDistanceSum = 0f;
+        teammateDistanceSamples = crowdedSamples = 0;
 
         foreach (var a in AllAgents()) a.ResetToKickoff();
 
