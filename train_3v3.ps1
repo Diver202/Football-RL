@@ -22,8 +22,10 @@ param(
     [string[]] $Teams = @('NoPass', 'HalfPass', 'AllPass'),
     # Training stage. '' = the original runs (config\3v3_<Team>.yaml -> results\3v3_<Team>).
     # Any other stage X = config\3v3_<Team>_X.yaml -> results\3v3_<Team>_X:
-    #   spaced = first spacing attempt;  roles = coach phase 1;  coach = coach phase 2.
-    [ValidateSet('', 'spaced', 'roles', 'coach')]
+    #   spaced = first spacing attempt;  roles = coach phase 1;  coach = coach phase 2;
+    #   coach2 / coach2nopress = phase 2 continued (with / without Press) - trained with the farmable role rewards;
+    #   coach3 = phase 2 redone with clean rewards; coach3b / coach3nopress = coach3 continued (with / without Press).
+    [ValidateSet('', 'spaced', 'roles', 'coach', 'coach2', 'coach2nopress', 'coach3', 'coach3b', 'coach3nopress')]
     [string] $Stage = '',
     [double] $TimeScale = 20,
     [int] $Retries = 2,
@@ -32,7 +34,10 @@ param(
     # 1M run by another 1M). The config files are not changed; a copy goes to logs\configs\.
     [int] $MaxSteps = 0,
     # Wait until a training that is already running has finished, then start.
-    [switch] $WaitForRunningTraining
+    [switch] $WaitForRunningTraining,
+    # Port for the game connection. Give each run its own (e.g. 5005, 5105, 5205) to train several teams
+    # at the same time in separate windows; when -BasePort is given the "already running" check is skipped.
+    [int] $BasePort = 5005
 )
 
 $ErrorActionPreference = 'Stop'
@@ -153,8 +158,14 @@ if ($WaitForRunningTraining) {
         Start-Sleep -Seconds 10
     }
 }
-elseif (Get-Process mlagents-learn -ErrorAction SilentlyContinue) {
-    throw 'mlagents-learn is already running. Only one training can run at a time.'
+elseif (-not $PSBoundParameters.ContainsKey('BasePort') -and (Get-Process mlagents-learn -ErrorAction SilentlyContinue)) {
+    throw 'mlagents-learn is already running. To train another team at the same time, give this run its own -BasePort (e.g. 5105).'
+}
+
+# Game processes of one team's build only (so parallel runs of other teams are left alone).
+function Stop-TeamGames([string]$Team) {
+    Get-Process Football -ErrorAction SilentlyContinue |
+        Where-Object { $_.Path -like "*\Builds\Team$Team\*" } | Stop-Process -Force
 }
 
 # Every team needs the model(s) it starts from. results\ is not in git, so restore a missing one from
@@ -223,10 +234,10 @@ try {
             Add-Content -LiteralPath $log -Encoding UTF8 -Value "==== $(Get-Date -Format s)  $what ===="
 
             # A game left over from a crashed attempt would block the port.
-            Get-Process Football -ErrorAction SilentlyContinue | Stop-Process -Force
+            Stop-TeamGames $team
 
             $runConfig = $(if ($flag -eq '--resume') { Get-ResumeConfig $config } else { $config })
-            $cmd = "`"$Learn`" $runConfig --env=$exe --no-graphics --time-scale=$TimeScale $flag 2>&1"
+            $cmd = "`"$Learn`" $runConfig --env=$exe --no-graphics --time-scale=$TimeScale --base-port=$BasePort $flag 2>&1"
             cmd /c $cmd | ForEach-Object {
                 Write-Host $_
                 Add-Content -LiteralPath $log -Encoding UTF8 -Value $_
@@ -257,7 +268,7 @@ try {
 }
 finally {
     [void][Football.Power]::SetThreadExecutionState($ES_CONTINUOUS)
-    Get-Process Football -ErrorAction SilentlyContinue | Stop-Process -Force
+    foreach ($team in $Teams) { Stop-TeamGames $team }
 }
 
 Write-Host ''

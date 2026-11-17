@@ -19294,7 +19294,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 8186ce8c440b26447bd58455976c8862, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent
@@ -23703,7 +23703,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 8186ce8c440b26447bd58455976c8862, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent
@@ -32001,7 +32001,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 8186ce8c440b26447bd58455976c8862, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent
@@ -34312,6 +34312,20 @@ MonoBehaviour:
   spacingWeight: 0
   spacingDistance: 10
   spacingExemptClosest: 0
+  coachMode: 2
+  coachPeriodSteps: 25
+  coachDecisionPeriod: 3
+  coachMinGap: 1
+  coachTerritoryWeight: 0.1
+  coachAllowPress: 0
+  roleHoldWeight: 0
+  roleProgressWeight: 0
+  roleRadius: 5
+  moveGain: 2
+  redCoachModel: {fileID: 5022602860645237092, guid: 7df84b6b4ec99c94880d57b576af0fca, type: 3}
+  blueCoachModel: {fileID: 5022602860645237092, guid: 7df84b6b4ec99c94880d57b576af0fca, type: 3}
+  pitchHalfLength: 50
+  pitchHalfWidth: 33
   maxEnvironmentSteps: 3000
 --- !u!1 &1356669740
 GameObject:
@@ -36509,7 +36523,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 8186ce8c440b26447bd58455976c8862, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent
@@ -40148,7 +40162,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 8186ce8c440b26447bd58455976c8862, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent
@@ -43156,7 +43170,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: adfd396e8a7c2b34bad9f9dc07ef2380, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 8186ce8c440b26447bd58455976c8862, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: FootballAgent

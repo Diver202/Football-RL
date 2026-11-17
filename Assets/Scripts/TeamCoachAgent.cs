@@ -8,24 +8,27 @@ using Unity.MLAgents.Sensors;
 /// The learning coach ("Coordinator" behavior) of one team, used when MatchController's coach mode is
 /// Learned. MatchController creates it at runtime (one per team); nothing to set up in the scene.
 ///
-/// Every 0.5 s it sees the whole match from its team's point of view and picks a FORMATION
-/// (see TeamCoach). It does not move players: it only gives them their instructions, and each player
-/// still decides its own actions with its own policy and its own lambda-weighted reward.
+/// At each decision point (kick-off, a switch of possession between the teams, otherwise every 3 s; see
+/// TeamCoach) it sees the whole match from its team's point of view and picks a FORMATION, which is held
+/// until the next decision. It does not move players: it only gives them their instructions, and each
+/// player still decides its own actions with its own policy and its own lambda-weighted reward.
 ///
-/// OBSERVATIONS (40), mirrored for Team Blue like the players' observations:
+/// OBSERVATIONS (43), mirrored for Team Blue like the players' observations:
 ///   ball position x/z, ball velocity x/z                                   (4)
 ///   own players in team-list order: position x/z, velocity x/z, has-ball   (15)
 ///   opponents, nearest to the ball first: same 5 each                      (15)
 ///   current formation, one-hot                                             (5)
 ///   fraction of the match remaining                                        (1)
-/// ACTION: one discrete branch, the formation (5 options).
-/// REWARD (team result, the same for every lambda): +goal value when the team scores, the concede
-///   penalty when it concedes, and the ball-progress shaping whenever a teammate carries the ball forward.
+///   possession: own ball / their ball / loose, one-hot                     (3)
+/// ACTION: one discrete branch, the formation (5 options; Press is masked when coach_allow_press = 0).
+/// REWARD (team result, the same for every lambda, zero-sum between the two coaches):
+///   +goal value when the team scores, -goal value when it concedes, and coach_territory_weight per metre
+///   the ball moves towards the opponent goal (minus per metre towards its own), whoever has the ball.
 /// </summary>
 public class TeamCoachAgent : Agent
 {
     public const string BehaviorNameValue = "Coordinator";
-    public const int ObservationSize = 4 + 15 + 15 + TeamCoach.FormationCount + 1;   // 40
+    public const int ObservationSize = 4 + 15 + 15 + TeamCoach.FormationCount + 1 + 3;   // 43
 
     private MatchController match;
     private TeamCoach coach;
@@ -70,6 +73,10 @@ public class TeamCoachAgent : Agent
 
         for (int f = 0; f < TeamCoach.FormationCount; f++) sensor.AddObservation(coach.Formation == f ? 1f : 0f);
         sensor.AddObservation(Mathf.Clamp01(1f - (float)match.StepCount / match.maxEnvironmentSteps));
+        Possession possession = coach.CurrentPossession();
+        sensor.AddObservation(possession == Possession.Own ? 1f : 0f);
+        sensor.AddObservation(possession == Possession.Opponent ? 1f : 0f);
+        sensor.AddObservation(possession == Possession.Loose ? 1f : 0f);
     }
 
     private void AddPlayers(VectorSensor sensor, List<FootballAgentML> list, bool sortByBall)
@@ -106,6 +113,13 @@ public class TeamCoachAgent : Agent
     public override void OnActionReceived(ActionBuffers actions)
     {
         if (coach != null) coach.SetFormation(actions.DiscreteActions[0]);
+    }
+
+    public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
+    {
+        // coach_allow_press = 0: the coach cannot pick Press (the network keeps its 5 outputs).
+        if (match != null && !match.coachAllowPress)
+            actionMask.SetActionEnabled(0, TeamCoach.PressFormation, false);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)

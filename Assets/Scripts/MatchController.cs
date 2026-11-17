@@ -75,18 +75,31 @@ public class MatchController : MonoBehaviour
              "Learned = a Coordinator agent per team picks the formation (phase 2). " +
              "Training builds take it from the command line: -coach off|scripted|learned.")]
     public CoachMode coachMode = CoachMode.Off;
-    [Tooltip("Physics steps between coach decisions (25 = 0.5 s).")]
+    [Tooltip("Physics steps between role re-assignments (who chases, who takes which slot). 25 = 0.5 s.")]
     [Min(1)] public int coachPeriodSteps = 25;
-    [Tooltip("A player with a slot earns this much over a whole match spent exactly on its slot " +
-             "(less further away, 0 beyond Role Radius). The trainer YAML sets it (role_hold_weight).")]
+    [Tooltip("Formation decisions: at kick-off, when possession switches between the teams, and otherwise " +
+             "every this many seconds (coach_decision_period). The formation is held in between.")]
+    [Min(0.5f)] public float coachDecisionPeriod = 3f;
+    [Tooltip("Never two formation decisions closer than this (seconds, coach_min_gap).")]
+    [Min(0.02f)] public float coachMinGap = 1f;
+    [Tooltip("Coach reward per metre the ball moves towards the opponent goal (coach_territory_weight). " +
+             "Zero-sum between the two coaches; the full length of the pitch is worth about a goal at 0.1.")]
+    [Min(0f)] public float coachTerritoryWeight = 0.1f;
+    [Tooltip("Whether the coach may choose the Press formation (coach_allow_press, 1/0). Without it every " +
+             "formation keeps the supporting players away from the ball. Done with action masking, so the " +
+             "Coordinator network keeps its 5 outputs.")]
+    public bool coachAllowPress = true;
+    [Tooltip("Every player earns this much over a whole match spent exactly at its target: the ball for the " +
+             "chaser, its slot for the others (less further away, 0 beyond Role Radius). The trainer YAML sets " +
+             "it (role_hold_weight).")]
     [Min(0f)] public float roleHoldWeight = 0f;
-    [Tooltip("Reward per metre moved towards the slot (role_progress_weight).")]
+    [Tooltip("Reward per metre a supporting player gets closer to its slot (role_progress_weight).")]
     [Min(0f)] public float roleProgressWeight = 0f;
     [Tooltip("Within this distance (m) of its slot a player counts as in position (role_radius).")]
     [Min(0.1f)] public float roleRadius = 5f;
     [Tooltip("Multiplies the movement action before it is capped at full speed (move_gain). The coach models " +
              "were made with movement outputs halved, so they use 2: same movement, but no longer stuck at the clip.")]
-    [Min(0.1f)] public float moveGain = 1f;
+    [Min(0.1f)] public float moveGain = 2f;
     [Tooltip("Coach models for watching a Learned-coach match without a trainer (Coordinator .onnx).")]
     public ModelAsset redCoachModel;
     public ModelAsset blueCoachModel;
@@ -213,16 +226,56 @@ public class MatchController : MonoBehaviour
         if (blueCoachAgent != null) yield return blueCoachAgent;
     }
 
+    // Formation decision clock (shared by both coaches: the same moments matter to both teams)
+    private int lastPossessingTeam = -1;   // team of the last ball carrier (0 Red, 1 Blue), -1 none yet
+    private int stepsSinceDecision;
+    private bool decisionPending;
+    private float prevRedTerritory;
+
     private void StepCoaches()
     {
         if (redCoach == null) return;
-        bool tick = StepCount % coachPeriodSteps == 0;
-        foreach (var c in new[] { redCoach, blueCoach })
+
+        // A switch of possession between the teams is a decision point for both coaches.
+        FootballAgent carrier = FootballAgent.activeBallCarrier;
+        if (carrier != null && teamOfBody.TryGetValue(carrier, out int team) && team != lastPossessingTeam)
         {
-            if (tick) c.Tick(coachMode, StepCount);
-            c.Step();
+            lastPossessingTeam = team;
+            decisionPending = true;
         }
-        if (tick) foreach (var agent in CoachAgents()) agent.RequestDecision();
+
+        stepsSinceDecision++;
+        int periodSteps = Mathf.Max(1, Mathf.RoundToInt(coachDecisionPeriod / Time.fixedDeltaTime));
+        int minGapSteps = Mathf.Max(1, Mathf.RoundToInt(coachMinGap / Time.fixedDeltaTime));
+        if ((decisionPending && stepsSinceDecision >= minGapSteps) || stepsSinceDecision >= periodSteps)
+        {
+            stepsSinceDecision = 0;
+            decisionPending = false;
+            if (coachMode == CoachMode.Scripted)
+            {
+                int choices = coachAllowPress ? TeamCoach.FormationCount : TeamCoach.PressFormation;   // Press is last
+                redCoach.SetFormation(UnityEngine.Random.Range(0, choices));
+                blueCoach.SetFormation(UnityEngine.Random.Range(0, choices));
+            }
+            else
+            {
+                // The Coordinator's action arrives on the next step and calls TeamCoach.SetFormation.
+                foreach (var agent in CoachAgents()) agent.RequestDecision();
+            }
+        }
+
+        if (StepCount % coachPeriodSteps == 0) { redCoach.Tick(); blueCoach.Tick(); }
+        redCoach.Step();
+        blueCoach.Step();
+
+        // Territory: each coach is paid for every metre the ball moves towards the goal its team attacks
+        // (and pays for every metre towards its own). Zero-sum, potential-based: over a match it adds up to
+        // where the ball ends, so it does not change what winning means, it only gives credit sooner.
+        float redTerritory = redCoach.Territory();
+        float delta = coachTerritoryWeight * (redTerritory - prevRedTerritory);
+        prevRedTerritory = redTerritory;
+        if (redCoachAgent != null) redCoachAgent.AddReward(delta);
+        if (blueCoachAgent != null) blueCoachAgent.AddReward(-delta);
     }
 
     private void OnEnable() { GameManager.OnGoalScoredEvent += HandleGoal; }
@@ -249,7 +302,9 @@ public class MatchController : MonoBehaviour
                   $"spacing_weight={spacingWeight}, spacing_distance={spacingDistance} m, " +
                   $"spacing exempts {(spacingExemptClosest ? "carrier + closest to ball (old rule)" : "carrier only")}, " +
                   $"coach={coachMode}, role_hold_weight={roleHoldWeight}, role_progress_weight={roleProgressWeight}, " +
-                  $"role_radius={roleRadius} m, move_gain={moveGain}, " +
+                  $"role_radius={roleRadius} m, move_gain={moveGain}, coach_decision_period={coachDecisionPeriod} s, " +
+                  $"coach_min_gap={coachMinGap} s, coach_territory_weight={coachTerritoryWeight}, " +
+                  $"coach_allow_press={coachAllowPress}, " +
                   $"match length {maxEnvironmentSteps * Time.fixedDeltaTime:0} s");
     }
 
@@ -265,6 +320,10 @@ public class MatchController : MonoBehaviour
         roleProgressWeight = Mathf.Max(0f, p.GetWithDefault("role_progress_weight", roleProgressWeight));
         roleRadius = Mathf.Max(0.1f, p.GetWithDefault("role_radius", roleRadius));
         moveGain = Mathf.Max(0.1f, p.GetWithDefault("move_gain", moveGain));
+        coachDecisionPeriod = Mathf.Max(0.5f, p.GetWithDefault("coach_decision_period", coachDecisionPeriod));
+        coachMinGap = Mathf.Max(0.02f, p.GetWithDefault("coach_min_gap", coachMinGap));
+        coachTerritoryWeight = Mathf.Max(0f, p.GetWithDefault("coach_territory_weight", coachTerritoryWeight));
+        coachAllowPress = p.GetWithDefault("coach_allow_press", coachAllowPress ? 1f : 0f) > 0.5f;
     }
 
     /// <summary>Only checks the setup and logs what is wrong; changes nothing.</summary>
@@ -320,6 +379,8 @@ public class MatchController : MonoBehaviour
         StepCount++;
         if (StepCount >= maxEnvironmentSteps)
         {
+            redCoach?.EndSegment(0);
+            blueCoach?.EndSegment(0);
             RecordMatchStats(goalScored: false);
             foreach (var a in AllAgents()) a.EpisodeInterrupted();
             foreach (var c in CoachAgents()) c.EpisodeInterrupted();
@@ -346,9 +407,12 @@ public class MatchController : MonoBehaviour
         }
         foreach (var a in conceders) if (a != null) a.AddReward(concedePenalty);
 
-        // Coaches judge the team result only (the same for every lambda).
+        // Coaches judge the team result only (the same for every lambda), zero-sum: +goal value for
+        // scoring, -goal value for conceding.
         CoachAgentOf(scorers)?.AddReward(goalValue);
-        CoachAgentOf(conceders)?.AddReward(concedePenalty);
+        CoachAgentOf(conceders)?.AddReward(-goalValue);
+        CoachOf(scorers.Count > 0 ? scorers[0] : null)?.EndSegment(+1);
+        CoachOf(conceders.Count > 0 ? conceders[0] : null)?.EndSegment(-1);
 
         RecordMatchStats(goalScored: true);
         foreach (var a in AllAgents()) a.EndEpisode();
@@ -408,7 +472,6 @@ public class MatchController : MonoBehaviour
     public void RewardBallProgress(FootballAgentML carrier, float reward)
     {
         carrier.AddReward(reward);
-        if (carrier.ownTeam != null) CoachAgentOf(carrier.ownTeam)?.AddReward(reward);
         if (lambda <= 0f || carrier.ownTeam == null) return;
         foreach (var mate in carrier.ownTeam)
             if (mate != null && mate != carrier) mate.AddReward(lambda * reward);
@@ -478,6 +541,7 @@ public class MatchController : MonoBehaviour
             int support = redCoach.SupportSteps + blueCoach.SupportSteps;
             if (support > 0)
                 stats.Add("Coach/Role Adherence", (float)(redCoach.SupportInSlotSteps + blueCoach.SupportInSlotSteps) / support);
+            stats.Add("Coach/Decisions per match", (redCoach.Decisions + blueCoach.Decisions) / 2f);
             int ticks = redCoach.Ticks + blueCoach.Ticks;
             if (ticks > 0)
                 for (int f = 0; f < TeamCoach.FormationCount; f++)
@@ -506,8 +570,6 @@ public class MatchController : MonoBehaviour
         teammateDistanceSamples = crowdedSamples = 0;
 
         foreach (var a in AllAgents()) a.ResetToKickoff();
-        redCoach?.ResetForKickoff(coachMode, StepCount);
-        blueCoach?.ResetForKickoff(coachMode, StepCount);
 
         if (ball != null)
         {
@@ -518,6 +580,18 @@ public class MatchController : MonoBehaviour
                 ballRb.linearVelocity = Vector3.zero;
                 ballRb.angularVelocity = Vector3.zero;
             }
+        }
+
+        // After the ball is back on the spot (territory and slots are measured from the ball).
+        if (redCoach != null)
+        {
+            redCoach.ResetForKickoff();
+            blueCoach.ResetForKickoff();
+            // First formation decision on the first step of the match.
+            lastPossessingTeam = -1;
+            decisionPending = true;
+            stepsSinceDecision = int.MaxValue / 2;
+            prevRedTerritory = redCoach.Territory();
         }
     }
 }

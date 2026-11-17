@@ -60,7 +60,7 @@ public class FootballAgentML : Agent
     private bool distancesInitialised;
     private bool hasSecuredFirstPossession;
     private float prevSlotDistance;
-    private int slotVersionSeen = -1;
+    private int slotVersionSeen = -1;   // -1 = no previous slot distance (start of match, or was the chaser)
 
     // Reused every observation to sort the other players by distance (no garbage per step).
     private readonly List<FootballAgentML> nearestBuffer = new List<FootballAgentML>(4);
@@ -320,26 +320,41 @@ public class FootballAgentML : Agent
         //    (0 unless spacing_weight is set in the trainer YAML).
         AddReward(match.SpacingPenalty(this, possessing, closestToBall));
 
-        // 7. Coach role: a player given a slot is paid for moving towards it and for being in it.
-        RewardRole(possessing);
+        // 7. Coach role: every player is paid for being at its target: the ball for the chaser (and the
+        //    ball carrier, who is always the chaser), its slot for the others; supporting players are also
+        //    paid for getting closer to their slot. Paying the chaser too matters: when only slot-holders
+        //    were paid, players learned to stay away from the ball so as not to become the (unpaid) chaser,
+        //    and nobody played the ball (2026-11-17, HalfPass: 0 passes, 0 goals, full-length matches).
+        RewardRole();
     }
 
-    private void RewardRole(bool possessing)
+    private void RewardRole()
     {
         TeamCoach coach = match.CoachOf(this);
-        if (coach == null || possessing || coach.IsChaser(this))
+        if (coach == null)
         {
             slotVersionSeen = -1;
             return;
         }
-        float d = TeamCoach.FlatDistance(transform.position, coach.SlotOf(this));
-        int v = coach.VersionOf(this);
-        // Progress is only paid while the target is the same one as last step (not when it jumps).
-        if (v == slotVersionSeen) AddReward(match.roleProgressWeight * (prevSlotDistance - d));
-        slotVersionSeen = v;
-        prevSlotDistance = d;
+        float d = TeamCoach.FlatDistance(transform.position, coach.SlotOf(this));   // the ball for the chaser
+
+        // Holding (every player): being at its target, more the closer, up to role_hold_weight per match.
         if (d < match.roleRadius)
             AddReward(match.roleHoldWeight * (1f - d / match.roleRadius) / match.maxEnvironmentSteps);
+
+        // Moving to the slot (supporting players only; the chaser has the approach-the-ball shaping).
+        // Potential-based: the change in distance to the slot, INCLUDING when the slot jumps (new role,
+        // slot or formation). Over a match it adds up to (first distance - last distance), so it guides
+        // without being farmable. (2026-11-17: skipping the jump step let players earn ~13 per match by
+        // walking back to slots after every formation change, while nobody played the ball.)
+        if (coach.IsChaser(this))
+        {
+            slotVersionSeen = -1;
+            return;
+        }
+        if (slotVersionSeen >= 0) AddReward(match.roleProgressWeight * (prevSlotDistance - d));
+        slotVersionSeen = 0;
+        prevSlotDistance = d;
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)

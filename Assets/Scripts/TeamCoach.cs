@@ -1,16 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.MLAgents;
 
 /// <summary>How a team is coached. Set on MatchController, or with the command line "-coach off|scripted|learned".</summary>
 public enum CoachMode
 {
     /// <summary>No coach: players get zeros for the coach inputs and play as before.</summary>
     Off,
-    /// <summary>A scripted coach picks a random formation every 2-5 s (phase 1: players learn to follow roles).</summary>
+    /// <summary>A scripted coach picks a RANDOM formation at every decision point (phase 1: players learn to
+    /// follow roles; also a randomised experiment that shows what each formation achieves).</summary>
     Scripted,
-    /// <summary>A learning coach agent (behavior "Coordinator") picks the formation every 0.5 s (phase 2).</summary>
+    /// <summary>A learning coach agent (behavior "Coordinator") picks the formation at every decision point (phase 2).</summary>
     Learned
 }
+
+/// <summary>Who has the ball, from one team's point of view.</summary>
+public enum Possession { Own = 0, Opponent = 1, Loose = 2 }
 
 /// <summary>
 /// One team's coach state (plain C#, not a component). It holds the current FORMATION and turns it into
@@ -19,7 +24,14 @@ public enum CoachMode
 ///   - the other players each get a SLOT: a spot on the pitch, defined relative to the ball, that moves
 ///     with the ball.
 /// Players see their instruction as 3 extra observations and are rewarded for being in their slot
-/// (see FootballAgentML). Who picks the formation depends on CoachMode.
+/// (see FootballAgentML).
+///
+/// Two clocks (both run by MatchController):
+///   - FORMATION DECISIONS (rare): at kick-off, when possession switches between the teams, and otherwise
+///     every coach_decision_period seconds (3 s), never less than 1 s apart. The formation is held between
+///     decisions. Who decides depends on CoachMode (random for Scripted, the Coordinator agent for Learned).
+///   - ROLE ASSIGNMENT (every 0.5 s): who is the chaser and which supporting player takes which slot.
+///     The team's ball carrier becomes the chaser immediately.
 ///
 /// Formations (2 slots each; "ahead" = towards the goal the team attacks, "across" = sideways):
 ///   0 Wide      both 4 m ahead of the ball, 14 m to either side
@@ -27,17 +39,26 @@ public enum CoachMode
 ///   2 Balanced  one 6 m ahead and 12 m towards the middle of the pitch, one covering 40% of the way back to own goal
 ///   3 Defend    both 45% of the way back to own goal, 8 m to either side
 ///   4 Press     both right next to the ball (2 m behind it, 4 m to either side)
+///
+/// For analysis, every formation decision is a "segment" that lasts until the next decision or the end of
+/// the match. For each segment it records (TensorBoard "CoachDiag/"), split by possession at the decision
+/// and by formation: the ground gained (metres the ball moved towards the opponent goal) and the goal
+/// difference (+1 scored, -1 conceded, 0). With the Scripted coach the formation is random, so these are
+/// clean estimates of what each formation achieves in each situation.
 /// </summary>
 public class TeamCoach
 {
     public const int FormationCount = 5;
     public const int DefaultFormation = 2;   // Balanced
+    public const int PressFormation = 4;     // must stay the last formation (coach_allow_press masks it)
     public static readonly string[] FormationNames = { "Wide", "Attack", "Balanced", "Defend", "Press" };
+    public static readonly string[] PossessionNames = { "Own ball", "Their ball", "Loose ball" };
 
     private readonly MatchController match;
     private readonly List<FootballAgentML> players;
     private readonly Transform attackGoal;
     private readonly Transform defendGoal;
+    private readonly float attackSign;   // +1 if this team attacks towards +x
 
     public int Formation { get; private set; } = DefaultFormation;
     public FootballAgentML Chaser { get; private set; }
@@ -47,10 +68,16 @@ public class TeamCoach
     private readonly Dictionary<FootballAgentML, int> slotIndex = new Dictionary<FootballAgentML, int>();
     private readonly Dictionary<FootballAgentML, int> version = new Dictionary<FootballAgentML, int>();
     private int assignedFormation = -1;
-    private int nextScriptedChange;
+
+    // Current segment (one formation decision) for the CoachDiag statistics
+    private bool segmentOpen;
+    private int segmentFormation;
+    private Possession segmentPossession;
+    private float segmentStartTerritory;
 
     // Statistics for the current match
     public int Ticks { get; private set; }
+    public int Decisions { get; private set; }
     public readonly int[] FormationTicks = new int[FormationCount];
     public int SupportSteps { get; private set; }
     public int SupportInSlotSteps { get; private set; }
@@ -61,6 +88,7 @@ public class TeamCoach
         this.players = players;
         this.attackGoal = attackGoal;
         this.defendGoal = defendGoal;
+        attackSign = Mathf.Sign(attackGoal.position.x - defendGoal.position.x);
         foreach (var p in players)
         {
             if (p == null) continue;
@@ -71,28 +99,57 @@ public class TeamCoach
 
     public IReadOnlyList<FootballAgentML> Players => players;
 
-    /// <summary>At kick-off.</summary>
-    public void ResetForKickoff(CoachMode mode, int step)
+    /// <summary>How far the ball is towards the goal this team attacks (metres from the centre line).</summary>
+    public float Territory() => attackSign * match.ball.position.x;
+
+    /// <summary>Who has the ball, from this team's point of view.</summary>
+    public Possession CurrentPossession()
     {
-        Formation = mode == CoachMode.Scripted ? Random.Range(0, FormationCount) : DefaultFormation;
-        nextScriptedChange = step + ScriptedInterval();
+        FootballAgent carrier = FootballAgent.activeBallCarrier;
+        if (carrier == null) return Possession.Loose;
+        foreach (var p in players) if (p != null && p.Body == carrier) return Possession.Own;
+        return Possession.Opponent;
+    }
+
+    /// <summary>At kick-off (the first formation decision follows on the first step).</summary>
+    public void ResetForKickoff()
+    {
+        segmentOpen = false;
+        Formation = DefaultFormation;
         Ticks = 0;
+        Decisions = 0;
         System.Array.Clear(FormationTicks, 0, FormationTicks.Length);
         SupportSteps = SupportInSlotSteps = 0;
         Assign(null);
     }
 
-    /// <summary>The learned coach's choice.</summary>
-    public void SetFormation(int formation) => Formation = Mathf.Clamp(formation, 0, FormationCount - 1);
-
-    /// <summary>Every coach period (0.5 s): scripted formation change if due, then re-assign roles.</summary>
-    public void Tick(CoachMode mode, int step)
+    /// <summary>A formation decision (random for the Scripted coach, the Coordinator's action for Learned).</summary>
+    public void SetFormation(int formation)
     {
-        if (mode == CoachMode.Scripted && step >= nextScriptedChange)
-        {
-            Formation = Random.Range(0, FormationCount);
-            nextScriptedChange = step + ScriptedInterval();
-        }
+        EndSegment(0);
+        Formation = Mathf.Clamp(formation, 0, FormationCount - 1);
+        Decisions++;
+        segmentOpen = true;
+        segmentFormation = Formation;
+        segmentPossession = CurrentPossession();
+        segmentStartTerritory = Territory();
+        Assign(null);
+    }
+
+    /// <summary>Closes the current segment and records it. goalDiff: +1 this team scored, -1 conceded, 0 neither.</summary>
+    public void EndSegment(int goalDiff)
+    {
+        if (!segmentOpen) return;
+        segmentOpen = false;
+        string key = $"CoachDiag/{PossessionNames[(int)segmentPossession]} - {FormationNames[segmentFormation]}";
+        var stats = Academy.Instance.StatsRecorder;
+        stats.Add(key + " ground gained", Territory() - segmentStartTerritory);
+        stats.Add(key + " goal diff", goalDiff);
+    }
+
+    /// <summary>Every 0.5 s: re-assign roles (chaser and slots) for the current formation.</summary>
+    public void Tick()
+    {
         Assign(null);
         Ticks++;
         FormationTicks[Formation]++;
@@ -127,8 +184,6 @@ public class TeamCoach
     public int VersionOf(FootballAgentML p) => version.TryGetValue(p, out int v) ? v : 0;
 
     // ------------------------------------------------------------------------------------------
-
-    private static int ScriptedInterval() => Random.Range(100, 251);   // 2-5 s
 
     private void Assign(FootballAgentML forcedChaser)
     {
@@ -194,7 +249,7 @@ public class TeamCoach
     {
         Vector3 b = Flat(match.ball.position);
         Vector3 own = Flat(defendGoal.position);
-        Vector3 ahead = new Vector3(Mathf.Sign(attackGoal.position.x - defendGoal.position.x), 0f, 0f);
+        Vector3 ahead = new Vector3(attackSign, 0f, 0f);
         Vector3 across = Vector3.forward;
         float side = slot == 0 ? 1f : -1f;
         float towardsMiddle = b.z > 0f ? -1f : 1f;
