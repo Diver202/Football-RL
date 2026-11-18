@@ -87,6 +87,10 @@ public class FootballAgent : MonoBehaviour
     // so HasPossession cannot be used to identify the scorer.
     public static FootballAgent LastToucher { get; private set; }
 
+    /// <summary>Raised on every power kick (pass or shot): the kicker and the kick's horizontal direction.
+    /// Used by MatchStats to count shots. Dribble taps do not raise it.</summary>
+    public static event System.Action<FootballAgent, Vector3> OnKick;
+
     private Rigidbody agentRb;
     private Vector2 currentMoveInput = Vector2.zero;
     private float dribbleCooldown = 0f;
@@ -378,6 +382,7 @@ public class FootballAgent : MonoBehaviour
         float kickForce = Mathf.Lerp(minKickForce, maxKickForce, Mathf.Clamp01(forceFraction));
         ballRb.linearVelocity = Vector3.zero; // Clear previous velocity for a crisp, punchy kick
         ballRb.AddForce(trajectory.normalized * kickForce, ForceMode.Impulse);
+        OnKick?.Invoke(this, horizDir.normalized);
     }
 
     /// <summary>

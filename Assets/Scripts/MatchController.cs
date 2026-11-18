@@ -111,6 +111,16 @@ public class MatchController : MonoBehaviour
     [Header("Episode")]
     [Tooltip("Physics steps before the match is called a draw (50 steps = 1 second). 3000 = 60 s.")]
     public int maxEnvironmentSteps = 3000;
+    [Tooltip("Training: after Max Environment Steps the match is called a draw and everyone kicks off again. " +
+             "Untick for an exhibition match (FinalBuild), where ExhibitionMatch runs the clock instead.")]
+    public bool resetOnTimeout = true;
+
+    /// <summary>Exhibition matches: fraction of the match left (0..1), shown to the coaches instead of the
+    /// time since the last kick-off. -1 = not used (training).</summary>
+    [System.NonSerialized] public float timeRemainingOverride = -1f;
+
+    public TeamCoachAgent RedCoachAgent => redCoachAgent;
+    public TeamCoachAgent BlueCoachAgent => blueCoachAgent;
 
     public int StepCount { get; private set; }
     public float ShapingScale => shapingScale;
@@ -377,12 +387,12 @@ public class MatchController : MonoBehaviour
         TrackSpacing(blueTeam);
         StepCoaches();
         StepCount++;
-        if (StepCount >= maxEnvironmentSteps)
+        if (resetOnTimeout && StepCount >= maxEnvironmentSteps)
         {
             redCoach?.EndSegment(0);
             blueCoach?.EndSegment(0);
             RecordMatchStats(goalScored: false);
-            foreach (var a in AllAgents()) a.EpisodeInterrupted();
+            foreach (var a in AllAgents()) if (a.isActiveAndEnabled) a.EpisodeInterrupted();
             foreach (var c in CoachAgents()) c.EpisodeInterrupted();
             ResetScene();
         }
@@ -415,7 +425,8 @@ public class MatchController : MonoBehaviour
         CoachOf(conceders.Count > 0 ? conceders[0] : null)?.EndSegment(-1);
 
         RecordMatchStats(goalScored: true);
-        foreach (var a in AllAgents()) a.EndEpisode();
+        // (Agents switched off for an exhibition match, e.g. a team played by TestBrain bots, are skipped.)
+        foreach (var a in AllAgents()) if (a.isActiveAndEnabled) a.EndEpisode();
         foreach (var c in CoachAgents()) c.EndEpisode();
         ResetScene();
     }

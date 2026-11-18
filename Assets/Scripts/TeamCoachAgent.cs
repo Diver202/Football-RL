@@ -72,7 +72,9 @@ public class TeamCoachAgent : Agent
         AddPlayers(sensor, opponents, sortByBall: true);
 
         for (int f = 0; f < TeamCoach.FormationCount; f++) sensor.AddObservation(coach.Formation == f ? 1f : 0f);
-        sensor.AddObservation(Mathf.Clamp01(1f - (float)match.StepCount / match.maxEnvironmentSteps));
+        sensor.AddObservation(match.timeRemainingOverride >= 0f
+            ? Mathf.Clamp01(match.timeRemainingOverride)
+            : Mathf.Clamp01(1f - (float)match.StepCount / match.maxEnvironmentSteps));
         Possession possession = coach.CurrentPossession();
         sensor.AddObservation(possession == Possession.Own ? 1f : 0f);
         sensor.AddObservation(possession == Possession.Opponent ? 1f : 0f);
@@ -115,10 +117,15 @@ public class TeamCoachAgent : Agent
         if (coach != null) coach.SetFormation(actions.DiscreteActions[0]);
     }
 
+    /// <summary>-1 = follow MatchController's coach_allow_press; 0 / 1 = this coach may not / may pick Press
+    /// (set per team by ExhibitionMatch, since the two teams can use different coach models).</summary>
+    [System.NonSerialized] public int allowPressOverride = -1;
+
     public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
     {
-        // coach_allow_press = 0: the coach cannot pick Press (the network keeps its 5 outputs).
-        if (match != null && !match.coachAllowPress)
+        // Press not allowed: mask it (the network keeps its 5 outputs).
+        bool allowPress = allowPressOverride < 0 ? (match == null || match.coachAllowPress) : allowPressOverride == 1;
+        if (!allowPress)
             actionMask.SetActionEnabled(0, TeamCoach.PressFormation, false);
     }
 

@@ -213,3 +213,18 @@ Open http://localhost:6006.
 3. Build once with **Football > Build Training Players**. `train_3v3.ps1` restores `results/3v3_base` from `saved_models` on its own.
 
 The old 1v1 stage (`config/selfplay_1v1.yaml`, `SinglePlayerTesting.unity`) has been retired. Its scene still uses 21 observations.
+
+---
+
+## 6. The playable game (`Assets/Scenes/FinalBuild.unity`)
+
+- **Pre-game:** pick Red and Blue (NoPass, HalfPass, AllPass, or TestBrain Bots), then **Kick Off**.
+- **Match:** 5 minutes, with no 60-second training resets. After a goal, a banner shows for 2 s and play restarts from kick-off.
+- **Full time:** score, result, possession, shots, passes, interceptions, tackles, ball in their half, distance covered, and each coach's main formation. Then **New Match** or **Quit**.
+- **Where it lives:**
+  - every screen is an ordinary object under **Menu Canvas**;
+  - the logic is on **Exhibition Match** (`ExhibitionMatch` and `MatchStats`). Its **Teams** list holds the models for each option, by default the `1_Final_NoPress` ones, along with the match length.
+- **Camera:** fixed broadcast view from the +z touchline (FOV 35, height 86 m, 43° down). Red is on the left, like its score.
+- **Export:** menu **Football > Build Final Game** builds `Builds/FinalGame/PassOrDribble.exe`.
+- **Rebuilding the screens:** `Football > Set Up Final Build Scene` rebuilds them from scratch, replacing them, so hand edits to the screens would be lost. Only use it to start over.
+- **Screenshot test:** run the exe with `-autotest <folder>` to play a short scripted session and save a screenshot of every screen.
