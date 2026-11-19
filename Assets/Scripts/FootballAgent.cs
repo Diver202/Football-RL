@@ -135,15 +135,15 @@ public class FootballAgent : MonoBehaviour
         currentMoveInput = moveInput;
     }
 
-    private void Update()
-    {
-        if (dribbleCooldown > 0f) dribbleCooldown -= Time.deltaTime;
-        if (powerKickCooldown > 0f) powerKickCooldown -= Time.deltaTime;
-        timeSinceLastTouch += Time.deltaTime;
-    }
-
     private void FixedUpdate()
     {
+        // Timers tick on the physics step, like everything else in the game. (They used to tick per rendered
+        // frame in Update, which made dribbling and possession depend on the frame rate: at high time scales
+        // one frame spans many physics steps, so cooldowns lasted longer and matches played differently.)
+        if (dribbleCooldown > 0f) dribbleCooldown -= Time.fixedDeltaTime;
+        if (powerKickCooldown > 0f) powerKickCooldown -= Time.fixedDeltaTime;
+        timeSinceLastTouch += Time.fixedDeltaTime;
+
         FindBallReference();
 
         // 1. Evaluate Dynamic Possession & Dribble Fatigue Decay

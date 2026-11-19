@@ -1,0 +1,593 @@
+{
+  "generated": "2026-11-19",
+  "matches": 600,
+  "standings": {
+    "NoPass": {
+      "played": 300,
+      "won": 260,
+      "drawn": 35,
+      "lost": 5,
+      "goals_for": 984,
+      "goals_against": 36,
+      "goal_difference": 948,
+      "points": 815,
+      "points_per_match": 2.716666666666667,
+      "win_rate": 0.8666666666666667
+    },
+    "HalfPass": {
+      "played": 300,
+      "won": 125,
+      "drawn": 84,
+      "lost": 91,
+      "goals_for": 241,
+      "goals_against": 207,
+      "goal_difference": 34,
+      "points": 459,
+      "points_per_match": 1.53,
+      "win_rate": 0.4166666666666667
+    },
+    "AllPass": {
+      "played": 300,
+      "won": 12,
+      "drawn": 47,
+      "lost": 241,
+      "goals_for": 68,
+      "goals_against": 952,
+      "goal_difference": -884,
+      "points": 83,
+      "points_per_match": 0.27666666666666667,
+      "win_rate": 0.04
+    },
+    "TestBrain Bots": {
+      "played": 300,
+      "won": 106,
+      "drawn": 28,
+      "lost": 166,
+      "goals_for": 567,
+      "goals_against": 665,
+      "goal_difference": -98,
+      "points": 346,
+      "points_per_match": 1.1533333333333333,
+      "win_rate": 0.35333333333333333
+    }
+  },
+  "table_order": [
+    "NoPass",
+    "HalfPass",
+    "TestBrain Bots",
+    "AllPass"
+  ],
+  "head_to_head": {
+    "AllPass_vs_TestBrainBots": {
+      "team_a": "AllPass",
+      "team_b": "TestBrain Bots",
+      "matches": 100,
+      "a_wins": 0,
+      "draws": 0,
+      "b_wins": 100,
+      "a_win_rate": 0.0,
+      "a_win_rate_ci95": [
+        0.0,
+        0.03699480747600191
+      ],
+      "b_win_rate": 1.0,
+      "b_win_rate_ci95": [
+        0.9630051925239981,
+        0.9999999999999999
+      ],
+      "a_goals_per_match": 0.19,
+      "b_goals_per_match": 5.5,
+      "a_goals_sd": 0.46482319871173183,
+      "b_goals_sd": 1.5142421513513922,
+      "sign_test_p": 4.825421503937196e-13,
+      "a_as_red": {
+        "matches": 50,
+        "a_wins": 0
+      },
+      "a_as_blue": {
+        "matches": 50,
+        "a_wins": 0
+      },
+      "stats": {
+        "possession": {
+          "a": 0.7750000000000002,
+          "b": 99.22499999999998
+        },
+        "shots": {
+          "a": 3.14,
+          "b": 13.24
+        },
+        "passes": {
+          "a": 0.14,
+          "b": 3.65
+        },
+        "interceptions": {
+          "a": 3.31,
+          "b": 12.02
+        },
+        "tackles": {
+          "a": 9.97,
+          "b": 0.92
+        },
+        "territory": {
+          "a": 34.67199999999998,
+          "b": 65.32800000000002
+        },
+        "distance": {
+          "a": 5198.508999999999,
+          "b": 4684.936000000001
+        }
+      },
+      "main_formation_counts": {
+        "AllPass": {
+          "Defend": 100
+        },
+        "TestBrain Bots": {
+          "none": 100
+        }
+      }
+    },
+    "HalfPass_vs_AllPass": {
+      "team_a": "HalfPass",
+      "team_b": "AllPass",
+      "matches": 100,
+      "a_wins": 55,
+      "draws": 34,
+      "b_wins": 11,
+      "a_win_rate": 0.55,
+      "a_win_rate_ci95": [
+        0.45244427031643447,
+        0.6438562489359654
+      ],
+      "b_win_rate": 0.11,
+      "b_win_rate_ci95": [
+        0.06254131955225126,
+        0.18631463027903022
+      ],
+      "a_goals_per_match": 1.06,
+      "b_goals_per_match": 0.35,
+      "a_goals_sd": 0.8855746294030924,
+      "b_goals_sd": 0.6092717958449422,
+      "sign_test_p": 3.601449657605633e-08,
+      "a_as_red": {
+        "matches": 50,
+        "a_wins": 27
+      },
+      "a_as_blue": {
+        "matches": 50,
+        "a_wins": 28
+      },
+      "stats": {
+        "possession": {
+          "a": 58.356,
+          "b": 41.64799999999998
+        },
+        "shots": {
+          "a": 6.64,
+          "b": 4.13
+        },
+        "passes": {
+          "a": 9.16,
+          "b": 2.72
+        },
+        "interceptions": {
+          "a": 13.31,
+          "b": 12.57
+        },
+        "tackles": {
+          "a": 0.88,
+          "b": 1.18
+        },
+        "territory": {
+          "a": 59.69599999999998,
+          "b": 40.303999999999995
+        },
+        "distance": {
+          "a": 6278.816999999999,
+          "b": 5855.830000000003
+        }
+      },
+      "main_formation_counts": {
+        "HalfPass": {
+          "Attack": 76,
+          "Balanced": 15,
+          "Wide": 5,
+          "Defend": 4
+        },
+        "AllPass": {
+          "Defend": 100
+        }
+      }
+    },
+    "HalfPass_vs_TestBrainBots": {
+      "team_a": "HalfPass",
+      "team_b": "TestBrain Bots",
+      "matches": 100,
+      "a_wins": 66,
+      "draws": 28,
+      "b_wins": 6,
+      "a_win_rate": 0.66,
+      "a_win_rate_ci95": [
+        0.5627754565831095,
+        0.74538620502457
+      ],
+      "b_win_rate": 0.06,
+      "b_win_rate_ci95": [
+        0.02778574526665662,
+        0.12476968531222507
+      ],
+      "a_goals_per_match": 1.19,
+      "b_goals_per_match": 0.11,
+      "a_goals_sd": 1.1694339475044149,
+      "b_goals_sd": 0.34509550720186033,
+      "sign_test_p": 6.9644370929921e-13,
+      "a_as_red": {
+        "matches": 50,
+        "a_wins": 34
+      },
+      "a_as_blue": {
+        "matches": 50,
+        "a_wins": 32
+      },
+      "stats": {
+        "possession": {
+          "a": 4.528999999999999,
+          "b": 95.47099999999999
+        },
+        "shots": {
+          "a": 10.23,
+          "b": 0.33
+        },
+        "passes": {
+          "a": 3.25,
+          "b": 3.22
+        },
+        "interceptions": {
+          "a": 4.38,
+          "b": 42.1
+        },
+        "tackles": {
+          "a": 51.48,
+          "b": 12.52
+        },
+        "territory": {
+          "a": 75.655,
+          "b": 24.345000000000006
+        },
+        "distance": {
+          "a": 5967.994999999999,
+          "b": 5165.588999999999
+        }
+      },
+      "main_formation_counts": {
+        "HalfPass": {
+          "Attack": 62,
+          "Defend": 20,
+          "Balanced": 10,
+          "Wide": 8
+        },
+        "TestBrain Bots": {
+          "none": 100
+        }
+      }
+    },
+    "NoPass_vs_AllPass": {
+      "team_a": "NoPass",
+      "team_b": "AllPass",
+      "matches": 100,
+      "a_wins": 86,
+      "draws": 13,
+      "b_wins": 1,
+      "a_win_rate": 0.86,
+      "a_win_rate_ci95": [
+        0.7786263961619276,
+        0.914737342455351
+      ],
+      "b_win_rate": 0.01,
+      "b_win_rate_ci95": [
+        0.0017673865655472645,
+        0.0544875247609346
+      ],
+      "a_goals_per_match": 2.96,
+      "b_goals_per_match": 0.14,
+      "a_goals_sd": 2.059322238215302,
+      "b_goals_sd": 0.4025173313289777,
+      "sign_test_p": 4.2113505095150765e-13,
+      "a_as_red": {
+        "matches": 50,
+        "a_wins": 42
+      },
+      "a_as_blue": {
+        "matches": 50,
+        "a_wins": 44
+      },
+      "stats": {
+        "possession": {
+          "a": 52.476000000000006,
+          "b": 47.523999999999994
+        },
+        "shots": {
+          "a": 13.29,
+          "b": 5.43
+        },
+        "passes": {
+          "a": 4.65,
+          "b": 2.77
+        },
+        "interceptions": {
+          "a": 13.19,
+          "b": 11.32
+        },
+        "tackles": {
+          "a": 0.79,
+          "b": 1.45
+        },
+        "territory": {
+          "a": 52.94,
+          "b": 47.06000000000001
+        },
+        "distance": {
+          "a": 6026.865999999998,
+          "b": 5922.74
+        }
+      },
+      "main_formation_counts": {
+        "NoPass": {
+          "Balanced": 100
+        },
+        "AllPass": {
+          "Defend": 100
+        }
+      }
+    },
+    "NoPass_vs_HalfPass": {
+      "team_a": "NoPass",
+      "team_b": "HalfPass",
+      "matches": 100,
+      "a_wins": 74,
+      "draws": 22,
+      "b_wins": 4,
+      "a_win_rate": 0.74,
+      "a_win_rate_ci95": [
+        0.6462882736813838,
+        0.8159542187301354
+      ],
+      "b_win_rate": 0.04,
+      "b_win_rate_ci95": [
+        0.015663050551848016,
+        0.09837217232607373
+      ],
+      "a_goals_per_match": 1.61,
+      "b_goals_per_match": 0.16,
+      "a_goals_sd": 1.301863466285341,
+      "b_goals_sd": 0.3684529491774709,
+      "sign_test_p": 1.3812783597891096e-12,
+      "a_as_red": {
+        "matches": 50,
+        "a_wins": 40
+      },
+      "a_as_blue": {
+        "matches": 50,
+        "a_wins": 34
+      },
+      "stats": {
+        "possession": {
+          "a": 45.67100000000001,
+          "b": 54.32900000000001
+        },
+        "shots": {
+          "a": 10.11,
+          "b": 3.56
+        },
+        "passes": {
+          "a": 4.43,
+          "b": 7.98
+        },
+        "interceptions": {
+          "a": 11.05,
+          "b": 10.44
+        },
+        "tackles": {
+          "a": 0.84,
+          "b": 0.85
+        },
+        "territory": {
+          "a": 51.940999999999995,
+          "b": 48.059000000000005
+        },
+        "distance": {
+          "a": 5950.523999999997,
+          "b": 6263.400000000003
+        }
+      },
+      "main_formation_counts": {
+        "NoPass": {
+          "Balanced": 100
+        },
+        "HalfPass": {
+          "Defend": 15,
+          "Wide": 24,
+          "Attack": 40,
+          "Balanced": 21
+        }
+      }
+    },
+    "NoPass_vs_TestBrainBots": {
+      "team_a": "NoPass",
+      "team_b": "TestBrain Bots",
+      "matches": 100,
+      "a_wins": 100,
+      "draws": 0,
+      "b_wins": 0,
+      "a_win_rate": 1.0,
+      "a_win_rate_ci95": [
+        0.9630051925239981,
+        0.9999999999999999
+      ],
+      "b_win_rate": 0.0,
+      "b_win_rate_ci95": [
+        0.0,
+        0.03699480747600191
+      ],
+      "a_goals_per_match": 5.27,
+      "b_goals_per_match": 0.06,
+      "a_goals_sd": 2.024371706994743,
+      "b_goals_sd": 0.23868325657594192,
+      "sign_test_p": 4.825421503937196e-13,
+      "a_as_red": {
+        "matches": 50,
+        "a_wins": 50
+      },
+      "a_as_blue": {
+        "matches": 50,
+        "a_wins": 50
+      },
+      "stats": {
+        "possession": {
+          "a": 6.187999999999999,
+          "b": 93.81200000000003
+        },
+        "shots": {
+          "a": 35.16,
+          "b": 0.93
+        },
+        "passes": {
+          "a": 1.94,
+          "b": 2.3
+        },
+        "interceptions": {
+          "a": 5.0,
+          "b": 37.63
+        },
+        "tackles": {
+          "a": 53.63,
+          "b": 16.76
+        },
+        "territory": {
+          "a": 86.48600000000002,
+          "b": 13.513999999999996
+        },
+        "distance": {
+          "a": 5334.266,
+          "b": 5035.004000000002
+        }
+      },
+      "main_formation_counts": {
+        "NoPass": {
+          "Balanced": 100
+        },
+        "TestBrain Bots": {
+          "none": 100
+        }
+      }
+    }
+  },
+  "team_averages": {
+    "NoPass": {
+      "gf": 3.28,
+      "ga": 0.12,
+      "possession": 34.778333333333336,
+      "shots": 19.52,
+      "shots_against": 3.3066666666666666,
+      "passes": 3.6733333333333333,
+      "interceptions": 9.746666666666666,
+      "tackles": 18.42,
+      "territory": 63.789,
+      "distance": 5770.552000000003,
+      "formation_share": {
+        "Wide": 0.06632333333333332,
+        "Attack": 0.027586666666666624,
+        "Balanced": 0.8412133333333336,
+        "Defend": 0.0647966666666667,
+        "Press": 0.0
+      }
+    },
+    "HalfPass": {
+      "gf": 0.8033333333333333,
+      "ga": 0.69,
+      "possession": 39.07133333333333,
+      "shots": 6.81,
+      "shots_against": 4.8566666666666665,
+      "passes": 6.796666666666667,
+      "interceptions": 9.376666666666667,
+      "tackles": 17.736666666666668,
+      "territory": 61.13666666666666,
+      "distance": 6170.0706666666665,
+      "formation_share": {
+        "Wide": 0.2372699999999999,
+        "Attack": 0.287576666666667,
+        "Balanced": 0.24255333333333332,
+        "Defend": 0.23267333333333326,
+        "Press": 0.0
+      }
+    },
+    "AllPass": {
+      "gf": 0.22666666666666666,
+      "ga": 3.1733333333333333,
+      "possession": 29.98233333333334,
+      "shots": 4.233333333333333,
+      "shots_against": 11.056666666666667,
+      "passes": 1.8766666666666667,
+      "interceptions": 9.066666666666666,
+      "tackles": 4.2,
+      "territory": 40.678666666666665,
+      "distance": 5659.026333333333,
+      "formation_share": {
+        "Wide": 0.10461,
+        "Attack": 0.08253000000000002,
+        "Balanced": 0.17285999999999996,
+        "Defend": 0.6399966666666667,
+        "Press": 0.0
+      }
+    },
+    "TestBrain Bots": {
+      "gf": 1.89,
+      "ga": 2.216666666666667,
+      "possession": 96.16933333333327,
+      "shots": 4.833333333333333,
+      "shots_against": 16.176666666666666,
+      "passes": 3.0566666666666666,
+      "interceptions": 30.583333333333332,
+      "tackles": 10.066666666666666,
+      "territory": 34.39566666666664,
+      "distance": 4961.842999999998,
+      "formation_share": {}
+    }
+  },
+  "side_check": {
+    "red_wins": 253,
+    "blue_wins": 250,
+    "draws": 97,
+    "sign_test_p": 0.9289540435608307
+  },
+  "goals_by_minute": {
+    "NoPass": [
+      200,
+      208,
+      178,
+      188,
+      210
+    ],
+    "HalfPass": [
+      57,
+      43,
+      48,
+      50,
+      43
+    ],
+    "AllPass": [
+      11,
+      14,
+      19,
+      8,
+      16
+    ],
+    "TestBrain Bots": [
+      90,
+      109,
+      128,
+      122,
+      118
+    ]
+  }
+}

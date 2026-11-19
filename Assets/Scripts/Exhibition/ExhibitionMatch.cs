@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using TMPro;
 using Unity.MLAgents;
 using Unity.MLAgents.Policies;
@@ -107,6 +109,8 @@ public class ExhibitionMatch : MonoBehaviour
     public Phase CurrentPhase { get; private set; } = Phase.PreGame;
 
     private float elapsed;
+    private float playTimeScale = 1f;                                    // > 1 only in tournament mode
+    private readonly List<(float time, bool red)> goals = new List<(float, bool)>();   // this match's goals
     private Vector3 defaultCameraPosition;
     private Quaternion defaultCameraRotation;
 
@@ -135,6 +139,7 @@ public class ExhibitionMatch : MonoBehaviour
 
         string shots = AutoTestFolder();
         if (shots != null) StartCoroutine(AutoTest(shots));
+        if (Arg("-tournament") != null) StartCoroutine(Tournament());
     }
 
     private void Update()
@@ -146,10 +151,20 @@ public class ExhibitionMatch : MonoBehaviour
             else if (CurrentPhase == Phase.Paused) Resume();
         }
 
+        if (CurrentPhase == Phase.Playing) UpdateClock();
+    }
+
+    private void FixedUpdate()
+    {
+        // The match clock runs on physics time, so a match is exactly matchLengthSeconds of simulation at any
+        // speed (the tournament runs much faster than real time).
         if (CurrentPhase != Phase.Playing) return;
-        elapsed = Mathf.Min(elapsed + Time.deltaTime, matchLengthSeconds);
-        UpdateClock();
-        if (elapsed >= matchLengthSeconds) EndMatch();
+        elapsed = Mathf.Min(elapsed + Time.fixedDeltaTime, matchLengthSeconds);
+        if (elapsed >= matchLengthSeconds)
+        {
+            UpdateClock();
+            EndMatch();
+        }
     }
 
     private void LateUpdate()
@@ -188,8 +203,9 @@ public class ExhibitionMatch : MonoBehaviour
         SetActive(pauseScreen, false);
         SetActive(hud, true);
         ResetCamera();
+        goals.Clear();
         CurrentPhase = Phase.Playing;
-        Time.timeScale = 1f;
+        Time.timeScale = playTimeScale;
         SetPlayControls(true);
     }
 
@@ -219,7 +235,7 @@ public class ExhibitionMatch : MonoBehaviour
         if (CurrentPhase != Phase.Paused) return;
         SetActive(pauseScreen, false);
         CurrentPhase = Phase.Playing;
-        Time.timeScale = 1f;
+        Time.timeScale = playTimeScale;
         SetPlayControls(true);
     }
 
@@ -267,7 +283,11 @@ public class ExhibitionMatch : MonoBehaviour
 
     private void HandleGoal(string scoringTeam)
     {
+        // Goals after the final whistle do not count. (At high time scales Unity still runs the physics steps
+        // already queued for the frame in which the clock reached full time: up to ~10 s of extra play.)
         if (CurrentPhase != Phase.Playing) return;
+        goals.Add((elapsed, scoringTeam == "TeamRed"));
+        if (goalPauseSeconds <= 0f) return;   // tournament: straight back to kick-off, no banner
         goalRoutine = StartCoroutine(GoalPause(scoringTeam == "TeamRed"));
     }
 
@@ -289,7 +309,7 @@ public class ExhibitionMatch : MonoBehaviour
         if (CurrentPhase == Phase.GoalScored)
         {
             CurrentPhase = Phase.Playing;
-            Time.timeScale = 1f;
+            Time.timeScale = playTimeScale;
         }
         goalRoutine = null;
     }
@@ -363,8 +383,9 @@ public class ExhibitionMatch : MonoBehaviour
 
     private void FillFullTime()
     {
-        int red = GameManager.Instance != null ? GameManager.Instance.teamRedScore : 0;
-        int blue = GameManager.Instance != null ? GameManager.Instance.teamBlueScore : 0;
+        // The score as it stood at the final whistle (recorded by MatchStats.EndMatch).
+        int red = stats != null ? stats.Red.goals : GameManager.Instance != null ? GameManager.Instance.teamRedScore : 0;
+        int blue = stats != null ? stats.Blue.goals : GameManager.Instance != null ? GameManager.Instance.teamBlueScore : 0;
         TeamOption redTeam = teams[redChoice], blueTeam = teams[blueChoice];
 
         SetText(finalScore, $"{red}  -  {blue}");
@@ -443,6 +464,122 @@ public class ExhibitionMatch : MonoBehaviour
     // ------------------------------------------------------------------ automatic screenshot test
     // Run the built game with  -autotest <folder>  to play a short scripted session and save screenshots
     // of every screen (used to check the UI). Normal play never uses this.
+
+    // ------------------------------------------------------------------ headless tournament
+    // PassOrDribble.exe -batchmode -nographics -tournament <out.csv> -pair NoPass,AllPass -matches 100
+    //                   [-timescale 50] [-start 0]
+    // Plays the two teams `matches` times back to back (sides swapped every match: the first team is Red in
+    // even-numbered matches), full length, no goal banner, and appends one CSV row per match (flushed after
+    // each match; -start resumes a stopped run). Quits when done. Same game, rules and physics as normal
+    // play: only the speed differs (the physics step is fixed, so the speed does not change the simulation).
+
+    private const string CsvHeader =
+        "match,red_team,blue_team,red_goals,blue_goals,result,winner_team," +
+        "red_possession_pct,blue_possession_pct,red_shots,blue_shots,red_passes,blue_passes," +
+        "red_interceptions,blue_interceptions,red_tackles,blue_tackles,red_territory_pct,blue_territory_pct," +
+        "red_distance_m,blue_distance_m,red_main_formation,blue_main_formation," +
+        "red_formation_shares,blue_formation_shares,goals,match_seconds,real_seconds";
+
+    private static string Arg(string name)
+    {
+        string[] a = System.Environment.GetCommandLineArgs();
+        for (int i = 0; i < a.Length; i++) if (a[i] == name) return i + 1 < a.Length ? a[i + 1] : "";
+        return null;
+    }
+
+    private int FindTeam(string name)
+    {
+        for (int i = 0; i < teams.Count; i++)
+            if (teams[i].displayName.StartsWith(name, System.StringComparison.OrdinalIgnoreCase)) return i;
+        return -1;
+    }
+
+    private IEnumerator Tournament()
+    {
+        var inv = CultureInfo.InvariantCulture;
+        string outFile = Path.GetFullPath(Arg("-tournament"));
+        string[] pair = (Arg("-pair") ?? "").Split(',');
+        int count = int.TryParse(Arg("-matches"), out int m) ? m : 100;
+        int start = int.TryParse(Arg("-start"), out int s) ? s : 0;
+        float speed = float.TryParse(Arg("-timescale"), NumberStyles.Float, inv, out float t) ? t : 20f;
+        int teamA = pair.Length == 2 ? FindTeam(pair[0].Trim()) : -1;
+        int teamB = pair.Length == 2 ? FindTeam(pair[1].Trim()) : -1;
+        if (teamA < 0 || teamB < 0)
+        {
+            Debug.LogError("Tournament: -pair must name two teams from the Teams list, e.g. -pair NoPass,AllPass");
+            Application.Quit(2);
+            yield break;
+        }
+
+        goalPauseSeconds = 0f;
+        playTimeScale = speed;
+        Directory.CreateDirectory(Path.GetDirectoryName(outFile));
+        bool writeHeader = !File.Exists(outFile);
+        yield return null;
+
+        for (int i = start; i < count; i++)
+        {
+            bool aIsRed = i % 2 == 0;
+            redChoice = aIsRed ? teamA : teamB;
+            blueChoice = aIsRed ? teamB : teamA;
+            float realStart = Time.realtimeSinceStartup;
+            KickOff();
+            while (CurrentPhase != Phase.FullTime) yield return null;
+
+            string row = MatchRow(i, Time.realtimeSinceStartup - realStart);
+            File.AppendAllText(outFile, (writeHeader ? CsvHeader + "\n" : "") + row + "\n");
+            writeHeader = false;
+            Debug.Log($"Tournament: match {i + 1}/{count}: {row}");
+            NewMatch();
+            yield return null;
+        }
+        Application.Quit(0);
+    }
+
+    private string MatchRow(int index, float realSeconds)
+    {
+        var inv = CultureInfo.InvariantCulture;
+        MatchStats.TeamStats r = stats.Red, b = stats.Blue;
+        int rg = r.goals, bg = b.goals;   // score at the final whistle (MatchStats.EndMatch)
+        string result = rg > bg ? "red" : bg > rg ? "blue" : "draw";
+        string winner = result == "red" ? teams[redChoice].displayName : result == "blue" ? teams[blueChoice].displayName : "";
+        float possession = r.possessionTime + b.possessionTime;
+        float redPossession = possession > 0f ? 100f * r.possessionTime / possession : 50f;
+        float territory = r.attackingHalfTime + b.attackingHalfTime;
+        float redTerritory = territory > 0f ? 100f * r.attackingHalfTime / territory : 50f;
+        var goalList = new List<string>();
+        foreach (var g in goals) goalList.Add((g.red ? "R" : "B") + g.time.ToString("0.0", inv));
+
+        string F(float v) => v.ToString("0.0", inv);
+        string Formation(MatchStats.TeamStats st)
+        {
+            if (!st.coached) return "none";
+            int f = st.MainFormation();
+            return f < 0 ? "none" : TeamCoach.FormationNames[f];
+        }
+        string Shares(MatchStats.TeamStats st)
+        {
+            if (!st.coached) return "";
+            float total = 0f;
+            foreach (float x in st.formationTime) total += x;
+            var parts = new List<string>();
+            for (int f = 0; f < st.formationTime.Length; f++)
+                parts.Add(TeamCoach.FormationNames[f] + "=" + (total > 0f ? st.formationTime[f] / total : 0f).ToString("0.000", inv));
+            return string.Join(";", parts);
+        }
+
+        return string.Join(",", new[]
+        {
+            index.ToString(inv), teams[redChoice].displayName, teams[blueChoice].displayName,
+            rg.ToString(inv), bg.ToString(inv), result, winner,
+            F(redPossession), F(100f - redPossession),
+            r.shots.ToString(inv), b.shots.ToString(inv), r.passes.ToString(inv), b.passes.ToString(inv),
+            r.interceptions.ToString(inv), b.interceptions.ToString(inv), r.tackles.ToString(inv), b.tackles.ToString(inv),
+            F(redTerritory), F(100f - redTerritory), F(r.distance), F(b.distance),
+            Formation(r), Formation(b), Shares(r), Shares(b),
+            string.Join(";", goalList), F(stats.Duration), realSeconds.ToString("0.00", inv),
+        });
+    }
 
     private static string AutoTestFolder()
     {

@@ -1,0 +1,1861 @@
+pairing,match,second,minute,side,team
+AllPass_vs_TestBrainBots,0,25.1,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,0,59.0,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,0,84.9,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,0,121.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,0,157.1,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,0,190.7,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,0,239.8,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,0,266.0,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,1,35.0,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,1,119.7,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,1,163.0,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,1,244.0,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,1,256.8,5,blue,AllPass
+AllPass_vs_TestBrainBots,2,54.0,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,2,73.9,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,2,155.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,2,176.3,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,2,287.1,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,3,22.0,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,3,45.6,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,3,143.6,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,3,173.1,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,3,204.7,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,3,244.1,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,4,26.7,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,4,161.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,4,184.9,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,4,221.2,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,4,243.8,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,4,287.0,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,5,21.1,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,5,191.4,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,5,203.1,4,blue,AllPass
+AllPass_vs_TestBrainBots,6,37.1,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,6,118.3,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,6,159.3,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,6,190.3,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,6,248.2,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,7,34.4,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,7,108.6,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,7,162.2,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,8,19.8,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,8,48.4,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,8,97.9,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,8,119.1,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,8,139.1,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,8,213.4,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,8,247.8,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,9,131.6,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,9,174.1,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,9,222.2,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,9,242.5,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,10,25.8,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,10,77.7,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,10,98.3,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,10,140.5,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,10,163.0,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,10,231.8,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,11,26.5,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,11,85.7,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,11,113.8,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,11,147.0,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,11,218.2,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,12,39.3,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,12,83.2,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,12,133.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,12,197.2,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,12,223.0,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,12,242.1,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,12,272.0,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,13,44.8,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,13,80.3,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,13,92.5,2,blue,AllPass
+AllPass_vs_TestBrainBots,13,164.8,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,13,185.2,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,13,228.2,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,13,263.8,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,14,32.1,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,14,216.7,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,15,21.3,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,15,51.3,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,15,87.8,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,15,114.9,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,15,129.3,3,blue,AllPass
+AllPass_vs_TestBrainBots,15,151.0,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,15,170.5,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,15,196.6,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,15,234.8,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,15,255.9,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,15,282.2,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,16,32.9,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,16,71.3,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,16,123.6,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,16,216.3,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,16,261.2,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,16,297.8,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,17,78.5,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,17,141.2,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,17,219.1,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,17,248.0,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,17,274.7,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,17,298.3,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,18,33.8,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,18,103.2,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,18,157.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,18,210.9,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,18,230.9,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,18,292.7,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,19,92.2,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,19,136.2,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,19,148.4,3,blue,AllPass
+AllPass_vs_TestBrainBots,19,169.5,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,19,191.1,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,19,204.9,4,blue,AllPass
+AllPass_vs_TestBrainBots,19,236.7,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,20,101.6,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,20,130.0,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,20,166.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,20,186.3,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,20,246.5,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,21,96.6,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,21,240.2,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,22,19.5,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,22,39.0,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,22,125.1,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,22,211.1,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,22,261.7,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,23,27.1,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,23,67.5,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,23,102.8,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,23,132.5,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,23,164.7,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,23,184.5,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,23,204.8,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,23,225.8,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,24,34.3,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,24,83.8,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,24,134.7,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,24,160.6,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,24,189.2,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,24,208.4,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,24,276.2,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,25,45.5,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,25,71.5,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,25,147.3,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,25,205.9,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,25,292.6,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,26,71.1,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,26,106.6,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,26,119.0,2,red,AllPass
+AllPass_vs_TestBrainBots,26,141.1,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,26,185.0,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,26,285.6,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,27,137.1,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,27,170.7,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,27,196.4,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,27,218.4,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,27,254.4,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,27,278.5,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,28,38.0,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,28,155.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,28,183.0,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,28,228.2,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,28,247.7,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,28,288.3,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,29,49.3,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,29,69.5,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,29,150.9,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,29,192.4,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,29,263.6,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,30,11.8,1,red,AllPass
+AllPass_vs_TestBrainBots,30,80.5,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,30,117.2,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,30,162.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,30,176.0,3,red,AllPass
+AllPass_vs_TestBrainBots,31,12.8,1,blue,AllPass
+AllPass_vs_TestBrainBots,31,65.5,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,31,170.3,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,31,234.2,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,31,279.6,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,32,20.5,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,32,78.5,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,32,111.4,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,32,158.7,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,32,228.4,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,32,272.2,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,33,30.2,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,33,82.0,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,33,112.9,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,33,232.2,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,33,280.4,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,34,36.5,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,34,62.9,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,34,132.1,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,34,230.0,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,34,299.7,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,35,28.0,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,35,48.1,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,35,85.7,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,35,108.0,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,35,145.7,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,35,175.8,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,35,196.9,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,35,239.2,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,35,294.5,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,36,34.8,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,36,62.5,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,36,134.4,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,36,166.0,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,36,186.8,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,36,275.9,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,37,29.7,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,37,92.2,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,37,163.7,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,37,213.1,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,37,237.4,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,37,270.8,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,38,34.5,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,38,73.9,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,38,104.4,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,38,147.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,38,203.8,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,38,236.2,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,38,256.5,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,39,33.1,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,39,78.6,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,39,111.4,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,39,153.1,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,39,173.1,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,39,194.8,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,39,216.9,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,39,281.9,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,40,27.9,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,40,105.7,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,40,196.7,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,40,265.1,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,41,27.9,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,41,48.6,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,41,90.6,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,41,223.3,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,41,270.7,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,42,30.1,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,42,61.6,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,42,90.8,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,42,141.9,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,42,163.4,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,42,190.3,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,42,236.9,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,43,44.6,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,43,75.3,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,43,144.2,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,43,180.6,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,43,281.1,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,44,38.6,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,44,160.1,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,44,194.5,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,44,222.7,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,44,260.8,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,45,33.1,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,45,107.8,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,45,218.6,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,45,256.9,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,45,292.7,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,46,55.7,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,46,120.4,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,46,167.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,46,205.0,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,46,264.6,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,47,60.7,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,47,121.4,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,47,182.8,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,47,221.8,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,47,261.7,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,48,19.8,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,48,52.0,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,48,86.9,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,48,144.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,48,156.9,3,red,AllPass
+AllPass_vs_TestBrainBots,48,180.9,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,48,224.4,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,48,246.9,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,48,275.0,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,49,74.3,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,49,122.1,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,49,159.7,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,49,188.9,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,49,250.2,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,49,293.5,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,50,20.3,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,50,41.7,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,50,104.1,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,50,142.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,50,190.1,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,50,279.3,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,51,22.8,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,51,137.8,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,51,181.7,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,51,216.6,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,51,257.9,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,51,286.6,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,52,77.6,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,52,95.9,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,52,152.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,52,182.0,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,52,286.8,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,53,40.9,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,53,106.9,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,53,145.3,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,53,263.7,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,54,165.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,54,187.7,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,54,240.7,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,54,274.2,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,55,42.6,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,55,125.5,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,55,158.8,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,55,229.3,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,55,266.2,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,55,287.1,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,56,27.4,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,56,84.6,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,56,185.4,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,56,221.2,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,56,263.4,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,57,43.5,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,57,81.2,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,57,145.0,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,57,176.3,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,57,211.7,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,57,248.5,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,58,125.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,58,172.9,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,58,242.8,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,58,289.6,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,59,113.2,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,59,145.8,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,59,207.9,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,59,243.1,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,60,68.7,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,60,121.4,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,60,162.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,60,189.5,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,60,230.0,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,60,278.5,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,60,290.4,5,red,AllPass
+AllPass_vs_TestBrainBots,61,33.8,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,61,57.8,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,61,150.5,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,61,211.3,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,62,38.9,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,62,79.7,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,62,178.6,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,62,218.6,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,62,273.0,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,62,285.8,5,red,AllPass
+AllPass_vs_TestBrainBots,63,19.7,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,63,40.2,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,63,75.7,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,63,120.0,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,63,162.2,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,63,191.3,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,64,44.0,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,64,124.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,64,248.8,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,65,38.7,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,65,92.6,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,65,116.5,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,65,128.5,3,blue,AllPass
+AllPass_vs_TestBrainBots,65,170.9,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,65,245.5,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,65,278.3,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,66,125.7,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,66,186.7,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,66,262.6,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,67,42.5,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,67,85.9,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,67,128.1,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,67,172.9,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,67,199.8,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,68,37.4,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,68,139.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,68,166.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,68,210.0,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,68,230.1,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,68,268.2,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,69,50.2,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,69,83.8,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,69,102.6,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,69,124.0,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,69,166.4,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,69,273.0,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,70,54.1,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,70,82.4,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,70,94.3,2,red,AllPass
+AllPass_vs_TestBrainBots,70,114.1,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,70,163.5,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,70,276.7,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,70,288.0,5,red,AllPass
+AllPass_vs_TestBrainBots,71,43.3,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,71,86.8,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,71,106.2,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,71,135.1,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,71,161.0,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,71,247.3,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,71,268.7,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,72,36.8,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,72,90.1,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,72,115.2,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,72,160.9,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,72,188.9,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,72,266.3,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,72,292.7,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,73,82.9,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,73,161.3,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,73,191.8,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,73,225.8,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,73,269.0,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,73,288.6,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,74,71.3,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,74,92.6,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,74,165.0,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,74,209.8,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,74,247.3,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,74,279.6,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,74,298.7,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,75,45.0,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,75,90.7,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,75,120.9,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,75,159.2,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,75,228.1,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,75,276.1,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,76,41.7,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,76,110.0,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,76,147.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,76,181.9,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,76,204.1,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,76,259.6,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,77,101.7,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,77,123.0,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,77,171.7,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,77,204.0,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,77,274.6,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,77,286.8,5,blue,AllPass
+AllPass_vs_TestBrainBots,78,58.0,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,78,77.2,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,78,229.5,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,79,36.0,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,79,73.3,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,79,148.1,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,79,190.1,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,79,209.7,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,79,238.0,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,80,51.1,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,80,94.9,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,80,134.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,80,168.7,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,80,224.9,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,80,267.5,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,81,45.2,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,81,166.9,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,81,205.7,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,81,227.5,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,82,21.2,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,82,58.6,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,82,99.0,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,82,120.5,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,82,140.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,82,162.3,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,82,210.2,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,82,247.1,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,83,98.3,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,83,167.0,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,83,211.2,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,83,281.5,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,84,142.3,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,84,183.3,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,84,290.0,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,85,37.8,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,85,58.5,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,85,82.4,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,85,107.0,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,85,152.8,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,85,203.6,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,85,252.9,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,85,296.3,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,86,105.3,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,86,127.4,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,86,172.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,86,289.8,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,87,99.8,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,87,137.4,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,87,201.6,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,87,230.3,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,87,251.1,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,87,278.0,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,88,63.9,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,88,118.6,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,88,158.5,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,88,242.0,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,88,263.0,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,88,288.8,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,89,19.1,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,89,50.5,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,89,135.4,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,89,199.6,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,89,263.7,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,90,24.9,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,90,106.9,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,90,159.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,90,202.2,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,90,248.9,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,91,36.8,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,91,83.9,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,91,103.6,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,91,123.5,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,91,144.3,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,91,249.0,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,91,269.5,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,92,20.1,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,92,61.8,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,92,80.6,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,92,99.7,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,92,118.0,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,92,139.1,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,92,180.4,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,92,234.8,4,red,AllPass
+AllPass_vs_TestBrainBots,92,278.4,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,93,17.9,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,93,57.8,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,93,180.0,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,93,239.1,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,94,93.0,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,94,185.9,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,94,224.6,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,94,283.1,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,95,34.5,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,95,70.5,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,95,118.4,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,95,149.4,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,95,174.0,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,95,216.3,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,95,248.9,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,96,51.2,1,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,96,71.7,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,96,107.6,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,96,132.1,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,96,171.3,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,96,196.8,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,96,234.5,4,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,96,271.0,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,97,38.1,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,97,63.6,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,97,131.5,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,97,143.8,3,blue,AllPass
+AllPass_vs_TestBrainBots,97,171.1,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,97,190.0,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,97,227.3,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,97,247.9,5,red,TestBrain Bots
+AllPass_vs_TestBrainBots,98,67.8,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,98,90.0,2,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,98,124.8,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,98,178.2,3,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,98,243.8,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,98,298.3,5,blue,TestBrain Bots
+AllPass_vs_TestBrainBots,99,36.6,1,red,TestBrain Bots
+AllPass_vs_TestBrainBots,99,81.1,2,red,TestBrain Bots
+AllPass_vs_TestBrainBots,99,135.3,3,red,TestBrain Bots
+AllPass_vs_TestBrainBots,99,202.3,4,red,TestBrain Bots
+AllPass_vs_TestBrainBots,99,290.3,5,red,TestBrain Bots
+HalfPass_vs_AllPass,0,200.5,4,red,HalfPass
+HalfPass_vs_AllPass,1,28.7,1,blue,HalfPass
+HalfPass_vs_AllPass,1,164.8,3,blue,HalfPass
+HalfPass_vs_AllPass,2,83.5,2,red,HalfPass
+HalfPass_vs_AllPass,2,188.1,4,blue,AllPass
+HalfPass_vs_AllPass,4,96.7,2,red,HalfPass
+HalfPass_vs_AllPass,6,127.7,3,blue,AllPass
+HalfPass_vs_AllPass,6,244.7,5,red,HalfPass
+HalfPass_vs_AllPass,8,79.1,2,red,HalfPass
+HalfPass_vs_AllPass,8,198.5,4,red,HalfPass
+HalfPass_vs_AllPass,8,258.9,5,red,HalfPass
+HalfPass_vs_AllPass,8,274.8,5,red,HalfPass
+HalfPass_vs_AllPass,11,32.4,1,blue,HalfPass
+HalfPass_vs_AllPass,13,185.8,4,blue,HalfPass
+HalfPass_vs_AllPass,13,279.1,5,red,AllPass
+HalfPass_vs_AllPass,14,202.6,4,red,HalfPass
+HalfPass_vs_AllPass,14,293.9,5,red,HalfPass
+HalfPass_vs_AllPass,16,35.8,1,red,HalfPass
+HalfPass_vs_AllPass,17,85.2,2,red,AllPass
+HalfPass_vs_AllPass,17,105.1,2,blue,HalfPass
+HalfPass_vs_AllPass,17,189.0,4,red,AllPass
+HalfPass_vs_AllPass,18,91.2,2,red,HalfPass
+HalfPass_vs_AllPass,19,51.1,1,red,AllPass
+HalfPass_vs_AllPass,21,52.4,1,blue,HalfPass
+HalfPass_vs_AllPass,21,69.3,2,blue,HalfPass
+HalfPass_vs_AllPass,21,276.5,5,red,AllPass
+HalfPass_vs_AllPass,22,33.1,1,blue,AllPass
+HalfPass_vs_AllPass,22,195.7,4,red,HalfPass
+HalfPass_vs_AllPass,23,81.1,2,blue,HalfPass
+HalfPass_vs_AllPass,23,117.9,2,blue,HalfPass
+HalfPass_vs_AllPass,23,193.4,4,blue,HalfPass
+HalfPass_vs_AllPass,24,142.0,3,red,HalfPass
+HalfPass_vs_AllPass,25,27.8,1,blue,HalfPass
+HalfPass_vs_AllPass,25,255.5,5,blue,HalfPass
+HalfPass_vs_AllPass,26,149.4,3,red,HalfPass
+HalfPass_vs_AllPass,27,184.4,4,blue,HalfPass
+HalfPass_vs_AllPass,29,156.6,3,red,AllPass
+HalfPass_vs_AllPass,29,174.2,3,blue,HalfPass
+HalfPass_vs_AllPass,30,20.6,1,blue,AllPass
+HalfPass_vs_AllPass,31,266.3,5,blue,HalfPass
+HalfPass_vs_AllPass,33,39.3,1,blue,HalfPass
+HalfPass_vs_AllPass,34,165.8,3,blue,AllPass
+HalfPass_vs_AllPass,38,84.4,2,red,HalfPass
+HalfPass_vs_AllPass,39,124.6,3,blue,HalfPass
+HalfPass_vs_AllPass,39,154.9,3,blue,HalfPass
+HalfPass_vs_AllPass,40,159.6,3,blue,AllPass
+HalfPass_vs_AllPass,41,254.4,5,red,AllPass
+HalfPass_vs_AllPass,42,164.5,3,red,HalfPass
+HalfPass_vs_AllPass,43,27.5,1,blue,HalfPass
+HalfPass_vs_AllPass,43,179.6,3,blue,HalfPass
+HalfPass_vs_AllPass,43,271.7,5,blue,HalfPass
+HalfPass_vs_AllPass,45,128.9,3,blue,HalfPass
+HalfPass_vs_AllPass,45,170.1,3,red,AllPass
+HalfPass_vs_AllPass,45,202.2,4,blue,HalfPass
+HalfPass_vs_AllPass,45,213.6,4,red,AllPass
+HalfPass_vs_AllPass,46,35.9,1,red,HalfPass
+HalfPass_vs_AllPass,47,105.2,2,blue,HalfPass
+HalfPass_vs_AllPass,48,72.1,2,blue,AllPass
+HalfPass_vs_AllPass,48,112.1,2,red,HalfPass
+HalfPass_vs_AllPass,49,30.5,1,blue,HalfPass
+HalfPass_vs_AllPass,50,154.1,3,blue,AllPass
+HalfPass_vs_AllPass,51,178.3,3,blue,HalfPass
+HalfPass_vs_AllPass,51,274.8,5,blue,HalfPass
+HalfPass_vs_AllPass,52,160.2,3,blue,AllPass
+HalfPass_vs_AllPass,52,185.9,4,red,HalfPass
+HalfPass_vs_AllPass,54,109.4,2,red,HalfPass
+HalfPass_vs_AllPass,54,228.3,4,red,HalfPass
+HalfPass_vs_AllPass,55,14.0,1,blue,HalfPass
+HalfPass_vs_AllPass,56,33.4,1,red,HalfPass
+HalfPass_vs_AllPass,56,282.7,5,red,HalfPass
+HalfPass_vs_AllPass,58,32.6,1,red,HalfPass
+HalfPass_vs_AllPass,59,268.3,5,blue,HalfPass
+HalfPass_vs_AllPass,60,24.6,1,red,HalfPass
+HalfPass_vs_AllPass,60,140.3,3,red,HalfPass
+HalfPass_vs_AllPass,61,267.6,5,blue,HalfPass
+HalfPass_vs_AllPass,61,299.9,5,blue,HalfPass
+HalfPass_vs_AllPass,63,220.0,4,blue,HalfPass
+HalfPass_vs_AllPass,64,166.3,3,red,HalfPass
+HalfPass_vs_AllPass,64,184.0,4,red,HalfPass
+HalfPass_vs_AllPass,65,101.1,2,blue,HalfPass
+HalfPass_vs_AllPass,65,192.0,4,blue,HalfPass
+HalfPass_vs_AllPass,67,61.4,2,blue,HalfPass
+HalfPass_vs_AllPass,68,19.3,1,red,HalfPass
+HalfPass_vs_AllPass,68,215.7,4,red,HalfPass
+HalfPass_vs_AllPass,70,40.3,1,red,HalfPass
+HalfPass_vs_AllPass,70,92.5,2,red,HalfPass
+HalfPass_vs_AllPass,71,286.5,5,red,AllPass
+HalfPass_vs_AllPass,72,22.3,1,blue,AllPass
+HalfPass_vs_AllPass,72,123.9,3,blue,AllPass
+HalfPass_vs_AllPass,72,148.3,3,red,HalfPass
+HalfPass_vs_AllPass,73,69.9,2,blue,HalfPass
+HalfPass_vs_AllPass,73,97.4,2,red,AllPass
+HalfPass_vs_AllPass,73,207.1,4,blue,HalfPass
+HalfPass_vs_AllPass,74,218.8,4,red,HalfPass
+HalfPass_vs_AllPass,75,121.5,3,red,AllPass
+HalfPass_vs_AllPass,75,269.4,5,blue,HalfPass
+HalfPass_vs_AllPass,76,92.0,2,red,HalfPass
+HalfPass_vs_AllPass,77,204.6,4,red,AllPass
+HalfPass_vs_AllPass,77,283.9,5,blue,HalfPass
+HalfPass_vs_AllPass,78,96.3,2,blue,AllPass
+HalfPass_vs_AllPass,78,201.4,4,red,HalfPass
+HalfPass_vs_AllPass,78,244.1,5,red,HalfPass
+HalfPass_vs_AllPass,79,169.4,3,blue,HalfPass
+HalfPass_vs_AllPass,80,17.9,1,red,HalfPass
+HalfPass_vs_AllPass,81,33.0,1,blue,HalfPass
+HalfPass_vs_AllPass,81,214.8,4,blue,HalfPass
+HalfPass_vs_AllPass,83,38.5,1,red,AllPass
+HalfPass_vs_AllPass,83,76.6,2,blue,HalfPass
+HalfPass_vs_AllPass,83,248.5,5,blue,HalfPass
+HalfPass_vs_AllPass,84,71.4,2,red,HalfPass
+HalfPass_vs_AllPass,85,40.3,1,red,AllPass
+HalfPass_vs_AllPass,85,235.0,4,blue,HalfPass
+HalfPass_vs_AllPass,85,266.4,5,red,AllPass
+HalfPass_vs_AllPass,85,278.8,5,red,AllPass
+HalfPass_vs_AllPass,86,31.7,1,red,HalfPass
+HalfPass_vs_AllPass,86,299.2,5,blue,AllPass
+HalfPass_vs_AllPass,87,41.6,1,blue,HalfPass
+HalfPass_vs_AllPass,88,146.8,3,red,HalfPass
+HalfPass_vs_AllPass,88,192.3,4,red,HalfPass
+HalfPass_vs_AllPass,89,124.2,3,blue,HalfPass
+HalfPass_vs_AllPass,89,295.8,5,blue,HalfPass
+HalfPass_vs_AllPass,90,97.4,2,red,HalfPass
+HalfPass_vs_AllPass,90,128.5,3,red,HalfPass
+HalfPass_vs_AllPass,90,270.8,5,red,HalfPass
+HalfPass_vs_AllPass,91,171.8,3,blue,HalfPass
+HalfPass_vs_AllPass,91,233.0,4,blue,HalfPass
+HalfPass_vs_AllPass,92,207.1,4,red,HalfPass
+HalfPass_vs_AllPass,93,63.2,2,blue,HalfPass
+HalfPass_vs_AllPass,93,94.2,2,red,AllPass
+HalfPass_vs_AllPass,93,168.2,3,red,AllPass
+HalfPass_vs_AllPass,93,228.4,4,blue,HalfPass
+HalfPass_vs_AllPass,94,144.3,3,blue,AllPass
+HalfPass_vs_AllPass,94,231.5,4,red,HalfPass
+HalfPass_vs_AllPass,95,85.2,2,blue,HalfPass
+HalfPass_vs_AllPass,96,103.1,2,blue,AllPass
+HalfPass_vs_AllPass,96,122.6,3,red,HalfPass
+HalfPass_vs_AllPass,96,170.9,3,red,HalfPass
+HalfPass_vs_AllPass,97,232.0,4,blue,HalfPass
+HalfPass_vs_AllPass,97,245.6,5,blue,HalfPass
+HalfPass_vs_AllPass,97,281.8,5,blue,HalfPass
+HalfPass_vs_AllPass,99,150.1,3,red,AllPass
+HalfPass_vs_TestBrainBots,0,79.7,2,red,HalfPass
+HalfPass_vs_TestBrainBots,1,21.2,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,1,279.3,5,blue,HalfPass
+HalfPass_vs_TestBrainBots,4,282.9,5,red,HalfPass
+HalfPass_vs_TestBrainBots,4,297.2,5,red,HalfPass
+HalfPass_vs_TestBrainBots,6,161.9,3,red,HalfPass
+HalfPass_vs_TestBrainBots,7,13.2,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,7,94.9,2,blue,HalfPass
+HalfPass_vs_TestBrainBots,7,146.9,3,blue,HalfPass
+HalfPass_vs_TestBrainBots,9,34.9,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,9,273.6,5,blue,HalfPass
+HalfPass_vs_TestBrainBots,10,20.8,1,red,HalfPass
+HalfPass_vs_TestBrainBots,10,76.0,2,red,HalfPass
+HalfPass_vs_TestBrainBots,10,164.1,3,red,HalfPass
+HalfPass_vs_TestBrainBots,10,202.1,4,red,HalfPass
+HalfPass_vs_TestBrainBots,11,186.8,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,12,172.4,3,red,HalfPass
+HalfPass_vs_TestBrainBots,12,204.3,4,red,HalfPass
+HalfPass_vs_TestBrainBots,13,48.3,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,14,46.4,1,red,HalfPass
+HalfPass_vs_TestBrainBots,15,38.2,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,16,108.8,2,red,HalfPass
+HalfPass_vs_TestBrainBots,17,103.8,2,blue,HalfPass
+HalfPass_vs_TestBrainBots,17,158.3,3,red,TestBrain Bots
+HalfPass_vs_TestBrainBots,17,293.2,5,red,TestBrain Bots
+HalfPass_vs_TestBrainBots,18,258.6,5,blue,TestBrain Bots
+HalfPass_vs_TestBrainBots,20,275.0,5,blue,TestBrain Bots
+HalfPass_vs_TestBrainBots,21,32.0,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,22,25.9,1,red,HalfPass
+HalfPass_vs_TestBrainBots,22,138.6,3,red,HalfPass
+HalfPass_vs_TestBrainBots,22,243.9,5,red,HalfPass
+HalfPass_vs_TestBrainBots,23,181.8,4,red,TestBrain Bots
+HalfPass_vs_TestBrainBots,23,194.1,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,23,213.2,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,24,265.5,5,red,HalfPass
+HalfPass_vs_TestBrainBots,26,29.5,1,red,HalfPass
+HalfPass_vs_TestBrainBots,26,44.1,1,red,HalfPass
+HalfPass_vs_TestBrainBots,26,261.6,5,red,HalfPass
+HalfPass_vs_TestBrainBots,29,225.3,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,31,208.8,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,31,283.1,5,blue,HalfPass
+HalfPass_vs_TestBrainBots,32,13.2,1,red,HalfPass
+HalfPass_vs_TestBrainBots,33,263.4,5,blue,HalfPass
+HalfPass_vs_TestBrainBots,34,33.9,1,red,HalfPass
+HalfPass_vs_TestBrainBots,36,16.8,1,red,HalfPass
+HalfPass_vs_TestBrainBots,38,192.2,4,red,HalfPass
+HalfPass_vs_TestBrainBots,39,23.3,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,41,126.2,3,blue,HalfPass
+HalfPass_vs_TestBrainBots,42,169.7,3,red,HalfPass
+HalfPass_vs_TestBrainBots,42,236.3,4,red,HalfPass
+HalfPass_vs_TestBrainBots,44,36.1,1,red,HalfPass
+HalfPass_vs_TestBrainBots,44,178.5,3,red,HalfPass
+HalfPass_vs_TestBrainBots,45,63.0,2,blue,HalfPass
+HalfPass_vs_TestBrainBots,46,21.3,1,red,HalfPass
+HalfPass_vs_TestBrainBots,48,23.1,1,red,HalfPass
+HalfPass_vs_TestBrainBots,48,76.8,2,red,HalfPass
+HalfPass_vs_TestBrainBots,48,94.1,2,red,HalfPass
+HalfPass_vs_TestBrainBots,48,242.5,5,red,HalfPass
+HalfPass_vs_TestBrainBots,49,26.4,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,49,121.6,3,blue,HalfPass
+HalfPass_vs_TestBrainBots,50,190.3,4,blue,TestBrain Bots
+HalfPass_vs_TestBrainBots,51,174.7,3,blue,HalfPass
+HalfPass_vs_TestBrainBots,52,174.7,3,red,HalfPass
+HalfPass_vs_TestBrainBots,52,224.6,4,red,HalfPass
+HalfPass_vs_TestBrainBots,52,266.1,5,red,HalfPass
+HalfPass_vs_TestBrainBots,53,102.3,2,blue,HalfPass
+HalfPass_vs_TestBrainBots,53,145.8,3,blue,HalfPass
+HalfPass_vs_TestBrainBots,53,162.0,3,blue,HalfPass
+HalfPass_vs_TestBrainBots,53,262.7,5,blue,HalfPass
+HalfPass_vs_TestBrainBots,54,50.0,1,red,HalfPass
+HalfPass_vs_TestBrainBots,55,70.9,2,blue,HalfPass
+HalfPass_vs_TestBrainBots,57,286.6,5,blue,HalfPass
+HalfPass_vs_TestBrainBots,59,57.1,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,59,208.4,4,red,TestBrain Bots
+HalfPass_vs_TestBrainBots,60,53.8,1,red,HalfPass
+HalfPass_vs_TestBrainBots,60,75.6,2,red,HalfPass
+HalfPass_vs_TestBrainBots,60,128.6,3,red,HalfPass
+HalfPass_vs_TestBrainBots,60,219.2,4,red,HalfPass
+HalfPass_vs_TestBrainBots,60,294.9,5,red,HalfPass
+HalfPass_vs_TestBrainBots,61,181.1,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,62,15.8,1,red,HalfPass
+HalfPass_vs_TestBrainBots,62,211.4,4,red,HalfPass
+HalfPass_vs_TestBrainBots,63,263.1,5,red,TestBrain Bots
+HalfPass_vs_TestBrainBots,64,295.0,5,red,HalfPass
+HalfPass_vs_TestBrainBots,65,47.4,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,65,91.4,2,blue,HalfPass
+HalfPass_vs_TestBrainBots,65,183.2,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,65,213.1,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,66,35.3,1,red,HalfPass
+HalfPass_vs_TestBrainBots,66,124.5,3,red,HalfPass
+HalfPass_vs_TestBrainBots,66,271.4,5,red,HalfPass
+HalfPass_vs_TestBrainBots,66,291.0,5,red,HalfPass
+HalfPass_vs_TestBrainBots,67,210.2,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,67,234.4,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,68,146.9,3,red,HalfPass
+HalfPass_vs_TestBrainBots,68,167.2,3,red,HalfPass
+HalfPass_vs_TestBrainBots,69,64.3,2,blue,HalfPass
+HalfPass_vs_TestBrainBots,69,115.5,2,blue,HalfPass
+HalfPass_vs_TestBrainBots,72,88.2,2,red,HalfPass
+HalfPass_vs_TestBrainBots,73,211.3,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,74,35.7,1,red,HalfPass
+HalfPass_vs_TestBrainBots,78,14.5,1,red,HalfPass
+HalfPass_vs_TestBrainBots,78,238.4,4,red,HalfPass
+HalfPass_vs_TestBrainBots,79,215.5,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,79,260.3,5,blue,HalfPass
+HalfPass_vs_TestBrainBots,80,272.7,5,blue,TestBrain Bots
+HalfPass_vs_TestBrainBots,81,13.7,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,81,135.4,3,blue,HalfPass
+HalfPass_vs_TestBrainBots,82,13.6,1,red,HalfPass
+HalfPass_vs_TestBrainBots,82,253.6,5,red,HalfPass
+HalfPass_vs_TestBrainBots,86,24.1,1,red,HalfPass
+HalfPass_vs_TestBrainBots,87,19.6,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,88,118.1,2,red,HalfPass
+HalfPass_vs_TestBrainBots,88,131.7,3,red,HalfPass
+HalfPass_vs_TestBrainBots,88,143.8,3,red,HalfPass
+HalfPass_vs_TestBrainBots,88,195.4,4,red,HalfPass
+HalfPass_vs_TestBrainBots,88,243.4,5,blue,TestBrain Bots
+HalfPass_vs_TestBrainBots,90,295.6,5,red,HalfPass
+HalfPass_vs_TestBrainBots,91,56.0,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,91,161.8,3,blue,HalfPass
+HalfPass_vs_TestBrainBots,92,213.8,4,red,HalfPass
+HalfPass_vs_TestBrainBots,93,286.3,5,blue,HalfPass
+HalfPass_vs_TestBrainBots,94,205.2,4,red,HalfPass
+HalfPass_vs_TestBrainBots,95,48.1,1,blue,HalfPass
+HalfPass_vs_TestBrainBots,95,164.1,3,blue,HalfPass
+HalfPass_vs_TestBrainBots,95,224.9,4,blue,HalfPass
+HalfPass_vs_TestBrainBots,97,160.2,3,blue,HalfPass
+HalfPass_vs_TestBrainBots,98,71.8,2,blue,TestBrain Bots
+HalfPass_vs_TestBrainBots,98,164.9,3,red,HalfPass
+HalfPass_vs_TestBrainBots,99,195.3,4,blue,HalfPass
+NoPass_vs_AllPass,0,23.8,1,red,NoPass
+NoPass_vs_AllPass,0,134.5,3,red,NoPass
+NoPass_vs_AllPass,1,61.9,2,blue,NoPass
+NoPass_vs_AllPass,1,99.2,2,blue,NoPass
+NoPass_vs_AllPass,1,120.3,3,blue,NoPass
+NoPass_vs_AllPass,1,132.4,3,blue,NoPass
+NoPass_vs_AllPass,1,251.5,5,blue,NoPass
+NoPass_vs_AllPass,1,284.9,5,blue,NoPass
+NoPass_vs_AllPass,2,90.3,2,red,NoPass
+NoPass_vs_AllPass,2,119.4,2,red,NoPass
+NoPass_vs_AllPass,3,45.3,1,blue,NoPass
+NoPass_vs_AllPass,3,63.6,2,blue,NoPass
+NoPass_vs_AllPass,3,266.2,5,blue,NoPass
+NoPass_vs_AllPass,5,37.5,1,red,AllPass
+NoPass_vs_AllPass,5,242.5,5,blue,NoPass
+NoPass_vs_AllPass,6,14.3,1,blue,AllPass
+NoPass_vs_AllPass,6,249.3,5,red,NoPass
+NoPass_vs_AllPass,6,265.3,5,red,NoPass
+NoPass_vs_AllPass,7,160.2,3,blue,NoPass
+NoPass_vs_AllPass,7,226.4,4,blue,NoPass
+NoPass_vs_AllPass,7,256.5,5,blue,NoPass
+NoPass_vs_AllPass,8,32.6,1,red,NoPass
+NoPass_vs_AllPass,9,44.8,1,blue,NoPass
+NoPass_vs_AllPass,9,188.2,4,blue,NoPass
+NoPass_vs_AllPass,9,226.6,4,blue,NoPass
+NoPass_vs_AllPass,9,244.6,5,blue,NoPass
+NoPass_vs_AllPass,10,16.2,1,red,NoPass
+NoPass_vs_AllPass,10,51.2,1,red,NoPass
+NoPass_vs_AllPass,11,113.0,2,blue,NoPass
+NoPass_vs_AllPass,11,159.3,3,blue,NoPass
+NoPass_vs_AllPass,11,238.1,4,blue,NoPass
+NoPass_vs_AllPass,12,64.9,2,red,NoPass
+NoPass_vs_AllPass,13,226.1,4,blue,NoPass
+NoPass_vs_AllPass,13,298.6,5,blue,NoPass
+NoPass_vs_AllPass,14,152.3,3,red,NoPass
+NoPass_vs_AllPass,14,207.0,4,red,NoPass
+NoPass_vs_AllPass,15,41.9,1,blue,NoPass
+NoPass_vs_AllPass,15,101.2,2,blue,NoPass
+NoPass_vs_AllPass,15,241.3,5,blue,NoPass
+NoPass_vs_AllPass,16,261.6,5,red,NoPass
+NoPass_vs_AllPass,17,97.8,2,blue,NoPass
+NoPass_vs_AllPass,17,168.2,3,blue,NoPass
+NoPass_vs_AllPass,17,252.1,5,blue,NoPass
+NoPass_vs_AllPass,17,287.4,5,blue,NoPass
+NoPass_vs_AllPass,18,43.9,1,red,NoPass
+NoPass_vs_AllPass,18,165.8,3,red,NoPass
+NoPass_vs_AllPass,18,188.1,4,red,NoPass
+NoPass_vs_AllPass,18,199.8,4,red,NoPass
+NoPass_vs_AllPass,18,257.3,5,red,NoPass
+NoPass_vs_AllPass,19,116.5,2,blue,NoPass
+NoPass_vs_AllPass,19,136.1,3,blue,NoPass
+NoPass_vs_AllPass,19,223.8,4,blue,NoPass
+NoPass_vs_AllPass,19,250.4,5,blue,NoPass
+NoPass_vs_AllPass,19,269.6,5,blue,NoPass
+NoPass_vs_AllPass,20,78.7,2,red,NoPass
+NoPass_vs_AllPass,20,286.8,5,red,NoPass
+NoPass_vs_AllPass,21,165.1,3,blue,NoPass
+NoPass_vs_AllPass,21,220.4,4,blue,NoPass
+NoPass_vs_AllPass,21,258.3,5,blue,NoPass
+NoPass_vs_AllPass,21,270.1,5,blue,NoPass
+NoPass_vs_AllPass,21,297.6,5,blue,NoPass
+NoPass_vs_AllPass,22,46.2,1,red,NoPass
+NoPass_vs_AllPass,22,115.5,2,red,NoPass
+NoPass_vs_AllPass,22,236.1,4,red,NoPass
+NoPass_vs_AllPass,22,257.4,5,red,NoPass
+NoPass_vs_AllPass,23,63.2,2,blue,NoPass
+NoPass_vs_AllPass,23,223.3,4,blue,NoPass
+NoPass_vs_AllPass,23,247.5,5,blue,NoPass
+NoPass_vs_AllPass,23,269.9,5,blue,NoPass
+NoPass_vs_AllPass,24,20.9,1,red,NoPass
+NoPass_vs_AllPass,24,46.4,1,red,NoPass
+NoPass_vs_AllPass,24,93.1,2,red,NoPass
+NoPass_vs_AllPass,24,119.2,2,red,NoPass
+NoPass_vs_AllPass,24,235.6,4,red,NoPass
+NoPass_vs_AllPass,24,256.7,5,red,NoPass
+NoPass_vs_AllPass,25,33.8,1,blue,NoPass
+NoPass_vs_AllPass,25,219.7,4,blue,NoPass
+NoPass_vs_AllPass,25,240.1,5,blue,NoPass
+NoPass_vs_AllPass,27,39.9,1,blue,NoPass
+NoPass_vs_AllPass,27,136.0,3,blue,NoPass
+NoPass_vs_AllPass,27,157.3,3,blue,NoPass
+NoPass_vs_AllPass,27,244.1,5,blue,NoPass
+NoPass_vs_AllPass,28,116.7,2,red,NoPass
+NoPass_vs_AllPass,28,171.4,3,red,NoPass
+NoPass_vs_AllPass,28,202.7,4,red,NoPass
+NoPass_vs_AllPass,29,12.4,1,blue,NoPass
+NoPass_vs_AllPass,29,35.9,1,blue,NoPass
+NoPass_vs_AllPass,29,74.6,2,blue,NoPass
+NoPass_vs_AllPass,29,137.6,3,blue,NoPass
+NoPass_vs_AllPass,29,196.6,4,blue,NoPass
+NoPass_vs_AllPass,29,240.2,5,blue,NoPass
+NoPass_vs_AllPass,29,274.4,5,blue,NoPass
+NoPass_vs_AllPass,30,145.4,3,red,NoPass
+NoPass_vs_AllPass,30,160.3,3,red,NoPass
+NoPass_vs_AllPass,30,190.6,4,red,NoPass
+NoPass_vs_AllPass,30,223.0,4,red,NoPass
+NoPass_vs_AllPass,30,255.7,5,red,NoPass
+NoPass_vs_AllPass,30,288.7,5,red,NoPass
+NoPass_vs_AllPass,31,38.6,1,blue,NoPass
+NoPass_vs_AllPass,32,90.9,2,red,NoPass
+NoPass_vs_AllPass,32,114.3,2,red,NoPass
+NoPass_vs_AllPass,32,163.7,3,red,NoPass
+NoPass_vs_AllPass,32,219.0,4,red,NoPass
+NoPass_vs_AllPass,32,284.0,5,red,NoPass
+NoPass_vs_AllPass,33,142.2,3,blue,NoPass
+NoPass_vs_AllPass,33,168.4,3,blue,NoPass
+NoPass_vs_AllPass,33,226.3,4,blue,NoPass
+NoPass_vs_AllPass,34,16.9,1,red,NoPass
+NoPass_vs_AllPass,35,49.0,1,blue,NoPass
+NoPass_vs_AllPass,35,225.7,4,blue,NoPass
+NoPass_vs_AllPass,36,71.5,2,red,NoPass
+NoPass_vs_AllPass,37,27.5,1,blue,NoPass
+NoPass_vs_AllPass,37,84.0,2,blue,NoPass
+NoPass_vs_AllPass,37,241.4,5,blue,NoPass
+NoPass_vs_AllPass,37,256.8,5,blue,NoPass
+NoPass_vs_AllPass,37,277.9,5,blue,NoPass
+NoPass_vs_AllPass,38,43.7,1,red,NoPass
+NoPass_vs_AllPass,38,277.6,5,red,NoPass
+NoPass_vs_AllPass,39,86.6,2,blue,NoPass
+NoPass_vs_AllPass,39,163.5,3,blue,NoPass
+NoPass_vs_AllPass,39,219.4,4,blue,NoPass
+NoPass_vs_AllPass,39,239.1,4,blue,NoPass
+NoPass_vs_AllPass,39,250.5,5,blue,NoPass
+NoPass_vs_AllPass,40,116.0,2,red,NoPass
+NoPass_vs_AllPass,40,151.0,3,red,NoPass
+NoPass_vs_AllPass,40,203.0,4,red,NoPass
+NoPass_vs_AllPass,41,31.7,1,blue,NoPass
+NoPass_vs_AllPass,41,52.9,1,blue,NoPass
+NoPass_vs_AllPass,41,72.6,2,blue,NoPass
+NoPass_vs_AllPass,41,119.8,2,blue,NoPass
+NoPass_vs_AllPass,41,145.8,3,blue,NoPass
+NoPass_vs_AllPass,41,235.1,4,blue,NoPass
+NoPass_vs_AllPass,41,293.0,5,blue,NoPass
+NoPass_vs_AllPass,43,70.0,2,blue,NoPass
+NoPass_vs_AllPass,43,82.4,2,blue,NoPass
+NoPass_vs_AllPass,43,194.2,4,blue,NoPass
+NoPass_vs_AllPass,43,213.0,4,blue,NoPass
+NoPass_vs_AllPass,43,225.9,4,blue,NoPass
+NoPass_vs_AllPass,44,74.0,2,red,NoPass
+NoPass_vs_AllPass,44,102.4,2,red,NoPass
+NoPass_vs_AllPass,44,188.5,4,red,NoPass
+NoPass_vs_AllPass,44,279.1,5,red,NoPass
+NoPass_vs_AllPass,45,60.0,2,blue,NoPass
+NoPass_vs_AllPass,45,79.0,2,blue,NoPass
+NoPass_vs_AllPass,45,107.9,2,blue,NoPass
+NoPass_vs_AllPass,46,113.3,2,red,NoPass
+NoPass_vs_AllPass,46,233.3,4,red,NoPass
+NoPass_vs_AllPass,47,22.0,1,blue,NoPass
+NoPass_vs_AllPass,47,36.5,1,blue,NoPass
+NoPass_vs_AllPass,47,114.2,2,blue,NoPass
+NoPass_vs_AllPass,47,148.2,3,blue,NoPass
+NoPass_vs_AllPass,47,171.5,3,blue,NoPass
+NoPass_vs_AllPass,48,37.6,1,red,NoPass
+NoPass_vs_AllPass,48,49.2,1,red,NoPass
+NoPass_vs_AllPass,48,64.4,2,red,NoPass
+NoPass_vs_AllPass,48,99.9,2,red,NoPass
+NoPass_vs_AllPass,48,120.0,3,red,NoPass
+NoPass_vs_AllPass,48,185.0,4,red,NoPass
+NoPass_vs_AllPass,48,241.3,5,red,NoPass
+NoPass_vs_AllPass,49,28.2,1,blue,NoPass
+NoPass_vs_AllPass,49,141.5,3,blue,NoPass
+NoPass_vs_AllPass,49,221.8,4,blue,NoPass
+NoPass_vs_AllPass,49,260.9,5,blue,NoPass
+NoPass_vs_AllPass,50,27.4,1,red,NoPass
+NoPass_vs_AllPass,50,72.8,2,red,NoPass
+NoPass_vs_AllPass,50,105.7,2,blue,AllPass
+NoPass_vs_AllPass,50,251.5,5,red,NoPass
+NoPass_vs_AllPass,50,284.8,5,red,NoPass
+NoPass_vs_AllPass,51,232.2,4,blue,NoPass
+NoPass_vs_AllPass,51,244.4,5,blue,NoPass
+NoPass_vs_AllPass,51,281.4,5,blue,NoPass
+NoPass_vs_AllPass,53,256.0,5,red,AllPass
+NoPass_vs_AllPass,54,31.2,1,red,NoPass
+NoPass_vs_AllPass,54,64.9,2,red,NoPass
+NoPass_vs_AllPass,54,89.7,2,red,NoPass
+NoPass_vs_AllPass,54,123.5,3,red,NoPass
+NoPass_vs_AllPass,54,145.4,3,red,NoPass
+NoPass_vs_AllPass,54,200.2,4,red,NoPass
+NoPass_vs_AllPass,54,230.8,4,red,NoPass
+NoPass_vs_AllPass,54,243.2,5,red,NoPass
+NoPass_vs_AllPass,56,112.0,2,red,NoPass
+NoPass_vs_AllPass,56,138.6,3,red,NoPass
+NoPass_vs_AllPass,56,170.0,3,red,NoPass
+NoPass_vs_AllPass,56,201.0,4,red,NoPass
+NoPass_vs_AllPass,57,59.7,1,blue,NoPass
+NoPass_vs_AllPass,57,106.9,2,blue,NoPass
+NoPass_vs_AllPass,57,131.0,3,blue,NoPass
+NoPass_vs_AllPass,57,192.6,4,blue,NoPass
+NoPass_vs_AllPass,57,238.9,4,blue,NoPass
+NoPass_vs_AllPass,58,14.6,1,red,NoPass
+NoPass_vs_AllPass,58,34.4,1,red,NoPass
+NoPass_vs_AllPass,58,54.4,1,red,NoPass
+NoPass_vs_AllPass,58,217.2,4,red,NoPass
+NoPass_vs_AllPass,58,240.9,5,red,NoPass
+NoPass_vs_AllPass,59,18.5,1,blue,NoPass
+NoPass_vs_AllPass,59,44.2,1,blue,NoPass
+NoPass_vs_AllPass,59,72.1,2,blue,NoPass
+NoPass_vs_AllPass,59,162.0,3,blue,NoPass
+NoPass_vs_AllPass,59,261.8,5,blue,NoPass
+NoPass_vs_AllPass,60,132.5,3,red,NoPass
+NoPass_vs_AllPass,60,174.8,3,red,NoPass
+NoPass_vs_AllPass,61,26.1,1,blue,NoPass
+NoPass_vs_AllPass,61,69.5,2,blue,NoPass
+NoPass_vs_AllPass,63,105.2,2,blue,NoPass
+NoPass_vs_AllPass,65,26.4,1,blue,NoPass
+NoPass_vs_AllPass,65,76.7,2,blue,NoPass
+NoPass_vs_AllPass,66,277.2,5,red,NoPass
+NoPass_vs_AllPass,67,14.6,1,blue,NoPass
+NoPass_vs_AllPass,67,68.1,2,blue,NoPass
+NoPass_vs_AllPass,68,37.8,1,red,NoPass
+NoPass_vs_AllPass,68,52.0,1,red,NoPass
+NoPass_vs_AllPass,68,90.6,2,red,NoPass
+NoPass_vs_AllPass,68,108.9,2,red,NoPass
+NoPass_vs_AllPass,69,20.1,1,blue,NoPass
+NoPass_vs_AllPass,69,61.2,2,blue,NoPass
+NoPass_vs_AllPass,69,99.9,2,blue,NoPass
+NoPass_vs_AllPass,69,240.3,5,blue,NoPass
+NoPass_vs_AllPass,69,264.9,5,blue,NoPass
+NoPass_vs_AllPass,70,39.6,1,red,NoPass
+NoPass_vs_AllPass,70,87.3,2,red,NoPass
+NoPass_vs_AllPass,70,153.4,3,red,NoPass
+NoPass_vs_AllPass,70,170.1,3,red,NoPass
+NoPass_vs_AllPass,70,244.5,5,red,NoPass
+NoPass_vs_AllPass,70,296.1,5,red,NoPass
+NoPass_vs_AllPass,71,19.8,1,blue,NoPass
+NoPass_vs_AllPass,71,92.6,2,blue,NoPass
+NoPass_vs_AllPass,71,113.9,2,blue,NoPass
+NoPass_vs_AllPass,71,249.5,5,blue,NoPass
+NoPass_vs_AllPass,72,58.9,1,red,NoPass
+NoPass_vs_AllPass,72,79.2,2,red,NoPass
+NoPass_vs_AllPass,72,267.4,5,blue,AllPass
+NoPass_vs_AllPass,73,218.0,4,blue,NoPass
+NoPass_vs_AllPass,74,35.6,1,red,NoPass
+NoPass_vs_AllPass,75,87.5,2,blue,NoPass
+NoPass_vs_AllPass,75,113.9,2,blue,NoPass
+NoPass_vs_AllPass,75,130.2,3,blue,NoPass
+NoPass_vs_AllPass,75,150.2,3,blue,NoPass
+NoPass_vs_AllPass,75,236.5,4,blue,NoPass
+NoPass_vs_AllPass,76,21.6,1,red,NoPass
+NoPass_vs_AllPass,76,66.8,2,red,NoPass
+NoPass_vs_AllPass,76,231.3,4,red,NoPass
+NoPass_vs_AllPass,76,255.0,5,red,NoPass
+NoPass_vs_AllPass,76,287.4,5,red,NoPass
+NoPass_vs_AllPass,77,79.1,2,red,AllPass
+NoPass_vs_AllPass,77,97.8,2,blue,NoPass
+NoPass_vs_AllPass,78,102.1,2,red,NoPass
+NoPass_vs_AllPass,78,124.0,3,red,NoPass
+NoPass_vs_AllPass,79,167.4,3,blue,NoPass
+NoPass_vs_AllPass,80,27.7,1,blue,AllPass
+NoPass_vs_AllPass,80,48.0,1,red,NoPass
+NoPass_vs_AllPass,80,82.5,2,red,NoPass
+NoPass_vs_AllPass,80,116.4,2,red,NoPass
+NoPass_vs_AllPass,80,156.4,3,red,NoPass
+NoPass_vs_AllPass,80,223.9,4,red,NoPass
+NoPass_vs_AllPass,80,264.8,5,red,NoPass
+NoPass_vs_AllPass,80,289.7,5,red,NoPass
+NoPass_vs_AllPass,81,12.2,1,blue,NoPass
+NoPass_vs_AllPass,81,56.5,1,blue,NoPass
+NoPass_vs_AllPass,81,90.5,2,red,AllPass
+NoPass_vs_AllPass,81,119.8,2,blue,NoPass
+NoPass_vs_AllPass,81,289.6,5,blue,NoPass
+NoPass_vs_AllPass,82,31.4,1,red,NoPass
+NoPass_vs_AllPass,82,196.0,4,red,NoPass
+NoPass_vs_AllPass,83,114.7,2,blue,NoPass
+NoPass_vs_AllPass,83,141.9,3,blue,NoPass
+NoPass_vs_AllPass,83,271.0,5,blue,NoPass
+NoPass_vs_AllPass,84,34.7,1,red,NoPass
+NoPass_vs_AllPass,84,80.1,2,blue,AllPass
+NoPass_vs_AllPass,84,98.0,2,red,NoPass
+NoPass_vs_AllPass,84,221.1,4,red,NoPass
+NoPass_vs_AllPass,85,17.8,1,blue,NoPass
+NoPass_vs_AllPass,85,217.0,4,red,AllPass
+NoPass_vs_AllPass,87,33.9,1,blue,NoPass
+NoPass_vs_AllPass,87,64.9,2,blue,NoPass
+NoPass_vs_AllPass,87,188.9,4,blue,NoPass
+NoPass_vs_AllPass,88,66.5,2,red,NoPass
+NoPass_vs_AllPass,88,100.6,2,red,NoPass
+NoPass_vs_AllPass,88,136.5,3,red,NoPass
+NoPass_vs_AllPass,88,183.4,4,red,NoPass
+NoPass_vs_AllPass,88,283.8,5,red,NoPass
+NoPass_vs_AllPass,90,99.5,2,red,NoPass
+NoPass_vs_AllPass,91,36.7,1,blue,NoPass
+NoPass_vs_AllPass,91,91.8,2,red,AllPass
+NoPass_vs_AllPass,91,133.2,3,blue,NoPass
+NoPass_vs_AllPass,91,218.0,4,blue,NoPass
+NoPass_vs_AllPass,91,263.8,5,red,AllPass
+NoPass_vs_AllPass,92,33.6,1,red,NoPass
+NoPass_vs_AllPass,92,101.7,2,red,NoPass
+NoPass_vs_AllPass,92,125.2,3,red,NoPass
+NoPass_vs_AllPass,92,243.0,5,red,NoPass
+NoPass_vs_AllPass,92,260.9,5,red,NoPass
+NoPass_vs_AllPass,92,292.1,5,red,NoPass
+NoPass_vs_AllPass,93,83.8,2,blue,NoPass
+NoPass_vs_AllPass,94,69.1,2,red,NoPass
+NoPass_vs_AllPass,94,221.8,4,red,NoPass
+NoPass_vs_AllPass,94,287.6,5,red,NoPass
+NoPass_vs_AllPass,95,25.8,1,blue,NoPass
+NoPass_vs_AllPass,95,48.6,1,blue,NoPass
+NoPass_vs_AllPass,96,270.0,5,red,NoPass
+NoPass_vs_AllPass,97,36.6,1,blue,NoPass
+NoPass_vs_AllPass,97,73.3,2,blue,NoPass
+NoPass_vs_AllPass,97,87.5,2,blue,NoPass
+NoPass_vs_AllPass,97,101.5,2,blue,NoPass
+NoPass_vs_AllPass,97,150.7,3,blue,NoPass
+NoPass_vs_AllPass,97,178.5,3,red,AllPass
+NoPass_vs_AllPass,97,226.7,4,blue,NoPass
+NoPass_vs_AllPass,97,246.3,5,red,AllPass
+NoPass_vs_AllPass,97,274.8,5,blue,NoPass
+NoPass_vs_AllPass,97,297.4,5,blue,NoPass
+NoPass_vs_AllPass,99,109.3,2,blue,NoPass
+NoPass_vs_HalfPass,0,103.0,2,red,NoPass
+NoPass_vs_HalfPass,1,18.5,1,blue,NoPass
+NoPass_vs_HalfPass,1,160.2,3,blue,NoPass
+NoPass_vs_HalfPass,1,217.5,4,blue,NoPass
+NoPass_vs_HalfPass,1,248.4,5,blue,NoPass
+NoPass_vs_HalfPass,2,15.8,1,red,NoPass
+NoPass_vs_HalfPass,2,93.6,2,red,NoPass
+NoPass_vs_HalfPass,2,133.0,3,red,NoPass
+NoPass_vs_HalfPass,2,153.1,3,blue,HalfPass
+NoPass_vs_HalfPass,2,287.3,5,red,NoPass
+NoPass_vs_HalfPass,3,210.0,4,blue,NoPass
+NoPass_vs_HalfPass,4,139.3,3,blue,HalfPass
+NoPass_vs_HalfPass,6,89.4,2,red,NoPass
+NoPass_vs_HalfPass,6,243.9,5,red,NoPass
+NoPass_vs_HalfPass,7,116.7,2,red,HalfPass
+NoPass_vs_HalfPass,8,61.6,2,red,NoPass
+NoPass_vs_HalfPass,8,219.1,4,red,NoPass
+NoPass_vs_HalfPass,8,237.0,4,red,NoPass
+NoPass_vs_HalfPass,8,249.2,5,red,NoPass
+NoPass_vs_HalfPass,9,131.5,3,blue,NoPass
+NoPass_vs_HalfPass,10,49.8,1,red,NoPass
+NoPass_vs_HalfPass,10,214.3,4,red,NoPass
+NoPass_vs_HalfPass,11,270.2,5,blue,NoPass
+NoPass_vs_HalfPass,12,298.4,5,red,NoPass
+NoPass_vs_HalfPass,13,65.7,2,blue,NoPass
+NoPass_vs_HalfPass,13,188.4,4,blue,NoPass
+NoPass_vs_HalfPass,13,244.0,5,blue,NoPass
+NoPass_vs_HalfPass,14,130.5,3,red,NoPass
+NoPass_vs_HalfPass,15,103.9,2,blue,NoPass
+NoPass_vs_HalfPass,16,36.4,1,red,NoPass
+NoPass_vs_HalfPass,16,58.2,1,red,NoPass
+NoPass_vs_HalfPass,16,176.9,3,red,NoPass
+NoPass_vs_HalfPass,16,194.2,4,red,NoPass
+NoPass_vs_HalfPass,18,142.3,3,red,NoPass
+NoPass_vs_HalfPass,18,163.7,3,red,NoPass
+NoPass_vs_HalfPass,18,292.6,5,red,NoPass
+NoPass_vs_HalfPass,19,17.0,1,red,HalfPass
+NoPass_vs_HalfPass,19,95.6,2,blue,NoPass
+NoPass_vs_HalfPass,20,32.0,1,red,NoPass
+NoPass_vs_HalfPass,20,44.2,1,red,NoPass
+NoPass_vs_HalfPass,20,232.2,4,red,NoPass
+NoPass_vs_HalfPass,21,174.3,3,blue,NoPass
+NoPass_vs_HalfPass,22,92.5,2,red,NoPass
+NoPass_vs_HalfPass,22,225.6,4,red,NoPass
+NoPass_vs_HalfPass,24,28.5,1,red,NoPass
+NoPass_vs_HalfPass,24,80.6,2,red,NoPass
+NoPass_vs_HalfPass,25,117.6,2,blue,NoPass
+NoPass_vs_HalfPass,27,112.8,2,blue,NoPass
+NoPass_vs_HalfPass,27,257.2,5,blue,NoPass
+NoPass_vs_HalfPass,28,158.9,3,red,NoPass
+NoPass_vs_HalfPass,29,127.4,3,blue,NoPass
+NoPass_vs_HalfPass,30,40.0,1,blue,HalfPass
+NoPass_vs_HalfPass,31,49.3,1,red,HalfPass
+NoPass_vs_HalfPass,31,102.2,2,blue,NoPass
+NoPass_vs_HalfPass,31,155.0,3,blue,NoPass
+NoPass_vs_HalfPass,32,151.2,3,red,NoPass
+NoPass_vs_HalfPass,32,252.5,5,red,NoPass
+NoPass_vs_HalfPass,33,159.5,3,blue,NoPass
+NoPass_vs_HalfPass,34,20.1,1,red,NoPass
+NoPass_vs_HalfPass,34,137.7,3,red,NoPass
+NoPass_vs_HalfPass,34,216.8,4,red,NoPass
+NoPass_vs_HalfPass,34,298.7,5,red,NoPass
+NoPass_vs_HalfPass,36,67.6,2,red,NoPass
+NoPass_vs_HalfPass,36,106.4,2,blue,HalfPass
+NoPass_vs_HalfPass,38,248.0,5,red,NoPass
+NoPass_vs_HalfPass,40,52.1,1,red,NoPass
+NoPass_vs_HalfPass,40,123.1,3,red,NoPass
+NoPass_vs_HalfPass,40,191.0,4,red,NoPass
+NoPass_vs_HalfPass,41,95.0,2,blue,NoPass
+NoPass_vs_HalfPass,41,165.0,3,blue,NoPass
+NoPass_vs_HalfPass,41,267.4,5,blue,NoPass
+NoPass_vs_HalfPass,42,215.0,4,red,NoPass
+NoPass_vs_HalfPass,42,298.3,5,red,NoPass
+NoPass_vs_HalfPass,43,30.6,1,blue,NoPass
+NoPass_vs_HalfPass,43,76.9,2,blue,NoPass
+NoPass_vs_HalfPass,43,267.0,5,blue,NoPass
+NoPass_vs_HalfPass,43,291.7,5,blue,NoPass
+NoPass_vs_HalfPass,44,172.2,3,red,NoPass
+NoPass_vs_HalfPass,46,105.3,2,red,NoPass
+NoPass_vs_HalfPass,48,12.8,1,red,NoPass
+NoPass_vs_HalfPass,48,106.2,2,red,NoPass
+NoPass_vs_HalfPass,48,220.8,4,red,NoPass
+NoPass_vs_HalfPass,48,243.0,5,red,NoPass
+NoPass_vs_HalfPass,49,17.0,1,red,HalfPass
+NoPass_vs_HalfPass,49,43.2,1,blue,NoPass
+NoPass_vs_HalfPass,49,174.0,3,blue,NoPass
+NoPass_vs_HalfPass,49,217.3,4,blue,NoPass
+NoPass_vs_HalfPass,51,90.4,2,blue,NoPass
+NoPass_vs_HalfPass,52,267.0,5,red,NoPass
+NoPass_vs_HalfPass,53,47.2,1,blue,NoPass
+NoPass_vs_HalfPass,53,152.3,3,blue,NoPass
+NoPass_vs_HalfPass,53,179.2,3,blue,NoPass
+NoPass_vs_HalfPass,54,96.6,2,red,NoPass
+NoPass_vs_HalfPass,54,127.4,3,red,NoPass
+NoPass_vs_HalfPass,54,158.3,3,red,NoPass
+NoPass_vs_HalfPass,55,50.5,1,blue,NoPass
+NoPass_vs_HalfPass,56,23.3,1,red,NoPass
+NoPass_vs_HalfPass,56,35.4,1,red,NoPass
+NoPass_vs_HalfPass,56,48.3,1,red,NoPass
+NoPass_vs_HalfPass,56,253.7,5,red,NoPass
+NoPass_vs_HalfPass,56,276.5,5,blue,HalfPass
+NoPass_vs_HalfPass,57,57.1,1,blue,NoPass
+NoPass_vs_HalfPass,57,107.9,2,blue,NoPass
+NoPass_vs_HalfPass,57,150.5,3,blue,NoPass
+NoPass_vs_HalfPass,57,241.9,5,blue,NoPass
+NoPass_vs_HalfPass,58,108.9,2,blue,HalfPass
+NoPass_vs_HalfPass,59,20.9,1,blue,NoPass
+NoPass_vs_HalfPass,59,50.1,1,blue,NoPass
+NoPass_vs_HalfPass,61,41.7,1,blue,NoPass
+NoPass_vs_HalfPass,61,238.8,4,blue,NoPass
+NoPass_vs_HalfPass,61,285.9,5,blue,NoPass
+NoPass_vs_HalfPass,62,85.7,2,red,NoPass
+NoPass_vs_HalfPass,62,97.5,2,red,NoPass
+NoPass_vs_HalfPass,62,292.5,5,red,NoPass
+NoPass_vs_HalfPass,63,184.9,4,blue,NoPass
+NoPass_vs_HalfPass,64,33.3,1,red,NoPass
+NoPass_vs_HalfPass,64,72.7,2,red,NoPass
+NoPass_vs_HalfPass,65,235.3,4,blue,NoPass
+NoPass_vs_HalfPass,66,97.8,2,red,NoPass
+NoPass_vs_HalfPass,67,282.2,5,blue,NoPass
+NoPass_vs_HalfPass,68,238.0,4,red,NoPass
+NoPass_vs_HalfPass,69,178.7,3,blue,NoPass
+NoPass_vs_HalfPass,69,208.8,4,blue,NoPass
+NoPass_vs_HalfPass,70,106.5,2,blue,HalfPass
+NoPass_vs_HalfPass,70,237.3,4,red,NoPass
+NoPass_vs_HalfPass,71,28.3,1,blue,NoPass
+NoPass_vs_HalfPass,71,46.7,1,red,HalfPass
+NoPass_vs_HalfPass,71,94.7,2,blue,NoPass
+NoPass_vs_HalfPass,71,279.5,5,blue,NoPass
+NoPass_vs_HalfPass,72,179.9,3,red,NoPass
+NoPass_vs_HalfPass,72,237.6,4,red,NoPass
+NoPass_vs_HalfPass,73,28.8,1,blue,NoPass
+NoPass_vs_HalfPass,73,97.2,2,blue,NoPass
+NoPass_vs_HalfPass,73,153.0,3,red,HalfPass
+NoPass_vs_HalfPass,73,194.8,4,blue,NoPass
+NoPass_vs_HalfPass,73,215.8,4,blue,NoPass
+NoPass_vs_HalfPass,74,30.6,1,red,NoPass
+NoPass_vs_HalfPass,76,45.4,1,red,NoPass
+NoPass_vs_HalfPass,76,250.5,5,red,NoPass
+NoPass_vs_HalfPass,78,78.2,2,red,NoPass
+NoPass_vs_HalfPass,80,211.5,4,red,NoPass
+NoPass_vs_HalfPass,80,272.7,5,red,NoPass
+NoPass_vs_HalfPass,81,39.8,1,blue,NoPass
+NoPass_vs_HalfPass,81,76.4,2,blue,NoPass
+NoPass_vs_HalfPass,81,105.5,2,blue,NoPass
+NoPass_vs_HalfPass,82,167.8,3,red,NoPass
+NoPass_vs_HalfPass,84,110.8,2,blue,HalfPass
+NoPass_vs_HalfPass,84,272.7,5,red,NoPass
+NoPass_vs_HalfPass,85,253.2,5,blue,NoPass
+NoPass_vs_HalfPass,85,265.2,5,blue,NoPass
+NoPass_vs_HalfPass,86,64.5,2,red,NoPass
+NoPass_vs_HalfPass,86,124.7,3,red,NoPass
+NoPass_vs_HalfPass,86,168.4,3,red,NoPass
+NoPass_vs_HalfPass,87,11.4,1,blue,NoPass
+NoPass_vs_HalfPass,87,286.3,5,blue,NoPass
+NoPass_vs_HalfPass,88,67.3,2,red,NoPass
+NoPass_vs_HalfPass,88,150.2,3,red,NoPass
+NoPass_vs_HalfPass,88,178.6,3,blue,HalfPass
+NoPass_vs_HalfPass,88,247.8,5,red,NoPass
+NoPass_vs_HalfPass,89,33.1,1,blue,NoPass
+NoPass_vs_HalfPass,89,249.2,5,blue,NoPass
+NoPass_vs_HalfPass,90,31.0,1,red,NoPass
+NoPass_vs_HalfPass,90,97.8,2,red,NoPass
+NoPass_vs_HalfPass,90,115.4,2,red,NoPass
+NoPass_vs_HalfPass,90,291.8,5,red,NoPass
+NoPass_vs_HalfPass,91,42.7,1,blue,NoPass
+NoPass_vs_HalfPass,91,63.4,2,blue,NoPass
+NoPass_vs_HalfPass,92,20.6,1,red,NoPass
+NoPass_vs_HalfPass,92,138.3,3,red,NoPass
+NoPass_vs_HalfPass,93,209.5,4,blue,NoPass
+NoPass_vs_HalfPass,94,70.1,2,red,NoPass
+NoPass_vs_HalfPass,94,129.5,3,red,NoPass
+NoPass_vs_HalfPass,94,163.6,3,red,NoPass
+NoPass_vs_HalfPass,94,250.2,5,blue,HalfPass
+NoPass_vs_HalfPass,94,263.0,5,red,NoPass
+NoPass_vs_HalfPass,95,254.9,5,blue,NoPass
+NoPass_vs_HalfPass,98,42.9,1,red,NoPass
+NoPass_vs_TestBrainBots,0,83.7,2,red,NoPass
+NoPass_vs_TestBrainBots,0,116.1,2,red,NoPass
+NoPass_vs_TestBrainBots,0,145.3,3,red,NoPass
+NoPass_vs_TestBrainBots,0,171.5,3,red,NoPass
+NoPass_vs_TestBrainBots,0,182.8,4,red,NoPass
+NoPass_vs_TestBrainBots,0,194.6,4,red,NoPass
+NoPass_vs_TestBrainBots,0,208.6,4,red,NoPass
+NoPass_vs_TestBrainBots,0,252.3,5,red,NoPass
+NoPass_vs_TestBrainBots,1,23.1,1,blue,NoPass
+NoPass_vs_TestBrainBots,1,189.3,4,blue,NoPass
+NoPass_vs_TestBrainBots,1,207.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,1,221.0,4,blue,NoPass
+NoPass_vs_TestBrainBots,1,250.3,5,blue,NoPass
+NoPass_vs_TestBrainBots,1,275.9,5,blue,NoPass
+NoPass_vs_TestBrainBots,2,45.8,1,red,NoPass
+NoPass_vs_TestBrainBots,2,132.2,3,red,NoPass
+NoPass_vs_TestBrainBots,2,149.9,3,red,NoPass
+NoPass_vs_TestBrainBots,2,177.2,3,red,NoPass
+NoPass_vs_TestBrainBots,2,190.0,4,red,NoPass
+NoPass_vs_TestBrainBots,2,228.7,4,red,NoPass
+NoPass_vs_TestBrainBots,2,248.4,5,red,NoPass
+NoPass_vs_TestBrainBots,2,288.1,5,red,NoPass
+NoPass_vs_TestBrainBots,3,97.6,2,blue,NoPass
+NoPass_vs_TestBrainBots,3,110.0,2,blue,NoPass
+NoPass_vs_TestBrainBots,3,122.5,3,blue,NoPass
+NoPass_vs_TestBrainBots,3,137.7,3,blue,NoPass
+NoPass_vs_TestBrainBots,3,152.4,3,blue,NoPass
+NoPass_vs_TestBrainBots,3,164.2,3,blue,NoPass
+NoPass_vs_TestBrainBots,4,27.6,1,red,NoPass
+NoPass_vs_TestBrainBots,4,39.9,1,red,NoPass
+NoPass_vs_TestBrainBots,4,64.0,2,red,NoPass
+NoPass_vs_TestBrainBots,4,225.5,4,red,NoPass
+NoPass_vs_TestBrainBots,5,12.0,1,blue,NoPass
+NoPass_vs_TestBrainBots,5,201.9,4,blue,NoPass
+NoPass_vs_TestBrainBots,5,228.3,4,blue,NoPass
+NoPass_vs_TestBrainBots,5,279.4,5,blue,NoPass
+NoPass_vs_TestBrainBots,5,291.4,5,blue,NoPass
+NoPass_vs_TestBrainBots,6,24.8,1,red,NoPass
+NoPass_vs_TestBrainBots,6,39.2,1,red,NoPass
+NoPass_vs_TestBrainBots,6,218.1,4,red,NoPass
+NoPass_vs_TestBrainBots,7,91.6,2,blue,NoPass
+NoPass_vs_TestBrainBots,7,134.6,3,blue,NoPass
+NoPass_vs_TestBrainBots,7,233.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,7,293.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,8,19.8,1,red,NoPass
+NoPass_vs_TestBrainBots,8,94.8,2,red,NoPass
+NoPass_vs_TestBrainBots,8,111.4,2,red,NoPass
+NoPass_vs_TestBrainBots,8,192.4,4,red,NoPass
+NoPass_vs_TestBrainBots,8,270.6,5,red,NoPass
+NoPass_vs_TestBrainBots,9,165.6,3,blue,NoPass
+NoPass_vs_TestBrainBots,9,200.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,9,292.9,5,blue,NoPass
+NoPass_vs_TestBrainBots,10,98.5,2,red,NoPass
+NoPass_vs_TestBrainBots,10,297.9,5,red,NoPass
+NoPass_vs_TestBrainBots,11,47.5,1,blue,NoPass
+NoPass_vs_TestBrainBots,11,59.9,1,blue,NoPass
+NoPass_vs_TestBrainBots,11,79.1,2,blue,NoPass
+NoPass_vs_TestBrainBots,11,94.9,2,blue,NoPass
+NoPass_vs_TestBrainBots,11,133.3,3,blue,NoPass
+NoPass_vs_TestBrainBots,11,147.9,3,blue,NoPass
+NoPass_vs_TestBrainBots,11,180.9,4,blue,NoPass
+NoPass_vs_TestBrainBots,11,201.7,4,blue,NoPass
+NoPass_vs_TestBrainBots,12,106.2,2,red,NoPass
+NoPass_vs_TestBrainBots,12,185.8,4,red,NoPass
+NoPass_vs_TestBrainBots,12,259.7,5,red,NoPass
+NoPass_vs_TestBrainBots,13,69.1,2,blue,NoPass
+NoPass_vs_TestBrainBots,13,102.0,2,blue,NoPass
+NoPass_vs_TestBrainBots,13,142.1,3,blue,NoPass
+NoPass_vs_TestBrainBots,13,167.5,3,blue,NoPass
+NoPass_vs_TestBrainBots,13,196.5,4,blue,NoPass
+NoPass_vs_TestBrainBots,13,221.6,4,blue,NoPass
+NoPass_vs_TestBrainBots,13,238.7,4,blue,NoPass
+NoPass_vs_TestBrainBots,13,272.7,5,blue,NoPass
+NoPass_vs_TestBrainBots,14,54.7,1,red,NoPass
+NoPass_vs_TestBrainBots,14,179.8,3,blue,TestBrain Bots
+NoPass_vs_TestBrainBots,14,284.9,5,red,NoPass
+NoPass_vs_TestBrainBots,15,26.0,1,blue,NoPass
+NoPass_vs_TestBrainBots,15,47.5,1,blue,NoPass
+NoPass_vs_TestBrainBots,15,86.0,2,blue,NoPass
+NoPass_vs_TestBrainBots,15,134.5,3,blue,NoPass
+NoPass_vs_TestBrainBots,15,171.4,3,blue,NoPass
+NoPass_vs_TestBrainBots,15,193.0,4,blue,NoPass
+NoPass_vs_TestBrainBots,15,253.9,5,blue,NoPass
+NoPass_vs_TestBrainBots,16,50.3,1,red,NoPass
+NoPass_vs_TestBrainBots,16,123.2,3,red,NoPass
+NoPass_vs_TestBrainBots,16,135.4,3,red,NoPass
+NoPass_vs_TestBrainBots,16,202.3,4,red,NoPass
+NoPass_vs_TestBrainBots,17,64.2,2,blue,NoPass
+NoPass_vs_TestBrainBots,17,172.8,3,blue,NoPass
+NoPass_vs_TestBrainBots,17,192.8,4,blue,NoPass
+NoPass_vs_TestBrainBots,17,222.6,4,blue,NoPass
+NoPass_vs_TestBrainBots,17,234.9,4,blue,NoPass
+NoPass_vs_TestBrainBots,17,263.0,5,blue,NoPass
+NoPass_vs_TestBrainBots,17,292.9,5,blue,NoPass
+NoPass_vs_TestBrainBots,18,45.9,1,red,NoPass
+NoPass_vs_TestBrainBots,18,138.0,3,red,NoPass
+NoPass_vs_TestBrainBots,18,205.7,4,red,NoPass
+NoPass_vs_TestBrainBots,18,256.0,5,red,NoPass
+NoPass_vs_TestBrainBots,19,17.9,1,blue,NoPass
+NoPass_vs_TestBrainBots,19,50.5,1,blue,NoPass
+NoPass_vs_TestBrainBots,19,70.3,2,blue,NoPass
+NoPass_vs_TestBrainBots,19,208.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,19,220.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,19,232.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,19,247.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,20,63.6,2,red,NoPass
+NoPass_vs_TestBrainBots,20,134.0,3,red,NoPass
+NoPass_vs_TestBrainBots,20,146.0,3,red,NoPass
+NoPass_vs_TestBrainBots,20,157.8,3,red,NoPass
+NoPass_vs_TestBrainBots,20,201.8,4,red,NoPass
+NoPass_vs_TestBrainBots,20,214.2,4,red,NoPass
+NoPass_vs_TestBrainBots,20,251.4,5,red,NoPass
+NoPass_vs_TestBrainBots,20,266.9,5,red,NoPass
+NoPass_vs_TestBrainBots,21,12.9,1,blue,NoPass
+NoPass_vs_TestBrainBots,21,34.8,1,blue,NoPass
+NoPass_vs_TestBrainBots,21,48.2,1,blue,NoPass
+NoPass_vs_TestBrainBots,21,68.7,2,blue,NoPass
+NoPass_vs_TestBrainBots,21,82.1,2,blue,NoPass
+NoPass_vs_TestBrainBots,21,114.6,2,blue,NoPass
+NoPass_vs_TestBrainBots,21,258.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,21,297.5,5,blue,NoPass
+NoPass_vs_TestBrainBots,22,52.5,1,red,NoPass
+NoPass_vs_TestBrainBots,22,99.7,2,red,NoPass
+NoPass_vs_TestBrainBots,22,132.4,3,red,NoPass
+NoPass_vs_TestBrainBots,22,280.8,5,red,NoPass
+NoPass_vs_TestBrainBots,23,12.8,1,blue,NoPass
+NoPass_vs_TestBrainBots,23,50.2,1,blue,NoPass
+NoPass_vs_TestBrainBots,23,124.3,3,blue,NoPass
+NoPass_vs_TestBrainBots,23,249.8,5,blue,NoPass
+NoPass_vs_TestBrainBots,24,13.8,1,red,NoPass
+NoPass_vs_TestBrainBots,24,30.4,1,red,NoPass
+NoPass_vs_TestBrainBots,24,45.7,1,red,NoPass
+NoPass_vs_TestBrainBots,24,159.2,3,red,NoPass
+NoPass_vs_TestBrainBots,24,188.1,4,red,NoPass
+NoPass_vs_TestBrainBots,24,209.5,4,red,NoPass
+NoPass_vs_TestBrainBots,24,245.8,5,red,NoPass
+NoPass_vs_TestBrainBots,25,91.7,2,blue,NoPass
+NoPass_vs_TestBrainBots,25,230.1,4,blue,NoPass
+NoPass_vs_TestBrainBots,26,40.0,1,red,NoPass
+NoPass_vs_TestBrainBots,26,87.9,2,red,NoPass
+NoPass_vs_TestBrainBots,26,149.5,3,red,NoPass
+NoPass_vs_TestBrainBots,26,184.9,4,red,NoPass
+NoPass_vs_TestBrainBots,26,285.5,5,red,NoPass
+NoPass_vs_TestBrainBots,26,297.8,5,red,NoPass
+NoPass_vs_TestBrainBots,27,30.3,1,blue,NoPass
+NoPass_vs_TestBrainBots,27,114.8,2,blue,NoPass
+NoPass_vs_TestBrainBots,27,146.5,3,blue,NoPass
+NoPass_vs_TestBrainBots,27,175.7,3,blue,NoPass
+NoPass_vs_TestBrainBots,27,187.6,4,blue,NoPass
+NoPass_vs_TestBrainBots,27,230.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,27,242.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,27,278.9,5,blue,NoPass
+NoPass_vs_TestBrainBots,28,36.0,1,red,NoPass
+NoPass_vs_TestBrainBots,28,48.1,1,red,NoPass
+NoPass_vs_TestBrainBots,28,126.2,3,red,NoPass
+NoPass_vs_TestBrainBots,28,164.7,3,red,NoPass
+NoPass_vs_TestBrainBots,28,176.5,3,red,NoPass
+NoPass_vs_TestBrainBots,28,209.9,4,red,NoPass
+NoPass_vs_TestBrainBots,28,271.3,5,red,NoPass
+NoPass_vs_TestBrainBots,29,11.5,1,blue,NoPass
+NoPass_vs_TestBrainBots,29,151.2,3,blue,NoPass
+NoPass_vs_TestBrainBots,29,163.1,3,blue,NoPass
+NoPass_vs_TestBrainBots,29,175.1,3,blue,NoPass
+NoPass_vs_TestBrainBots,29,187.0,4,blue,NoPass
+NoPass_vs_TestBrainBots,29,217.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,29,234.7,4,blue,NoPass
+NoPass_vs_TestBrainBots,29,246.7,5,blue,NoPass
+NoPass_vs_TestBrainBots,30,45.8,1,red,NoPass
+NoPass_vs_TestBrainBots,30,62.7,2,red,NoPass
+NoPass_vs_TestBrainBots,30,105.4,2,red,NoPass
+NoPass_vs_TestBrainBots,30,137.5,3,red,NoPass
+NoPass_vs_TestBrainBots,30,164.2,3,red,NoPass
+NoPass_vs_TestBrainBots,30,197.9,4,red,NoPass
+NoPass_vs_TestBrainBots,30,209.6,4,red,NoPass
+NoPass_vs_TestBrainBots,30,246.0,5,red,NoPass
+NoPass_vs_TestBrainBots,31,93.5,2,blue,NoPass
+NoPass_vs_TestBrainBots,31,214.8,4,red,TestBrain Bots
+NoPass_vs_TestBrainBots,31,241.0,5,blue,NoPass
+NoPass_vs_TestBrainBots,31,252.5,5,blue,NoPass
+NoPass_vs_TestBrainBots,32,164.7,3,red,NoPass
+NoPass_vs_TestBrainBots,32,187.4,4,red,NoPass
+NoPass_vs_TestBrainBots,32,199.7,4,red,NoPass
+NoPass_vs_TestBrainBots,32,218.0,4,red,NoPass
+NoPass_vs_TestBrainBots,33,44.2,1,blue,NoPass
+NoPass_vs_TestBrainBots,33,148.8,3,blue,NoPass
+NoPass_vs_TestBrainBots,33,165.9,3,blue,NoPass
+NoPass_vs_TestBrainBots,33,252.1,5,blue,NoPass
+NoPass_vs_TestBrainBots,34,54.3,1,red,NoPass
+NoPass_vs_TestBrainBots,34,123.8,3,red,NoPass
+NoPass_vs_TestBrainBots,34,136.2,3,red,NoPass
+NoPass_vs_TestBrainBots,34,151.2,3,red,NoPass
+NoPass_vs_TestBrainBots,34,187.1,4,red,NoPass
+NoPass_vs_TestBrainBots,34,242.0,5,red,NoPass
+NoPass_vs_TestBrainBots,35,58.6,1,blue,NoPass
+NoPass_vs_TestBrainBots,35,107.5,2,blue,NoPass
+NoPass_vs_TestBrainBots,35,120.0,3,blue,NoPass
+NoPass_vs_TestBrainBots,35,177.1,3,blue,NoPass
+NoPass_vs_TestBrainBots,35,204.6,4,blue,NoPass
+NoPass_vs_TestBrainBots,35,216.4,4,blue,NoPass
+NoPass_vs_TestBrainBots,36,12.2,1,red,NoPass
+NoPass_vs_TestBrainBots,36,36.4,1,red,NoPass
+NoPass_vs_TestBrainBots,36,180.8,4,red,NoPass
+NoPass_vs_TestBrainBots,36,205.1,4,red,NoPass
+NoPass_vs_TestBrainBots,36,291.6,5,red,NoPass
+NoPass_vs_TestBrainBots,37,18.0,1,blue,NoPass
+NoPass_vs_TestBrainBots,37,179.7,3,blue,NoPass
+NoPass_vs_TestBrainBots,38,12.1,1,red,NoPass
+NoPass_vs_TestBrainBots,38,138.6,3,red,NoPass
+NoPass_vs_TestBrainBots,38,172.8,3,red,NoPass
+NoPass_vs_TestBrainBots,38,280.2,5,red,NoPass
+NoPass_vs_TestBrainBots,38,292.0,5,red,NoPass
+NoPass_vs_TestBrainBots,39,120.7,3,blue,NoPass
+NoPass_vs_TestBrainBots,40,207.8,4,red,NoPass
+NoPass_vs_TestBrainBots,40,265.8,5,red,NoPass
+NoPass_vs_TestBrainBots,40,282.2,5,red,NoPass
+NoPass_vs_TestBrainBots,41,30.6,1,blue,NoPass
+NoPass_vs_TestBrainBots,41,45.4,1,blue,NoPass
+NoPass_vs_TestBrainBots,41,59.3,1,blue,NoPass
+NoPass_vs_TestBrainBots,41,103.7,2,blue,NoPass
+NoPass_vs_TestBrainBots,41,177.5,3,blue,NoPass
+NoPass_vs_TestBrainBots,41,220.1,4,blue,NoPass
+NoPass_vs_TestBrainBots,41,261.8,5,blue,NoPass
+NoPass_vs_TestBrainBots,41,296.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,42,27.6,1,red,NoPass
+NoPass_vs_TestBrainBots,42,39.5,1,red,NoPass
+NoPass_vs_TestBrainBots,42,51.2,1,red,NoPass
+NoPass_vs_TestBrainBots,42,92.6,2,red,NoPass
+NoPass_vs_TestBrainBots,42,112.6,2,red,NoPass
+NoPass_vs_TestBrainBots,42,125.0,3,red,NoPass
+NoPass_vs_TestBrainBots,42,171.2,3,red,NoPass
+NoPass_vs_TestBrainBots,42,187.0,4,red,NoPass
+NoPass_vs_TestBrainBots,42,247.9,5,blue,TestBrain Bots
+NoPass_vs_TestBrainBots,42,269.0,5,red,NoPass
+NoPass_vs_TestBrainBots,43,79.4,2,blue,NoPass
+NoPass_vs_TestBrainBots,43,91.3,2,blue,NoPass
+NoPass_vs_TestBrainBots,43,129.0,3,blue,NoPass
+NoPass_vs_TestBrainBots,43,299.5,5,blue,NoPass
+NoPass_vs_TestBrainBots,44,66.8,2,red,NoPass
+NoPass_vs_TestBrainBots,44,81.0,2,red,NoPass
+NoPass_vs_TestBrainBots,44,100.7,2,red,NoPass
+NoPass_vs_TestBrainBots,44,112.8,2,red,NoPass
+NoPass_vs_TestBrainBots,45,32.4,1,blue,NoPass
+NoPass_vs_TestBrainBots,45,92.3,2,blue,NoPass
+NoPass_vs_TestBrainBots,45,110.3,2,blue,NoPass
+NoPass_vs_TestBrainBots,45,141.9,3,blue,NoPass
+NoPass_vs_TestBrainBots,45,153.7,3,blue,NoPass
+NoPass_vs_TestBrainBots,46,12.2,1,red,NoPass
+NoPass_vs_TestBrainBots,46,167.4,3,red,NoPass
+NoPass_vs_TestBrainBots,46,184.4,4,red,NoPass
+NoPass_vs_TestBrainBots,46,217.6,4,red,NoPass
+NoPass_vs_TestBrainBots,47,12.2,1,blue,NoPass
+NoPass_vs_TestBrainBots,47,40.3,1,blue,NoPass
+NoPass_vs_TestBrainBots,47,96.6,2,blue,NoPass
+NoPass_vs_TestBrainBots,47,174.1,3,blue,NoPass
+NoPass_vs_TestBrainBots,47,269.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,48,12.0,1,red,NoPass
+NoPass_vs_TestBrainBots,48,119.7,2,red,NoPass
+NoPass_vs_TestBrainBots,48,174.9,3,red,NoPass
+NoPass_vs_TestBrainBots,48,200.2,4,red,NoPass
+NoPass_vs_TestBrainBots,48,247.4,5,red,NoPass
+NoPass_vs_TestBrainBots,49,37.8,1,blue,NoPass
+NoPass_vs_TestBrainBots,49,96.9,2,blue,NoPass
+NoPass_vs_TestBrainBots,49,141.5,3,blue,NoPass
+NoPass_vs_TestBrainBots,49,210.1,4,blue,NoPass
+NoPass_vs_TestBrainBots,49,222.6,4,blue,NoPass
+NoPass_vs_TestBrainBots,50,76.9,2,red,NoPass
+NoPass_vs_TestBrainBots,50,163.3,3,red,NoPass
+NoPass_vs_TestBrainBots,50,181.6,4,red,NoPass
+NoPass_vs_TestBrainBots,50,252.0,5,red,NoPass
+NoPass_vs_TestBrainBots,51,15.4,1,blue,NoPass
+NoPass_vs_TestBrainBots,51,156.4,3,blue,NoPass
+NoPass_vs_TestBrainBots,51,172.4,3,blue,NoPass
+NoPass_vs_TestBrainBots,51,201.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,51,214.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,52,49.8,1,red,NoPass
+NoPass_vs_TestBrainBots,52,99.0,2,red,NoPass
+NoPass_vs_TestBrainBots,52,110.9,2,red,NoPass
+NoPass_vs_TestBrainBots,52,127.2,3,red,NoPass
+NoPass_vs_TestBrainBots,52,225.2,4,red,NoPass
+NoPass_vs_TestBrainBots,52,237.0,4,red,NoPass
+NoPass_vs_TestBrainBots,52,254.6,5,red,NoPass
+NoPass_vs_TestBrainBots,52,271.2,5,red,NoPass
+NoPass_vs_TestBrainBots,53,12.7,1,blue,NoPass
+NoPass_vs_TestBrainBots,53,27.2,1,blue,NoPass
+NoPass_vs_TestBrainBots,53,42.3,1,blue,NoPass
+NoPass_vs_TestBrainBots,53,93.4,2,blue,NoPass
+NoPass_vs_TestBrainBots,53,219.1,4,blue,NoPass
+NoPass_vs_TestBrainBots,53,273.6,5,blue,NoPass
+NoPass_vs_TestBrainBots,53,285.9,5,blue,NoPass
+NoPass_vs_TestBrainBots,54,277.0,5,red,NoPass
+NoPass_vs_TestBrainBots,55,17.9,1,blue,NoPass
+NoPass_vs_TestBrainBots,55,39.8,1,blue,NoPass
+NoPass_vs_TestBrainBots,55,61.4,2,blue,NoPass
+NoPass_vs_TestBrainBots,55,98.9,2,blue,NoPass
+NoPass_vs_TestBrainBots,56,49.3,1,red,NoPass
+NoPass_vs_TestBrainBots,56,153.5,3,red,NoPass
+NoPass_vs_TestBrainBots,56,180.4,4,red,NoPass
+NoPass_vs_TestBrainBots,56,192.2,4,red,NoPass
+NoPass_vs_TestBrainBots,57,11.6,1,blue,NoPass
+NoPass_vs_TestBrainBots,57,23.9,1,blue,NoPass
+NoPass_vs_TestBrainBots,57,107.6,2,blue,NoPass
+NoPass_vs_TestBrainBots,57,137.3,3,blue,NoPass
+NoPass_vs_TestBrainBots,57,280.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,58,18.4,1,red,NoPass
+NoPass_vs_TestBrainBots,58,89.7,2,red,NoPass
+NoPass_vs_TestBrainBots,58,126.2,3,red,NoPass
+NoPass_vs_TestBrainBots,58,208.7,4,red,NoPass
+NoPass_vs_TestBrainBots,59,38.8,1,blue,NoPass
+NoPass_vs_TestBrainBots,59,98.2,2,blue,NoPass
+NoPass_vs_TestBrainBots,59,183.4,4,blue,NoPass
+NoPass_vs_TestBrainBots,59,258.3,5,blue,NoPass
+NoPass_vs_TestBrainBots,59,270.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,59,289.7,5,blue,NoPass
+NoPass_vs_TestBrainBots,60,57.5,1,red,NoPass
+NoPass_vs_TestBrainBots,60,75.7,2,red,NoPass
+NoPass_vs_TestBrainBots,60,168.3,3,red,NoPass
+NoPass_vs_TestBrainBots,60,191.3,4,red,NoPass
+NoPass_vs_TestBrainBots,60,269.5,5,red,NoPass
+NoPass_vs_TestBrainBots,61,17.8,1,blue,NoPass
+NoPass_vs_TestBrainBots,61,153.9,3,blue,NoPass
+NoPass_vs_TestBrainBots,61,166.4,3,blue,NoPass
+NoPass_vs_TestBrainBots,61,208.7,4,blue,NoPass
+NoPass_vs_TestBrainBots,61,279.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,61,295.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,62,17.0,1,red,NoPass
+NoPass_vs_TestBrainBots,62,36.2,1,red,NoPass
+NoPass_vs_TestBrainBots,62,48.5,1,red,NoPass
+NoPass_vs_TestBrainBots,62,88.8,2,red,NoPass
+NoPass_vs_TestBrainBots,62,244.2,5,red,NoPass
+NoPass_vs_TestBrainBots,62,275.6,5,red,NoPass
+NoPass_vs_TestBrainBots,63,19.3,1,blue,NoPass
+NoPass_vs_TestBrainBots,63,245.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,64,46.9,1,red,NoPass
+NoPass_vs_TestBrainBots,64,64.9,2,red,NoPass
+NoPass_vs_TestBrainBots,64,76.6,2,red,NoPass
+NoPass_vs_TestBrainBots,64,151.0,3,red,NoPass
+NoPass_vs_TestBrainBots,64,181.3,4,red,NoPass
+NoPass_vs_TestBrainBots,64,202.1,4,red,NoPass
+NoPass_vs_TestBrainBots,64,220.7,4,red,NoPass
+NoPass_vs_TestBrainBots,65,52.2,1,blue,NoPass
+NoPass_vs_TestBrainBots,65,64.4,2,blue,NoPass
+NoPass_vs_TestBrainBots,65,78.5,2,blue,NoPass
+NoPass_vs_TestBrainBots,65,89.8,2,blue,NoPass
+NoPass_vs_TestBrainBots,65,113.7,2,blue,NoPass
+NoPass_vs_TestBrainBots,65,218.8,4,blue,NoPass
+NoPass_vs_TestBrainBots,66,53.7,1,blue,TestBrain Bots
+NoPass_vs_TestBrainBots,66,65.4,2,red,NoPass
+NoPass_vs_TestBrainBots,66,87.7,2,red,NoPass
+NoPass_vs_TestBrainBots,66,112.4,2,red,NoPass
+NoPass_vs_TestBrainBots,66,253.0,5,red,NoPass
+NoPass_vs_TestBrainBots,67,67.3,2,blue,NoPass
+NoPass_vs_TestBrainBots,67,129.8,3,blue,NoPass
+NoPass_vs_TestBrainBots,67,147.1,3,blue,NoPass
+NoPass_vs_TestBrainBots,67,164.4,3,blue,NoPass
+NoPass_vs_TestBrainBots,67,190.4,4,blue,NoPass
+NoPass_vs_TestBrainBots,67,257.0,5,blue,NoPass
+NoPass_vs_TestBrainBots,67,290.0,5,blue,NoPass
+NoPass_vs_TestBrainBots,68,13.3,1,red,NoPass
+NoPass_vs_TestBrainBots,68,118.3,2,red,NoPass
+NoPass_vs_TestBrainBots,68,187.2,4,red,NoPass
+NoPass_vs_TestBrainBots,68,274.6,5,red,NoPass
+NoPass_vs_TestBrainBots,69,25.7,1,blue,NoPass
+NoPass_vs_TestBrainBots,69,83.3,2,blue,NoPass
+NoPass_vs_TestBrainBots,69,94.8,2,blue,NoPass
+NoPass_vs_TestBrainBots,69,110.5,2,blue,NoPass
+NoPass_vs_TestBrainBots,69,129.7,3,blue,NoPass
+NoPass_vs_TestBrainBots,69,142.2,3,blue,NoPass
+NoPass_vs_TestBrainBots,69,210.1,4,blue,NoPass
+NoPass_vs_TestBrainBots,69,222.0,4,blue,NoPass
+NoPass_vs_TestBrainBots,69,277.4,5,blue,NoPass
+NoPass_vs_TestBrainBots,70,12.0,1,red,NoPass
+NoPass_vs_TestBrainBots,71,33.0,1,blue,NoPass
+NoPass_vs_TestBrainBots,71,49.6,1,blue,NoPass
+NoPass_vs_TestBrainBots,72,56.7,1,red,NoPass
+NoPass_vs_TestBrainBots,72,102.8,2,red,NoPass
+NoPass_vs_TestBrainBots,73,12.1,1,blue,NoPass
+NoPass_vs_TestBrainBots,73,60.4,2,blue,NoPass
+NoPass_vs_TestBrainBots,73,136.3,3,blue,NoPass
+NoPass_vs_TestBrainBots,74,188.8,4,red,NoPass
+NoPass_vs_TestBrainBots,74,226.4,4,red,NoPass
+NoPass_vs_TestBrainBots,74,238.7,4,red,NoPass
+NoPass_vs_TestBrainBots,74,263.3,5,red,NoPass
+NoPass_vs_TestBrainBots,74,276.0,5,red,NoPass
+NoPass_vs_TestBrainBots,74,294.5,5,red,NoPass
+NoPass_vs_TestBrainBots,75,43.9,1,blue,NoPass
+NoPass_vs_TestBrainBots,75,56.0,1,blue,NoPass
+NoPass_vs_TestBrainBots,75,68.0,2,blue,NoPass
+NoPass_vs_TestBrainBots,75,109.9,2,blue,NoPass
+NoPass_vs_TestBrainBots,75,182.7,4,blue,NoPass
+NoPass_vs_TestBrainBots,75,256.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,75,269.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,75,281.3,5,blue,NoPass
+NoPass_vs_TestBrainBots,76,49.6,1,red,NoPass
+NoPass_vs_TestBrainBots,76,61.4,2,red,NoPass
+NoPass_vs_TestBrainBots,76,118.7,2,red,NoPass
+NoPass_vs_TestBrainBots,76,130.6,3,red,NoPass
+NoPass_vs_TestBrainBots,76,247.8,5,red,NoPass
+NoPass_vs_TestBrainBots,76,266.3,5,red,NoPass
+NoPass_vs_TestBrainBots,76,281.2,5,red,NoPass
+NoPass_vs_TestBrainBots,76,298.9,5,red,NoPass
+NoPass_vs_TestBrainBots,77,39.5,1,blue,NoPass
+NoPass_vs_TestBrainBots,77,84.4,2,blue,NoPass
+NoPass_vs_TestBrainBots,77,128.2,3,blue,NoPass
+NoPass_vs_TestBrainBots,77,140.9,3,blue,NoPass
+NoPass_vs_TestBrainBots,77,181.8,4,blue,NoPass
+NoPass_vs_TestBrainBots,77,198.0,4,blue,NoPass
+NoPass_vs_TestBrainBots,77,210.3,4,blue,NoPass
+NoPass_vs_TestBrainBots,78,52.9,1,blue,TestBrain Bots
+NoPass_vs_TestBrainBots,78,82.6,2,red,NoPass
+NoPass_vs_TestBrainBots,78,108.7,2,red,NoPass
+NoPass_vs_TestBrainBots,78,129.8,3,red,NoPass
+NoPass_vs_TestBrainBots,78,151.5,3,red,NoPass
+NoPass_vs_TestBrainBots,78,192.8,4,red,NoPass
+NoPass_vs_TestBrainBots,79,21.5,1,blue,NoPass
+NoPass_vs_TestBrainBots,79,116.7,2,red,TestBrain Bots
+NoPass_vs_TestBrainBots,79,240.0,5,blue,NoPass
+NoPass_vs_TestBrainBots,79,251.5,5,blue,NoPass
+NoPass_vs_TestBrainBots,79,269.3,5,blue,NoPass
+NoPass_vs_TestBrainBots,80,93.6,2,red,NoPass
+NoPass_vs_TestBrainBots,80,181.5,4,red,NoPass
+NoPass_vs_TestBrainBots,80,204.8,4,red,NoPass
+NoPass_vs_TestBrainBots,80,220.9,4,red,NoPass
+NoPass_vs_TestBrainBots,80,233.2,4,red,NoPass
+NoPass_vs_TestBrainBots,80,246.6,5,red,NoPass
+NoPass_vs_TestBrainBots,80,281.9,5,red,NoPass
+NoPass_vs_TestBrainBots,81,156.0,3,blue,NoPass
+NoPass_vs_TestBrainBots,81,241.7,5,blue,NoPass
+NoPass_vs_TestBrainBots,82,11.8,1,red,NoPass
+NoPass_vs_TestBrainBots,82,23.3,1,red,NoPass
+NoPass_vs_TestBrainBots,82,41.9,1,red,NoPass
+NoPass_vs_TestBrainBots,82,79.5,2,red,NoPass
+NoPass_vs_TestBrainBots,82,200.1,4,red,NoPass
+NoPass_vs_TestBrainBots,82,233.5,4,red,NoPass
+NoPass_vs_TestBrainBots,82,268.7,5,red,NoPass
+NoPass_vs_TestBrainBots,82,284.6,5,red,NoPass
+NoPass_vs_TestBrainBots,83,129.1,3,blue,NoPass
+NoPass_vs_TestBrainBots,83,249.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,83,263.3,5,blue,NoPass
+NoPass_vs_TestBrainBots,83,290.8,5,blue,NoPass
+NoPass_vs_TestBrainBots,84,30.0,1,red,NoPass
+NoPass_vs_TestBrainBots,84,55.4,1,red,NoPass
+NoPass_vs_TestBrainBots,84,107.5,2,red,NoPass
+NoPass_vs_TestBrainBots,84,124.5,3,red,NoPass
+NoPass_vs_TestBrainBots,84,188.7,4,red,NoPass
+NoPass_vs_TestBrainBots,84,257.5,5,red,NoPass
+NoPass_vs_TestBrainBots,84,282.6,5,red,NoPass
+NoPass_vs_TestBrainBots,85,15.0,1,blue,NoPass
+NoPass_vs_TestBrainBots,85,68.7,2,blue,NoPass
+NoPass_vs_TestBrainBots,85,103.0,2,blue,NoPass
+NoPass_vs_TestBrainBots,85,114.5,2,blue,NoPass
+NoPass_vs_TestBrainBots,85,167.6,3,blue,NoPass
+NoPass_vs_TestBrainBots,85,240.6,5,blue,NoPass
+NoPass_vs_TestBrainBots,86,21.9,1,red,NoPass
+NoPass_vs_TestBrainBots,86,34.3,1,red,NoPass
+NoPass_vs_TestBrainBots,86,108.2,2,red,NoPass
+NoPass_vs_TestBrainBots,86,123.1,3,red,NoPass
+NoPass_vs_TestBrainBots,86,154.3,3,red,NoPass
+NoPass_vs_TestBrainBots,86,277.8,5,red,NoPass
+NoPass_vs_TestBrainBots,87,48.3,1,blue,NoPass
+NoPass_vs_TestBrainBots,87,97.8,2,blue,NoPass
+NoPass_vs_TestBrainBots,87,119.9,2,blue,NoPass
+NoPass_vs_TestBrainBots,87,222.2,4,blue,NoPass
+NoPass_vs_TestBrainBots,87,257.5,5,blue,NoPass
+NoPass_vs_TestBrainBots,88,34.5,1,red,NoPass
+NoPass_vs_TestBrainBots,88,102.9,2,red,NoPass
+NoPass_vs_TestBrainBots,88,164.7,3,red,NoPass
+NoPass_vs_TestBrainBots,88,195.9,4,red,NoPass
+NoPass_vs_TestBrainBots,89,12.0,1,blue,NoPass
+NoPass_vs_TestBrainBots,89,31.5,1,blue,NoPass
+NoPass_vs_TestBrainBots,89,97.0,2,blue,NoPass
+NoPass_vs_TestBrainBots,89,146.1,3,blue,NoPass
+NoPass_vs_TestBrainBots,89,166.4,3,blue,NoPass
+NoPass_vs_TestBrainBots,89,281.7,5,blue,NoPass
+NoPass_vs_TestBrainBots,90,32.3,1,red,NoPass
+NoPass_vs_TestBrainBots,90,72.5,2,red,NoPass
+NoPass_vs_TestBrainBots,90,108.6,2,red,NoPass
+NoPass_vs_TestBrainBots,90,184.4,4,red,NoPass
+NoPass_vs_TestBrainBots,91,17.6,1,blue,NoPass
+NoPass_vs_TestBrainBots,91,30.7,1,blue,NoPass
+NoPass_vs_TestBrainBots,91,90.4,2,blue,NoPass
+NoPass_vs_TestBrainBots,91,131.4,3,blue,NoPass
+NoPass_vs_TestBrainBots,91,223.0,4,blue,NoPass
+NoPass_vs_TestBrainBots,92,18.5,1,red,NoPass
+NoPass_vs_TestBrainBots,92,42.5,1,red,NoPass
+NoPass_vs_TestBrainBots,92,93.5,2,red,NoPass
+NoPass_vs_TestBrainBots,92,179.0,3,red,NoPass
+NoPass_vs_TestBrainBots,92,194.7,4,red,NoPass
+NoPass_vs_TestBrainBots,92,258.2,5,red,NoPass
+NoPass_vs_TestBrainBots,92,276.6,5,red,NoPass
+NoPass_vs_TestBrainBots,93,19.8,1,blue,NoPass
+NoPass_vs_TestBrainBots,93,34.1,1,blue,NoPass
+NoPass_vs_TestBrainBots,93,172.5,3,blue,NoPass
+NoPass_vs_TestBrainBots,93,220.5,4,blue,NoPass
+NoPass_vs_TestBrainBots,93,264.6,5,blue,NoPass
+NoPass_vs_TestBrainBots,94,12.4,1,red,NoPass
+NoPass_vs_TestBrainBots,94,25.0,1,red,NoPass
+NoPass_vs_TestBrainBots,94,124.6,3,red,NoPass
+NoPass_vs_TestBrainBots,94,136.7,3,red,NoPass
+NoPass_vs_TestBrainBots,94,167.1,3,red,NoPass
+NoPass_vs_TestBrainBots,94,179.9,3,red,NoPass
+NoPass_vs_TestBrainBots,94,191.4,4,red,NoPass
+NoPass_vs_TestBrainBots,94,250.0,5,red,NoPass
+NoPass_vs_TestBrainBots,94,262.1,5,red,NoPass
+NoPass_vs_TestBrainBots,94,289.2,5,red,NoPass
+NoPass_vs_TestBrainBots,95,12.1,1,blue,NoPass
+NoPass_vs_TestBrainBots,95,77.4,2,blue,NoPass
+NoPass_vs_TestBrainBots,95,104.9,2,blue,NoPass
+NoPass_vs_TestBrainBots,95,182.8,4,blue,NoPass
+NoPass_vs_TestBrainBots,95,196.8,4,blue,NoPass
+NoPass_vs_TestBrainBots,95,298.2,5,blue,NoPass
+NoPass_vs_TestBrainBots,96,29.0,1,red,NoPass
+NoPass_vs_TestBrainBots,96,69.0,2,red,NoPass
+NoPass_vs_TestBrainBots,96,186.1,4,red,NoPass
+NoPass_vs_TestBrainBots,96,202.3,4,red,NoPass
+NoPass_vs_TestBrainBots,96,236.4,4,red,NoPass
+NoPass_vs_TestBrainBots,96,257.8,5,red,NoPass
+NoPass_vs_TestBrainBots,97,17.6,1,blue,NoPass
+NoPass_vs_TestBrainBots,97,67.9,2,blue,NoPass
+NoPass_vs_TestBrainBots,97,91.6,2,blue,NoPass
+NoPass_vs_TestBrainBots,97,182.1,4,blue,NoPass
+NoPass_vs_TestBrainBots,97,205.6,4,blue,NoPass
+NoPass_vs_TestBrainBots,98,76.3,2,red,NoPass
+NoPass_vs_TestBrainBots,98,145.8,3,red,NoPass
+NoPass_vs_TestBrainBots,98,212.1,4,red,NoPass
+NoPass_vs_TestBrainBots,98,238.2,4,red,NoPass
+NoPass_vs_TestBrainBots,98,282.0,5,red,NoPass
+NoPass_vs_TestBrainBots,98,300.0,5,red,NoPass
+NoPass_vs_TestBrainBots,99,15.4,1,blue,NoPass
+NoPass_vs_TestBrainBots,99,120.4,3,blue,NoPass
+NoPass_vs_TestBrainBots,99,207.3,4,blue,NoPass
+NoPass_vs_TestBrainBots,99,219.1,4,blue,NoPass
+NoPass_vs_TestBrainBots,99,244.4,5,blue,NoPass
+NoPass_vs_TestBrainBots,99,256.7,5,blue,NoPass
